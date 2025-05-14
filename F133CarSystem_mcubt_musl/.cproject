@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+	<storageModule moduleId="org.eclipse.cdt.core.settings">
+		<cconfiguration id="flythings.managedbuild.config.gnu.uiApp.release.927368457">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="flythings.managedbuild.config.gnu.uiApp.release.927368457" moduleId="org.eclipse.cdt.core.settings" name="Release">
+				<externalSettings>
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/F133CarSystem_PND"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/F133CarSystem_PND/Release"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="zkgui" srcPrefixMapping="" srcRootPath=""/>
+					</externalSetting>
+				</externalSettings>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactExtension="so" artifactName="zkgui" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.sharedLib" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.sharedLib,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release" cleanCommand="rm -rf" description="" id="flythings.managedbuild.config.gnu.uiApp.release.927368457" name="Release" parent="flythings.managedbuild.config.gnu.uiApp.release">
+					<folderInfo id="flythings.managedbuild.config.gnu.uiApp.release.927368457." name="/" resourcePath="">
+						<toolChain id="flythings.managedbuild.toolchain.gnu.uiApp.release.11866015" name="Platform Managedbuild GCC" superClass="flythings.managedbuild.toolchain.gnu.uiApp.release">
+							<targetPlatform archList="all" binaryParser="" id="flythings.managedbuild.targetPlatform.gnu.1276034000" isAbstract="false" osList="all" superClass="flythings.managedbuild.targetPlatform.gnu"/>
+							<builder buildPath="${workspace_loc:/F133CarSystem_PND}/Release" id="flythings.managedbuild.builder.gnu.1631269371" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="GNU Make 构建器" parallelBuildOn="true" parallelizationNumber="optimal" superClass="flythings.managedbuild.builder.gnu"/>
+							<tool id="flythings.managedbuild.tool.gnu.c.compiler.1296985437" name="C Compiler" superClass="flythings.managedbuild.tool.gnu.c.compiler">
+								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.option.optimization.level.2120589820" name="优化级别" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" valueType="enumerated"/>
+								<option defaultValue="gnu.c.debugging.level.none" id="gnu.c.compiler.option.debugging.level.1836669128" name="调试级别" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" valueType="enumerated"/>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.include.paths.1591304259" name="包含路径（-I）" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+								</option>
+								<option id="gnu.c.compiler.option.misc.other.1142116337" name="其他标志" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -pipe -Wformat -Werror=format-security -fstack-protector -fno-caller-saves" valueType="string"/>
+								<option id="gnu.c.compiler.option.misc.pic.1895231331" name="Position Independent Code (-fPIC)" superClass="gnu.c.compiler.option.misc.pic" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.57918598" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+							</tool>
+							<tool id="flythings.managedbuild.tool.gnu.cpp.compiler.1152434155" name="C++ Compiler" superClass="flythings.managedbuild.tool.gnu.cpp.compiler">
+								<option id="gnu.cpp.compiler.option.optimization.level.1197234" name="优化级别" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
+								<option defaultValue="gnu.cpp.compiler.debugging.level.none" id="gnu.cpp.compiler.option.debugging.level.1455001522" name="调试级别" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" valueType="enumerated"/>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.include.paths.1352112872" name="包含路径（-I）" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+								</option>
+								<option id="gnu.cpp.compiler.option.other.other.527345512" name="其他标志" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -pipe -Wformat -Werror=format-security -fstack-protector -fno-caller-saves -fexceptions" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.other.pic.689120846" name="Position Independent Code (-fPIC)" superClass="gnu.cpp.compiler.option.other.pic" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.dialect.std.363334211" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.c++11" valueType="enumerated"/>
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.583964600" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+							</tool>
+							<tool id="flythings.managedbuild.tool.gnu.c.linker.2140172112" name="C Linker" superClass="flythings.managedbuild.tool.gnu.c.linker">
+								<option defaultValue="true" id="gnu.c.link.option.shared.1677339513" name="共享的（-shared）" superClass="gnu.c.link.option.shared" valueType="boolean"/>
+							</tool>
+							<tool id="flythings.managedbuild.tool.gnu.cpp.linker.863445113" name="C++ Linker" superClass="flythings.managedbuild.tool.gnu.cpp.linker">
+								<option defaultValue="true" id="gnu.cpp.link.option.shared.947436027" name="共享的（-shared）" superClass="gnu.cpp.link.option.shared" valueType="boolean"/>
+								<option id="gnu.cpp.link.option.flags.1009131935" name="链接器标志" superClass="gnu.cpp.link.option.flags" value="-Wl,-z,now -Wl,-z,relro -Wl,-z,defs -Wl,--warn-common -Wl,-z,combreloc -Wl,--warn-once" valueType="string"/>
+								<option id="gnu.cpp.link.option.strip.62027478" name="省略所有的符号信息（-s）" superClass="gnu.cpp.link.option.strip" value="true" valueType="boolean"/>
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.699583568" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
+									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
+								</inputType>
+							</tool>
+							<tool id="flythings.managedbuild.tool.gnu.archiver.955061062" name="Archiver" superClass="flythings.managedbuild.tool.gnu.archiver"/>
+							<tool id="flythings.managedbuild.tool.gnu.assembler.600822253" name="Assembler" superClass="flythings.managedbuild.tool.gnu.assembler">
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.232221441" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+							</tool>
+						</toolChain>
+					</folderInfo>
+					<sourceEntries>
+						<entry excluding="logic/*Logic.cc|logic/navibar.cc|logic/statusbar.cc|logic/screensaver.cc" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+					</sourceEntries>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+		<cconfiguration id="flythings.managedbuild.config.gnu.uiApp.debug.1336514307">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="flythings.managedbuild.config.gnu.uiApp.debug.1336514307" moduleId="org.eclipse.cdt.core.settings" name="Debug">
+				<externalSettings>
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/F133CarSystem_PND"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/F133CarSystem_PND/Debug"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="zkgui" srcPrefixMapping="" srcRootPath=""/>
+					</externalSetting>
+				</externalSettings>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactExtension="so" artifactName="zkgui" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.sharedLib" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.sharedLib,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="rm -rf" description="" id="flythings.managedbuild.config.gnu.uiApp.debug.1336514307" name="Debug" parent="flythings.managedbuild.config.gnu.uiApp.debug">
+					<folderInfo id="flythings.managedbuild.config.gnu.uiApp.debug.1336514307." name="/" resourcePath="">
+						<toolChain id="flythings.managedbuild.toolchain.gnu.uiApp.debug.341108487" name="Platform Managedbuild GCC" superClass="flythings.managedbuild.toolchain.gnu.uiApp.debug">
+							<targetPlatform archList="all" binaryParser="" id="flythings.managedbuild.targetPlatform.gnu.1396891735" isAbstract="false" osList="all" superClass="flythings.managedbuild.targetPlatform.gnu"/>
+							<builder buildPath="${workspace_loc:/F133CarSystem_PND}/Debug" id="flythings.managedbuild.builder.gnu.1850399052" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="GNU Make 构建器" parallelBuildOn="true" parallelizationNumber="optimal" superClass="flythings.managedbuild.builder.gnu"/>
+							<tool id="flythings.managedbuild.tool.gnu.c.compiler.1196139372" name="C Compiler" superClass="flythings.managedbuild.tool.gnu.c.compiler">
+								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.1113113659" name="优化级别" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" valueType="enumerated"/>
+								<option defaultValue="gnu.c.debugging.level.max" id="gnu.c.compiler.option.debugging.level.2133442724" name="调试级别" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" valueType="enumerated"/>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.include.paths.1748443539" name="包含路径（-I）" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+								</option>
+								<option id="gnu.c.compiler.option.misc.other.145918719" name="其他标志" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -pipe -Wformat -Werror=format-security -fstack-protector -fno-caller-saves" valueType="string"/>
+								<option id="gnu.c.compiler.option.misc.pic.716913339" name="Position Independent Code (-fPIC)" superClass="gnu.c.compiler.option.misc.pic" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1269857093" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+							</tool>
+							<tool id="flythings.managedbuild.tool.gnu.cpp.compiler.295917777" name="C++ Compiler" superClass="flythings.managedbuild.tool.gnu.cpp.compiler">
+								<option id="gnu.cpp.compiler.option.optimization.level.86935768" name="优化级别" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+								<option defaultValue="gnu.cpp.compiler.debugging.level.max" id="gnu.cpp.compiler.option.debugging.level.702486567" name="调试级别" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" valueType="enumerated"/>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.include.paths.2045269921" name="包含路径（-I）" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+								</option>
+								<option id="gnu.cpp.compiler.option.other.other.471884644" name="其他标志" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -pipe -Wformat -Werror=format-security -fstack-protector -fno-caller-saves -fexceptions" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.other.pic.1230179078" name="Position Independent Code (-fPIC)" superClass="gnu.cpp.compiler.option.other.pic" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.dialect.std.1886849896" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.c++11" valueType="enumerated"/>
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.415645727" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+							</tool>
+							<tool id="flythings.managedbuild.tool.gnu.c.linker.1176616733" name="C Linker" superClass="flythings.managedbuild.tool.gnu.c.linker">
+								<option defaultValue="true" id="gnu.c.link.option.shared.1911828811" name="共享的（-shared）" superClass="gnu.c.link.option.shared" valueType="boolean"/>
+							</tool>
+							<tool id="flythings.managedbuild.tool.gnu.cpp.linker.537006930" name="C++ Linker" superClass="flythings.managedbuild.tool.gnu.cpp.linker">
+								<option defaultValue="true" id="gnu.cpp.link.option.shared.1064292189" name="共享的（-shared）" superClass="gnu.cpp.link.option.shared" valueType="boolean"/>
+								<option id="gnu.cpp.link.option.flags.1464895209" name="链接器标志" superClass="gnu.cpp.link.option.flags" value="-Wl,-z,now -Wl,-z,relro -Wl,-z,defs -Wl,--warn-common -Wl,-z,combreloc -Wl,--warn-once" valueType="string"/>
+								<option id="gnu.cpp.link.option.strip.1012177658" name="省略所有的符号信息（-s）" superClass="gnu.cpp.link.option.strip" value="true" valueType="boolean"/>
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1706758160" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
+									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
+								</inputType>
+							</tool>
+							<tool id="flythings.managedbuild.tool.gnu.archiver.1316558971" name="Archiver" superClass="flythings.managedbuild.tool.gnu.archiver"/>
+							<tool id="flythings.managedbuild.tool.gnu.assembler.1033404631" name="Assembler" superClass="flythings.managedbuild.tool.gnu.assembler">
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1194041621" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+							</tool>
+						</toolChain>
+					</folderInfo>
+					<sourceEntries>
+						<entry excluding="logic/*Logic.cc|logic/navibar.cc|logic/statusbar.cc|logic/screensaver.cc" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+					</sourceEntries>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+	</storageModule>
+	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+		<project id="F133CarSystem_PND.flythings.managedbuild.target.gnu.uiApp.1585000237" name="共享库" projectType="flythings.managedbuild.target.gnu.uiApp"/>
+	</storageModule>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="flythings.managedbuild.config.gnu.uiApp.release.927368457;flythings.managedbuild.config.gnu.uiApp.release.927368457.;flythings.managedbuild.tool.gnu.cpp.compiler.1152434155;cdt.managedbuild.tool.gnu.cpp.compiler.input.583964600">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="flythings.managedbuild.config.gnu.uiApp.debug.1336514307;flythings.managedbuild.config.gnu.uiApp.debug.1336514307.;flythings.managedbuild.tool.gnu.c.compiler.1196139372;cdt.managedbuild.tool.gnu.c.compiler.input.1269857093">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="flythings.managedbuild.config.gnu.uiApp.release.927368457;flythings.managedbuild.config.gnu.uiApp.release.927368457.;flythings.managedbuild.tool.gnu.c.compiler.1296985437;cdt.managedbuild.tool.gnu.c.compiler.input.57918598">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="flythings.managedbuild.config.gnu.uiApp.debug.1336514307;flythings.managedbuild.config.gnu.uiApp.debug.1336514307.;flythings.managedbuild.tool.gnu.cpp.compiler.295917777;cdt.managedbuild.tool.gnu.cpp.compiler.input.415645727">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+</cproject>

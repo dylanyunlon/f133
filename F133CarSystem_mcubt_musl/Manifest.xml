@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE flythings>
+<manifest cyclicDependency="true" platform="F133">    <dependencies enableOnPlatforms="F133">        <package id="easyui" version="2.3.0"/>        <package id="log" version="1.0.0"/>        <package id="zkhardware" version="1.0.0"/>        <package id="zknet" version="1.0.0"/>    </dependencies></manifest>
