@@ -4,6 +4,7 @@
     <string name="Video">视频</string>
     <string name="PhoneLink">手机互联</string>
     <string name="Bluetooth">蓝牙</string>
+    <string name="volume">音量</string>
     <string name="Music volume">音乐音量</string>
     <string name="Carplay call volume">carplay打电话音量</string>
     <string name="Recording volume">录音音量</string>
@@ -55,6 +56,7 @@
     <string name="link">互联</string>
     <string name="voice">声音</string>
     <string name="reverse">倒车</string>
+    <string name="factory">工厂</string>
     <string name="system">系统</string>
     <string name="more">更多</string>
     <string name="Camera parameters">摄像头参数</string>
@@ -168,4 +170,13 @@
 	<string name="Lylink is not auto">互联未授权</string>
 	<string name="Lylink is auto">互联已授权</string>
 	<string name="Specifies whether to go to the MCU upgrade page">是否进入mcu升级界面</string>
+	<string name="PM">下午</string>
+	<string name="AM">上午</string>
+	<string name="Audio output from the speaker">音频从喇叭输出</string>
+	<string name="auxtips">音频从AUX输出</string>
+	<string name="Carplay/Auto audio is output from your phone's Bluetooth">Carplay/Auto 音频从手机蓝牙输出</string>
+	<string name="Do you want to delete the contact?">是否删除联系人</string>
+	<string name="This image is not supported for display!">不支持显示该图片!</string>
+	<string name="No files">无文件</string>
+	<string name="Display parameter adjustment">显示参数调节</string>
 </resources>

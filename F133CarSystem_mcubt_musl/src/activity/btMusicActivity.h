@@ -26,6 +26,22 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_BTMUSIC_TextView2    50007
+#define ID_BTMUSIC_TextView14    50011
+#define ID_BTMUSIC_btTipsWindow    110006
+#define ID_BTMUSIC_TextView1    50003
+#define ID_BTMUSIC_TextView20    50027
+#define ID_BTMUSIC_TextView19    50026
+#define ID_BTMUSIC_TextView18    50025
+#define ID_BTMUSIC_TextView17    50024
+#define ID_BTMUSIC_TextView16    50002
+#define ID_BTMUSIC_TextView15    50001
+#define ID_BTMUSIC_btsettingButton    20003
+#define ID_BTMUSIC_btcontactsButton    20002
+#define ID_BTMUSIC_btrecordButton    20001
+#define ID_BTMUSIC_phoneButton    20008
+#define ID_BTMUSIC_queryMusicButton    20010
+#define ID_BTMUSIC_btAppWindow    110001
 #define ID_BTMUSIC_tittleTextView    50004
 #define ID_BTMUSIC_artistTextView    50005
 #define ID_BTMUSIC_albumTextView    50006
@@ -37,7 +53,6 @@
 #define ID_BTMUSIC_playButton    20032
 #define ID_BTMUSIC_musicSeekBar    91002
 #define ID_BTMUSIC_lyricTextView    50023
-#define ID_BTMUSIC_sys_back   100
 /*TAG:Macro宏ID END*/
 
 class btMusicActivity : public Activity, 

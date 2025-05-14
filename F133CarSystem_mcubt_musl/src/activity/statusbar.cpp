@@ -2,6 +2,7 @@
 #include "entry/EasyUIContext.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mnumTextViewPtr;
 static ZKButton* manswerButtonPtr;
 static ZKButton* mnameTextViewButtonPtr;
 static ZKButton* mrejectButtonPtr;
@@ -117,6 +118,7 @@ statusbar::~statusbar() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mstatusbarPtr = NULL;
+    mnumTextViewPtr = NULL;
     manswerButtonPtr = NULL;
     mnameTextViewButtonPtr = NULL;
     mrejectButtonPtr = NULL;
@@ -132,6 +134,7 @@ const char* statusbar::getAppName() const{
 //TAG:onCreate
 void statusbar::onCreate() {
 	BaseApp::onCreate();
+    mnumTextViewPtr = (ZKTextView*)findControlByID(ID_STATUSBAR_numTextView);
     manswerButtonPtr = (ZKButton*)findControlByID(ID_STATUSBAR_answerButton);
     mnameTextViewButtonPtr = (ZKButton*)findControlByID(ID_STATUSBAR_nameTextViewButton);
     mrejectButtonPtr = (ZKButton*)findControlByID(ID_STATUSBAR_rejectButton);

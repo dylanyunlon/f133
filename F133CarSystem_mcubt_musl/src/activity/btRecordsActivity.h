@@ -26,16 +26,38 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_BTRECORDS_TextView5    50006
+#define ID_BTRECORDS_TextView4    50005
+#define ID_BTRECORDS_TextView3    50004
+#define ID_BTRECORDS_TextView2    50003
+#define ID_BTRECORDS_TextView1    50001
+#define ID_BTRECORDS_sureButton    20015
+#define ID_BTRECORDS_cancelButton    20014
+#define ID_BTRECORDS_TipsTextView    50011
+#define ID_BTRECORDS_DeleteTipsWindow    110010
+#define ID_BTRECORDS_TextView20    50027
+#define ID_BTRECORDS_TextView19    50026
+#define ID_BTRECORDS_TextView18    50025
+#define ID_BTRECORDS_TextView17    50024
+#define ID_BTRECORDS_TextView16    50023
+#define ID_BTRECORDS_TextView15    50002
+#define ID_BTRECORDS_btsettingButton    20007
+#define ID_BTRECORDS_btcontactsButton    20006
+#define ID_BTRECORDS_btrecordButton    20002
+#define ID_BTRECORDS_phoneButton    20008
+#define ID_BTRECORDS_queryMusicButton    20010
+#define ID_BTRECORDS_btAppWindow    110001
+#define ID_BTRECORDS_outButton    20011
+#define ID_BTRECORDS_inButton    20012
+#define ID_BTRECORDS_missButton    20013
+#define ID_BTRECORDS_DeleteButton    20009
+#define ID_BTRECORDS_SubItem1    24001
 #define ID_BTRECORDS_syncPointer    90001
 #define ID_BTRECORDS_scaningTextView    50012
 #define ID_BTRECORDS_scaningWindow    110003
 #define ID_BTRECORDS_downloadButton    20001
-#define ID_BTRECORDS_btDialButton    20003
-#define ID_BTRECORDS_btRecordsButton    20004
-#define ID_BTRECORDS_btContactsButton    20005
 #define ID_BTRECORDS_rNameSubItem    24004
 #define ID_BTRECORDS_recordsListView    80004
-#define ID_BTRECORDS_sys_back   100
 /*TAG:Macro宏ID END*/
 
 class btRecordsActivity : public Activity, 

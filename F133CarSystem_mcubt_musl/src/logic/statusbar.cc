@@ -60,22 +60,24 @@ static void set_bt_call_info() {
 }
 
 static void set_status_layout(bt_call_state_e state) {
-	LayoutPosition position = EASYUICONTEXT->getStatusBar()->getPosition();
+//	LayoutPosition position = EASYUICONTEXT->getStatusBar()->getPosition();
 	if (state == E_BT_CALL_STATE_INCOMING) {
 		set_bt_call_info();
-		position = LayoutPosition(314, 3, 396, 60);
-		EASYUICONTEXT->getStatusBar()->setPosition(position);
+//		position = LayoutPosition(314, 3, 396, 60);
+//		EASYUICONTEXT->getStatusBar()->setPosition(position);
+		manswerButtonPtr->setVisible(true);
 		mincomingWindowPtr->showWnd();
 	}
 	else if (state == E_BT_CALL_STATE_OUTGOING) {
 		set_bt_call_info();
-		position = LayoutPosition(314, 3, 396-60, 60);
-		EASYUICONTEXT->getStatusBar()->setPosition(position);
+//		position = LayoutPosition(314, 3, 396-60, 60);
+//		EASYUICONTEXT->getStatusBar()->setPosition(position);
+		manswerButtonPtr->setVisible(false);
 		mincomingWindowPtr->showWnd();
 	}
 	else if (state == E_BT_CALL_STATE_TALKING) {
-		position = LayoutPosition(314+158, 0, 80, 40);
-		EASYUICONTEXT->getStatusBar()->setPosition(position);
+//		position = LayoutPosition(314+158, 0, 80, 40);
+//		EASYUICONTEXT->getStatusBar()->setPosition(position);
 		mincomingWindowPtr->hideWnd();
 	}
 }

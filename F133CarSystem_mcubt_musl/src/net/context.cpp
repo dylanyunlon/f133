@@ -89,12 +89,14 @@ public:
 #if 1  // carlife need setup
 		switch (event) {
 		case E_WIFI_CONNECT_CONNECTED: {
-			LYLINKAPI_WIFI_PARAM param;
-			memset(&param, 0, sizeof(param));
-			param.stadisc.id = LYLINK_WIFI_STA_CONNECTED;
-			WIFIMANAGER->getConfigureInfo(NULL, NULL, param.stadisc.gateway, NULL, NULL);
-			LOGD("[net] wifi gw: %s\n", param.stadisc.gateway);
-			lylinkapi_wifi(&param);
+			if (sys::setting::get_link_mode() == E_LINK_MODE_CARLIFE) {
+				LYLINKAPI_WIFI_PARAM param;
+				memset(&param, 0, sizeof(param));
+				param.stadisc.id = LYLINK_WIFI_STA_CONNECTED;
+				WIFIMANAGER->getConfigureInfo(NULL, NULL, param.stadisc.gateway, NULL, NULL);
+				LOGD("[net] wifi gw: %s\n", param.stadisc.gateway);
+				lylinkapi_wifi(&param);
+			}
 		}
 			break;
 		case E_WIFI_CONNECT_DISCONNECT: {

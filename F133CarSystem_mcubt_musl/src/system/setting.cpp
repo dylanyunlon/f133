@@ -59,6 +59,8 @@
 #define FM_FREQUENCY               "fm_frequency"
 #define FM_SWITCH				   "fm_switch"
 
+#define TIME_FORMAT_24H            "time_format_24h"
+
 #define DEFAULT_FREQUENCY		   900
 
 typedef struct{
@@ -71,6 +73,7 @@ typedef struct{
 	int high;
 	int rot;
 } camera_info_tab;
+static bool _s_time_format_24h = true;
 static camera_info_tab s_camera_info_tab;
 static std::set<play_mode_state_cb> _s_play_state_set;
 static Mutex _s_play_mutex;
@@ -123,7 +126,7 @@ void init() {
 //	} else {
 //		set_usb_config(E_USB_MODE_HOST);
 //	}
-
+	_s_time_format_24h = storage::get_bool(TIME_FORMAT_24H, true);
 	uint8_t otp_tag[2];
 	if (storage::otp_read_data(BT_LIC_OFFSET + BT_LIC_SIZE, otp_tag, 2)) {
 		LOGD("### otp auth tag: %02X %02X\n", otp_tag[0], otp_tag[1]);
@@ -376,7 +379,7 @@ void set_sound_mode(sound_mode_e mode) {
 }
 
 sound_mode_e get_sound_mode() {
-	return (sound_mode_e) storage::get_int(SOUND_MODE, E_SOUND_MODE_AUX);
+	return (sound_mode_e) storage::get_int(SOUND_MODE, E_SOUND_MODE_SPK);
 }
 
 void set_front_tire_data(std::string& data) {
@@ -417,6 +420,15 @@ bool get_fm_switch() {
 
 void set_fm_switch(bool status) {
 	storage::put_bool(FM_SWITCH, status);
+}
+
+void set_time_format_24h(bool format_24h) {
+	_s_time_format_24h = format_24h;
+	storage::put_bool(TIME_FORMAT_24H, format_24h);
+}
+
+bool is_time_format_24h() {
+	return _s_time_format_24h;
 }
 }
 }

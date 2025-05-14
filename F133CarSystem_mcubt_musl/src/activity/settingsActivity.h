@@ -13,6 +13,7 @@
 
 #include "utils/Log.h"
 #include "control/ZKDigitalClock.h"
+#include "window/ZKScrollWindow.h"
 #include "control/ZKButton.h"
 #include "control/ZKCircleBar.h"
 #include "control/ZKDiagram.h"
@@ -26,6 +27,29 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_SETTINGS_hourButton24    20009
+#define ID_SETTINGS_hourButton12    20008
+#define ID_SETTINGS_TextView9    50010
+#define ID_SETTINGS_TextView8    50007
+#define ID_SETTINGS_TextView7    50006
+#define ID_SETTINGS_TextView6    50005
+#define ID_SETTINGS_TextView5    50004
+#define ID_SETTINGS_TextView4    50003
+#define ID_SETTINGS_TextView3    50001
+#define ID_SETTINGS_CameraScrollWindow    32001
+#define ID_SETTINGS_rotnextButton    20023
+#define ID_SETTINGS_rotdownButton    20022
+#define ID_SETTINGS_rotTextView    50047
+#define ID_SETTINGS_TextView36    50046
+#define ID_SETTINGS_skipaddButton    20021
+#define ID_SETTINGS_skipTextView    50045
+#define ID_SETTINGS_skipreduceButton    20012
+#define ID_SETTINGS_CutcvbsButton    20011
+#define ID_SETTINGS_SubItem10    24026
+#define ID_SETTINGS_SubItem9    24025
+#define ID_SETTINGS_TextView35    50044
+#define ID_SETTINGS_TextView32    50041
+#define ID_SETTINGS_TextView33    50042
 #define ID_SETTINGS_otpTextView    50056
 #define ID_SETTINGS_otpWindow    110016
 #define ID_SETTINGS_developerWnd    110012
@@ -34,7 +58,6 @@
 #define ID_SETTINGS_SubItem5    24018
 #define ID_SETTINGS_moreListView    80008
 #define ID_SETTINGS_moreWnd    110006
-#define ID_SETTINGS_tTextView    50001
 #define ID_SETTINGS_timeCancelButton    20014
 #define ID_SETTINGS_SetTimeSureBtn    20006
 #define ID_SETTINGS_Subd    24017
@@ -48,21 +71,6 @@
 #define ID_SETTINGS_SubItem4    24013
 #define ID_SETTINGS_Subh    24012
 #define ID_SETTINGS_hourListView    80015
-#define ID_SETTINGS_TextView3    50003
-#define ID_SETTINGS_TextView5    50005
-#define ID_SETTINGS_TextView4    50004
-#define ID_SETTINGS_TextView6    50006
-#define ID_SETTINGS_TextView7    50007
-#define ID_SETTINGS_TextView8    50010
-#define ID_SETTINGS_TextView9    50011
-#define ID_SETTINGS_TextView10    50012
-#define ID_SETTINGS_TextView13    50013
-#define ID_SETTINGS_TextView14    50014
-#define ID_SETTINGS_TextView15    50015
-#define ID_SETTINGS_TextView16    50022
-#define ID_SETTINGS_TextView17    50023
-#define ID_SETTINGS_TextView18    50024
-#define ID_SETTINGS_TextView19    50025
 #define ID_SETTINGS_setWindow    110011
 #define ID_SETTINGS_SetdataWnd    110008
 #define ID_SETTINGS_languagePicSub    24011
@@ -87,22 +95,13 @@
 #define ID_SETTINGS_cvbsButton    20013
 #define ID_SETTINGS_TextView28    50037
 #define ID_SETTINGS_TextView27    50036
-#define ID_SETTINGS_rotvalueEditText    51002
-#define ID_SETTINGS_SetRotBtn    20009
-#define ID_SETTINGS_SkipSureBtn    20008
-#define ID_SETTINGS_SkipEditText    51001
 #define ID_SETTINGS_TextView1    50020
 #define ID_SETTINGS_CutCameraBtn    20007
-#define ID_SETTINGS_CameraTypeText    50019
 #define ID_SETTINGS_TextView2    50018
 #define ID_SETTINGS_formatTextView    50002
 #define ID_SETTINGS_ChannelListView    80007
 #define ID_SETTINGS_caminfoListView    80006
 #define ID_SETTINGS_CameraWnd    110010
-#define ID_SETTINGS_reverseTextSub    24008
-#define ID_SETTINGS_SubItem3    24007
-#define ID_SETTINGS_SubItem2    24006
-#define ID_SETTINGS_ReverseListView    80003
 #define ID_SETTINGS_reverseWnd    110004
 #define ID_SETTINGS_TextView24    50033
 #define ID_SETTINGS_TextView25    50034
@@ -127,10 +126,7 @@
 #define ID_SETTINGS_linkAuthorizeButton    20037
 #define ID_SETTINGS_btAuthorizeButton    20036
 #define ID_SETTINGS_SetLinkTypeBtn    20001
-#define ID_SETTINGS_SetLinkVoiceBtn    20010
 #define ID_SETTINGS_Link_typeText    50054
-#define ID_SETTINGS_TextView30    50039
-#define ID_SETTINGS_TextView38    50053
 #define ID_SETTINGS_TextView31    50040
 #define ID_SETTINGS_TextView41    50055
 #define ID_SETTINGS_linkWnd    110002
@@ -148,12 +144,8 @@
 #define ID_SETTINGS_SubItem1    24003
 #define ID_SETTINGS_showListView    80002
 #define ID_SETTINGS_colorButton    20015
-#define ID_SETTINGS_TextView36    50046
-#define ID_SETTINGS_TextView37    50047
-#define ID_SETTINGS_TextView39    50049
 #define ID_SETTINGS_brightnessTextView    50048
 #define ID_SETTINGS_showWnd    110001
-#define ID_SETTINGS_SubItem10    24025
 #define ID_SETTINGS_SettingpicSub    24002
 #define ID_SETTINGS_settingTextSub    24001
 #define ID_SETTINGS_SubItem7    24021

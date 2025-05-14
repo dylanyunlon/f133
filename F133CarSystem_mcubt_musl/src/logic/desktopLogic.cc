@@ -48,13 +48,13 @@
 #include "fy/files.hpp"
 #include "net/NetManager.h"
 #include "os/MountMonitor.h"
+#include "sysapp_context.h"
 
 #define WIFIMANAGER			NETMANAGER->getWifiManager()
 
 #define SOFT_VERSION	"2024.01.25 17:18"
 
-//extern void to_home_btn_show();				// 显示导航栏home键
-//extern void set_navibar_PlayVolSeekBar(int progress);
+//extern void set_navibar_PlayVolSeekBar(int progress
 
 static bt_cb_t _s_bt_cb;
 static void set_status_btn_visble_pos(ZKButton* pButton, bool isVisible);
@@ -74,7 +74,7 @@ static void parser() {
 		martistTextViewPtr->setTextTr("Unknown");
 	}
 	isTrue = media::parse_id3_pic(cur_play_file.c_str(), "/tmp/music.jpg");
-	mmusicPicTextViewPtr->setBackgroundPic(isTrue ? "/tmp/music.jpg" : CONFIGMANAGER->getResFilePath("/HomePage/default.png").c_str());
+	mmusicPicTextViewPtr->setBackgroundPic(isTrue ? "/tmp/music.jpg" : CONFIGMANAGER->getResFilePath("/HomePage/icon_media_cover_n.png").c_str());
 }
 
 static void _music_play_status_cb(music_play_status_e status) {
@@ -100,7 +100,7 @@ static void _music_play_status_cb(music_play_status_e status) {
 		mtitleTextViewPtr->setTextColor(0xFF000000);
 		mtitleTextViewPtr->setTextTr("Unknown");
 		martistTextViewPtr->setTextTr("Unknown");
-		mmusicPicTextViewPtr->setBackgroundPic("/HomePage/default.png");
+		mmusicPicTextViewPtr->setBackgroundPic("/HomePage/icon_media_cover_n.png");
 		break;
 	case E_MUSIC_PLAY_STATUS_PAUSE:      	// 暂停播放
 		mtitleTextViewPtr->setLongMode(ZKTextView::E_LONG_MODE_NONE);
@@ -130,10 +130,6 @@ static void _lylink_callback(LYLINKAPI_EVENT evt, int para0, void *para1) {
 	default:
 		break;
 	}
-}
-
-void MainFtu_MediaSeekBar(int progress) {
-	mPlayVolSeekBarPtr->setProgress(progress);
 }
 
 /********************* 导航栏小图标——begin ***********************/
@@ -377,7 +373,7 @@ static void onUI_show() {
 static void onUI_hide() {
 //	mDigitalClock2Ptr->setVisible(false);
 	// 隐藏时关闭该界面，释放界面资源。
-	EASYUICONTEXT->closeActivity("desktopActivity");
+//	EASYUICONTEXT->closeActivity("desktopActivity");
 }
 
 /*
@@ -443,6 +439,7 @@ static bool ondesktopActivityTouchEvent(const MotionEvent &ev) {
 
 	switch (ev.mActionStatus) {
 	case MotionEvent::E_ACTION_DOWN:	//触摸按下
+		LOGD("时刻 = %ld 坐标  x = %d, y = %d", ev.mEventTime, ev.mX, ev.mY);
 		break;
 	case MotionEvent::E_ACTION_MOVE:	//触摸滑动
 		break;
@@ -708,14 +705,14 @@ static void onSlideItemClick_appSlideWindow(ZKSlideWindow *pSlideWindow, int ind
 	    LOGD(" ButtonClick FM !!!\n");
 	    EASYUICONTEXT->openActivity("FMemitActivity");
 		break;
-	case 11:
-		LOGD(" ButtonClick Tire !!!\n");
-		EASYUICONTEXT->openActivity("tirePressureActivity");
-		break;
-	case 12:
-	    LOGD(" ButtonClick CLButton !!!\n");
-	    open_link_activity(E_LINK_MODE_CARLIFE);
-		break;
+//	case 11:
+//		LOGD(" ButtonClick Tire !!!\n");
+//		EASYUICONTEXT->openActivity("tirePressureActivity");
+//		break;
+//	case 12:
+//	    LOGD(" ButtonClick CLButton !!!\n");
+//	    open_link_activity(E_LINK_MODE_CARLIFE);
+//		break;
 	default: break;
 	}
 }

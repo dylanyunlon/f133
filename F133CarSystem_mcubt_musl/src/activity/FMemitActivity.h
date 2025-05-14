@@ -26,13 +26,32 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
-#define ID_FMEMIT_invalidSeekBar    91002
-#define ID_FMEMIT_TextView5    50006
+#define ID_FMEMIT_tipCancel    20007
+#define ID_FMEMIT_tipSure    20006
+#define ID_FMEMIT_LinkSwitchTipTextView    50015
+#define ID_FMEMIT_TextView10    50014
+#define ID_FMEMIT_LinkTipWindow    110005
+#define ID_FMEMIT_TextView9    50013
+#define ID_FMEMIT_TextView8    50012
+#define ID_FMEMIT_LinkWindow    110004
+#define ID_FMEMIT_TextView7    50011
+#define ID_FMEMIT_TextView6    50010
+#define ID_FMEMIT_AUXWindow    110003
+#define ID_FMEMIT_TextView5    50009
+#define ID_FMEMIT_TextView4    50008
+#define ID_FMEMIT_ARMWindow    110002
+#define ID_FMEMIT_TextView2    50002
+#define ID_FMEMIT_FMWindow    110001
+#define ID_FMEMIT_TextViewCP    50007
+#define ID_FMEMIT_TextViewARM    50005
+#define ID_FMEMIT_TextViewAUX    50006
+#define ID_FMEMIT_TextViewFM    50004
+#define ID_FMEMIT_BTButton    20005
+#define ID_FMEMIT_ARMButton    20004
+#define ID_FMEMIT_AUXButton    20003
 #define ID_FMEMIT_fmSeekBar    91001
-#define ID_FMEMIT_sys_back   100
 #define ID_FMEMIT_addButton    20002
 #define ID_FMEMIT_decButton    20001
-#define ID_FMEMIT_TextView2    50002
 #define ID_FMEMIT_TextView1    50001
 #define ID_FMEMIT_ButtonFM    20008
 #define ID_FMEMIT_EditTextFmFreq    51001

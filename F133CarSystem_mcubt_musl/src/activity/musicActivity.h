@@ -26,9 +26,16 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_MUSIC_TextView7    50016
+#define ID_MUSIC_TextView5    50010
+#define ID_MUSIC_TextView6    50015
+#define ID_MUSIC_SubItem1    24003
+#define ID_MUSIC_TextView3    50006
+#define ID_MUSIC_TextView4    50009
+#define ID_MUSIC_TextView2    50004
+#define ID_MUSIC_TextView1    50002
 #define ID_MUSIC_errorTextView    50014
 #define ID_MUSIC_errorWindow    110002
-#define ID_MUSIC_PlayMode    20011
 #define ID_MUSIC_TextView    50013
 #define ID_MUSIC_picTextView    50011
 #define ID_MUSIC_albumTextView    50008
@@ -54,7 +61,6 @@
 #define ID_MUSIC_USB2Button    20004
 #define ID_MUSIC_USB1Button    20003
 #define ID_MUSIC_SDButton    20002
-#define ID_MUSIC_sys_back   100
 /*TAG:Macro宏ID END*/
 
 class musicActivity : public Activity, 

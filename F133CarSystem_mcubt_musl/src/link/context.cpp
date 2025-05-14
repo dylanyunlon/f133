@@ -734,14 +734,14 @@ static bool _start_link() {
 
 	// 设置airplay名称
 	char script[128];
-	sprintf(script, LINK_SCRIPT, sys::setting::get_dev_name().c_str());
-	sprintf(script, LINK_SCRIPT_CN, sys::setting::get_dev_name().c_str());
 //	fy::files::create_script(LINK_BIN_SH, script);
 	fy::files::remove(LINK_BIN_SH);
 	if (sys::setting::get_link_mode() == E_LINK_MODE_CARLIFE) {
+		sprintf(script, LINK_SCRIPT_CN, sys::setting::get_dev_name().c_str());
 		fy::files::create_script(LINK_BIN_SH, LINK_SCRIPT_CN);
 	} else {
-		fy::files::create_script(LINK_BIN_SH, LINK_SCRIPT);
+		sprintf(script, LINK_SCRIPT_AB, sys::setting::get_dev_name().c_str());
+		fy::files::create_script(LINK_BIN_SH, LINK_SCRIPT_AB);
 	}
 
 	int funmode = 0;

@@ -31,6 +31,7 @@
 */
 
 #include "bt/context.h"
+#include "link/context.h"
 
 static bt_cb_t _s_bt_cb;
 
@@ -79,6 +80,14 @@ static void _bt_remove_cb() {
 	bt::remove_cb(&_s_bt_cb);
 }
 
+static void _textview_touchpass(bool pass) {
+	mTextView16Ptr->setTouchPass(pass);
+	mTextView17Ptr->setTouchPass(pass);
+	mTextView18Ptr->setTouchPass(pass);
+	mTextView19Ptr->setTouchPass(pass);
+	mTextView20Ptr->setTouchPass(pass);
+}
+
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -115,7 +124,7 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
-
+	_textview_touchpass(true);
 }
 
 /*
@@ -181,11 +190,6 @@ static bool onbtMusicActivityTouchEvent(const MotionEvent &ev) {
 	}
 	return false;
 }
-static bool onButtonClick_sys_back(ZKButton *pButton) {
-    LOGD(" ButtonClick sys_back !!!\n");
-    return false;
-}
-
 static void onProgressChanged_musicSeekBar(ZKSeekBar *pSeekBar, int progress) {
     //LOGD(" ProgressChanged musicSeekBar %d !!!\n", progress);
 }
@@ -205,5 +209,61 @@ static bool onButtonClick_nextButton(ZKButton *pButton) {
 static bool onButtonClick_playButton(ZKButton *pButton) {
     LOGD(" ButtonClick playButton !!!\n");
     bt::music_is_playing() ? bt::music_pause() : bt::music_play();
+    return false;
+}
+static bool onButtonClick_queryMusicButton(ZKButton *pButton) {
+    LOGD(" ButtonClick queryMusicButton !!!\n");
+    EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btDialActivity");
+    EASYUICONTEXT->closeActivity("btRecordsActivity");
+    return false;
+}
+
+static bool onButtonClick_phoneButton(ZKButton *pButton) {
+    LOGD(" ButtonClick phoneButton !!!\n");
+    if (lk::is_connected()) {
+    	mbtTipsWindowPtr->showWnd();
+    	return false;
+    }
+    EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->openActivity("btDialActivity");
+    EASYUICONTEXT->closeActivity("btRecordsActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
+    return false;
+}
+
+static bool onButtonClick_btrecordButton(ZKButton *pButton) {
+    LOGD(" ButtonClick btrecordButton !!!\n");
+    if (lk::is_connected()) {
+    	mbtTipsWindowPtr->showWnd();
+    	return false;
+    }
+    EASYUICONTEXT->closeActivity("btDialActivity");
+    EASYUICONTEXT->openActivity("btRecordsActivity");
+    EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
+    return false;
+}
+
+static bool onButtonClick_btcontactsButton(ZKButton *pButton) {
+    LOGD(" ButtonClick btcontactsButton !!!\n");
+    if (lk::is_connected()) {
+    	mbtTipsWindowPtr->showWnd();
+    	return false;
+    }
+    EASYUICONTEXT->closeActivity("btDialActivity");
+    EASYUICONTEXT->openActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btRecordsActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
+    return false;
+}
+
+static bool onButtonClick_btsettingButton(ZKButton *pButton) {
+    LOGD(" ButtonClick btsettingButton !!!\n");
+    EASYUICONTEXT->openActivity("btsettingActivity");
+    EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btDialActivity");
+    EASYUICONTEXT->closeActivity("btRecordsActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
     return false;
 }

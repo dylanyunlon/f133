@@ -34,33 +34,11 @@
 #include "media/audio_player.h"
 #include "system/setting.h"
 #include "uart/context.h"
-static void set_setSelect_UI(bool isSelected) {
-	mdecButtonPtr->setSelected(isSelected);
-	mEditTextFmFreqPtr->setSelected(isSelected);
-	mTextView3Ptr->setSelected(isSelected);
-	maddButtonPtr->setSelected(isSelected);
+#include "media/audio_context.h"
+#include "mode_observer.h"
+#include "link/context.h"
 
-	mfmSeekBarPtr->setTouchable(isSelected);
-	minvalidSeekBarPtr->setVisible(!isSelected);
-	mButtonFMPtr->setSelected(isSelected);
-	//uart::fm_frequency(mfmSeekBarPtr->getProgress() + 875);
-	//sys::fm_set_freq(sys::fm_get_freq());
-}
-
-static void sys_play_mode_cb_(audio_player_mode_e mode) {
-	switch(mode) {
-	case E_AUDIO_PLAYER_MODE_FM:     // fm发射
-		set_setSelect_UI(true);
-		break;
-	case E_AUDIO_PLAYER_MODE_SPK:    // 扬声器
-	case E_AUDIO_PLAYER_MODE_HP:     // 耳机
-	case E_AUDIO_PLAYER_MODE_BT: 	 // 蓝牙发射
-		set_setSelect_UI(false);
-		break;
-	default:
-		break;
-	}
-}
+#define LINK_RESTART_TIMER 1
 
 static void set_EditTextFmFreq_fmVal(int progress) {
 	char buf[8] = {0};
@@ -68,13 +46,88 @@ static void set_EditTextFmFreq_fmVal(int progress) {
 	mEditTextFmFreqPtr->setText(buf);
 }
 
+static bool _probe_link_connected() {
+	LYLINK_TYPE_E link_type = lk::get_lylink_type();
+	if ((link_type == LINK_TYPE_WIFICP) || (link_type == LINK_TYPE_WIFIAUTO)) {
+		char tip[256];
+		sprintf(tip, "%s%s,%s",
+				LANGUAGEMANAGER->getValue("connected").c_str(),
+				(link_type == LINK_TYPE_WIFICP) ? "CarPlay" : "Android Auto",
+				LANGUAGEMANAGER->getValue("confirm_switch_link_screen_mode").c_str());
+		mLinkSwitchTipTextViewPtr->setText(tip);
+		mLinkTipWindowPtr->showWnd();
+		return true;
+	}
+
+	return false;
+}
+
 namespace {
+
+static void _sound_mode_cb(sound_mode_e mode) {
+	switch (mode) {
+	case E_SOUND_MODE_SPK:
+		mARMButtonPtr->setSelected(true);
+		mARMWindowPtr->showWnd();
+		mBTButtonPtr->setSelected(false);
+		mAUXButtonPtr->setSelected(false);
+		mButtonFMPtr->setSelected(false);
+		mLinkWindowPtr->hideWnd();
+		mFMWindowPtr->hideWnd();
+		mAUXWindowPtr->hideWnd();
+		break;
+
+	case E_SOUND_MODE_LINK:
+		mBTButtonPtr->setSelected(true);
+		mLinkWindowPtr->showWnd();
+		mARMButtonPtr->setSelected(false);
+		mAUXButtonPtr->setSelected(false);
+		mButtonFMPtr->setSelected(false);
+		mARMWindowPtr->hideWnd();
+		mFMWindowPtr->hideWnd();
+		mAUXWindowPtr->hideWnd();
+		break;
+
+	case E_SOUND_MODE_FM:
+		mButtonFMPtr->setSelected(true);
+		mFMWindowPtr->showWnd();
+		mBTButtonPtr->setSelected(false);
+		mARMButtonPtr->setSelected(false);
+		mAUXButtonPtr->setSelected(false);
+		mARMWindowPtr->hideWnd();
+		mLinkWindowPtr->hideWnd();
+		mAUXWindowPtr->hideWnd();
+		break;
+
+	case E_SOUND_MODE_AUX:
+		mAUXButtonPtr->setSelected(true);
+		mAUXWindowPtr->showWnd();
+		mBTButtonPtr->setSelected(false);
+		mARMButtonPtr->setSelected(false);
+		mButtonFMPtr->setSelected(false);
+		mARMWindowPtr->hideWnd();
+		mLinkWindowPtr->hideWnd();
+		mFMWindowPtr->hideWnd();
+		break;
+
+	default:
+		break;
+	}
+}
+
+static void _change_sound_mode(sound_mode_e mode) {
+	if ((mode::get_sound_mode() == E_SOUND_MODE_LINK) || (mode == E_SOUND_MODE_LINK)) {
+		mActivityPtr->registerUserTimer(LINK_RESTART_TIMER, 0);
+	}
+
+	mode::set_sound_mode(mode);
+}
+
 
 class FMSeekBarChangeListener : public ZKSeekBar::ISeekBarChangeListener {
 public:
 	virtual void onProgressChanged(ZKSeekBar *pSeekBar, int progress) {
 		set_EditTextFmFreq_fmVal(progress);
-		minvalidSeekBarPtr->setProgress(progress);
 	}
 	virtual void onStartTrackingTouch(ZKSeekBar *pSeekBar) {
 
@@ -92,21 +145,6 @@ public:
 }
 static FMSeekBarChangeListener sSeekBarChangeListener;
 
-
-static void fm_status_cb(bool status){
-	if(status){
-		set_setSelect_UI(true);
-	}else{
-		set_setSelect_UI(false);
-	}
-
-}
-
-static void fm_fren_cb(int fre){
-	mfmSeekBarPtr->setProgress(fre - 875);
-	minvalidSeekBarPtr->setProgress(mfmSeekBarPtr->getProgress());
-	set_EditTextFmFreq_fmVal(mfmSeekBarPtr->getProgress());
-}
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -122,31 +160,18 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
  */
 static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
-	uart::fm_switch(sys::setting::get_fm_switch());
-
-	uart::add_fm_state_cb(fm_status_cb);
-	uart::add_fm_fre_cb(fm_fren_cb);
-
-	uart::query_fmswitch();
-	uart::query_frequency();
-
-	// fm发射
-	//sys::fm_start();
-	//sys::fm_set_freq(sys::fm_get_freq());
-
-
-	//mfmSeekBarPtr->setProgress((sys::fm_get_freq() - 8750) / 10);
-	//minvalidSeekBarPtr->setProgress(mfmSeekBarPtr->getProgress());
-	//set_EditTextFmFreq_fmVal(mfmSeekBarPtr->getProgress());
-
-	//set_setSelect_UI(sys::fm_is_enable());
-
-	sys::setting::add_play_state_cb(sys_play_mode_cb_);
+	mTextViewFMPtr->setTouchPass(true);
+	mTextViewARMPtr->setTouchPass(true);
+	mTextViewAUXPtr->setTouchPass(true);
+	mTextViewCPPtr->setTouchPass(true);
 	mfmSeekBarPtr->setSeekBarChangeListener(&sSeekBarChangeListener);
 	mfmSeekBarPtr->setProgress(sys::setting::get_fm_frequency() - 880);
 	char buf[16];
 	sprintf(buf, "%.1f", (sys::setting::get_fm_frequency()) / 10.f);
 	mEditTextFmFreqPtr->setText(buf);
+
+	_sound_mode_cb(mode::get_sound_mode());
+	mode::add_sound_mode_cb(_sound_mode_cb);
 }
 
 /**
@@ -176,10 +201,7 @@ static void onUI_hide() {
  * 当界面完全退出时触发
  */
 static void onUI_quit() {
-	uart::remove_fm_state_cb(fm_status_cb);
-	uart::remove_fm_fre_cb(fm_fren_cb);
-
-	sys::setting::remove_play_state_cb(sys_play_mode_cb_);
+	mode::remove_sound_mode_cb(_sound_mode_cb);
 	mfmSeekBarPtr->setSeekBarChangeListener(NULL);
 }
 
@@ -202,7 +224,9 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  */
 static bool onUI_Timer(int id){
 	switch (id) {
-
+	case LINK_RESTART_TIMER:
+		lk::restart_lylink();
+		break;
 		default:
 			break;
 	}
@@ -239,18 +263,12 @@ static void onEditTextChanged_EditTextFmFreq(const std::string &text) {
 
 static bool onButtonClick_ButtonFM(ZKButton *pButton) {
     LOGD(" ButtonClick ButtonFM !!!\n");
-    uart::fm_switch(!pButton->isSelected());
-    sys::setting::set_fm_switch(!pButton->isSelected());
-    //pButton->setSelected(!pButton->isSelected());
+    _change_sound_mode(E_SOUND_MODE_FM);
     return false;
 }
 
 static bool onButtonClick_decButton(ZKButton *pButton) {
     LOGD(" ButtonClick decButton !!!\n");
-    if (!pButton->isSelected()) {
-    	return false;
-    }
-
 	int progress = mfmSeekBarPtr->getProgress();
 	if (progress > 0) {
 		mfmSeekBarPtr->setProgress(progress - 1);
@@ -264,10 +282,6 @@ static bool onButtonClick_decButton(ZKButton *pButton) {
 
 static bool onButtonClick_addButton(ZKButton *pButton) {
     LOGD(" ButtonClick addButton !!!\n");
-    if (!pButton->isSelected()) {
-    	return false;
-    }
-
 	int progress = mfmSeekBarPtr->getProgress();
 	if (progress < mfmSeekBarPtr->getMax()) {
 		mfmSeekBarPtr->setProgress(progress + 1);
@@ -279,11 +293,6 @@ static bool onButtonClick_addButton(ZKButton *pButton) {
     return false;
 }
 
-static bool onButtonClick_sys_back(ZKButton *pButton) {
-    LOGD(" ButtonClick sys_back !!!\n");
-    return false;
-}
-
 static void onProgressChanged_fmSeekBar(ZKSeekBar *pSeekBar, int progress) {
     //LOGD(" ProgressChanged fmSeekBar %d !!!\n", progress);
 }
@@ -292,3 +301,34 @@ static void onProgressChanged_invalidSeekBar(ZKSeekBar *pSeekBar, int progress) 
     //LOGD(" ProgressChanged invalidSeekBar %d !!!\n", progress);
 }
 
+static bool onButtonClick_AUXButton(ZKButton *pButton) {
+    LOGD(" ButtonClick AUXButton !!!\n");
+    _change_sound_mode(E_SOUND_MODE_AUX);
+    return false;
+}
+
+static bool onButtonClick_ARMButton(ZKButton *pButton) {
+    LOGD(" ButtonClick ARMButton !!!\n");
+    _change_sound_mode(E_SOUND_MODE_SPK);
+    return false;
+}
+
+static bool onButtonClick_BTButton(ZKButton *pButton) {
+    LOGD(" ButtonClick BTButton !!!\n");
+    if (!_probe_link_connected()) {
+		_change_sound_mode(E_SOUND_MODE_LINK);
+    }
+    return false;
+}
+static bool onButtonClick_tipSure(ZKButton *pButton) {
+    LOGD(" ButtonClick tipSure !!!\n");
+	mLinkTipWindowPtr->hideWnd();
+	_change_sound_mode(E_SOUND_MODE_LINK);
+    return false;
+}
+
+static bool onButtonClick_tipCancel(ZKButton *pButton) {
+    LOGD(" ButtonClick tipCancel !!!\n");
+    mLinkTipWindowPtr->hideWnd();
+    return false;
+}

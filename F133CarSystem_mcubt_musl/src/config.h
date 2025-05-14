@@ -40,10 +40,10 @@
 #define LINK_SERVICE         "link"
 #define LINK_BIN_SH          "/tmp/link.sh"
 
-#define LINK_SCRIPT       	 "#!/bin/sh\n" \
+#define LINK_SCRIPT_AB       	 "#!/bin/sh\n" \
 							 "export LOCAL_IP_ADDRESS=" NET_STATIC_IP "\n" \
 							 "export PRODUCT_NAME=\"%s\"\n" \
-                             "/res/bin/lylinkapp\n"  // "/res/bin/lylinkapp -v=ic\n" 跑授权芯片   国外版本（android auto） -v=a
+                             "/res/bin/lylinkapp_ab\n"  // "/res/bin/lylinkapp -v=ic\n" 跑授权芯片   国外版本（android auto） -v=a
 
 #define LINK_SCRIPT_CN       "#!/bin/sh\n" \
 							 "export LOCAL_IP_ADDRESS=" NET_STATIC_IP "\n" \
@@ -168,9 +168,8 @@
 #define REVERSE_LINE_Y_RATIO     0.3
 #define REVERSE_LINE_R_RATIO     0.45
 
-#define APP_TYPE_SYS_CTRLBAR     100
-#define APP_TYPE_SYS_FLOATWND    101
-#define APP_TYPE_SYS_CAMER 		 102
+#define APP_TYPE_SYS_TOPBAR		101
+#define APP_TYPE_SYS_CTRLBAR	100
 
 #define SHUTDOWN_PROP_KEY        "sys.shutdown.state"
 
@@ -181,5 +180,10 @@
 #define TFCARD_MOUNT_POINT "/mnt/extsd"
 #define USB_MOUNT_POINT "/mnt/usbotg"
 #define PRODUCT_TEST_FILE_NAME "product_test.ini"
+
+#define BT_RECORD_OUTGOING 		1		// 下载去电记录
+#define BT_RECORD_INCOMING 		2		// 下载来电记录
+#define BT_RECORD_MISSED 		3		// 下载未接来电
+#define BT_RECORD_RECENT 		4		// 同步最近通话记录
 
 #endif /* _CONFIG_H_ */

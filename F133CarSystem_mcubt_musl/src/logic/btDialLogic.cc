@@ -42,6 +42,10 @@ static void put_number_str(const std::string input) {
 		dial_munber_str.erase(dial_munber_str.end() - 1);
 	}
 	else {
+		if (dial_munber_str.length() > 20) {
+			mLongTipsWindowPtr->showWnd();
+			return;
+		}
 		dial_munber_str += input;
 	}
 	mnumTextViewPtr->setText(dial_munber_str);
@@ -60,7 +64,13 @@ public:
 }
 static LongClickListener delLongClickListener;
 
-
+static void _textview_touchpass(bool pass) {
+	mTextView16Ptr->setTouchPass(pass);
+	mTextView17Ptr->setTouchPass(pass);
+	mTextView18Ptr->setTouchPass(pass);
+	mTextView19Ptr->setTouchPass(pass);
+	mTextView20Ptr->setTouchPass(pass);
+}
 
 /**
  * 注册定时器
@@ -97,7 +107,7 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
-
+	_textview_touchpass(true);
 }
 
 /*
@@ -167,17 +177,18 @@ static bool onbtDialActivityTouchEvent(const MotionEvent &ev) {
 	}
 	return false;
 }
-
-static bool onButtonClick_sys_back(ZKButton *pButton) {
-    LOGD(" ButtonClick sys_back !!!\n");
-    return false;
-}
-
 static bool onButtonClick_dialButton(ZKButton *pButton) {
     LOGD(" ButtonClick dialButton !!!\n");
-    bt::dial(mnumTextViewPtr->getText().c_str());
-    dial_munber_str = "";
-    mnumTextViewPtr->setText("");
+    if(mnumTextViewPtr->getText().empty()) { // 电话回拨功能，需要同步通话记录后才能回拨
+    	bt_record_t record;
+    	bt::get_record_by_index(0, record);
+    	dial_munber_str = record.num;
+    	mnumTextViewPtr->setText(record.num);
+    } else {
+        bt::dial(mnumTextViewPtr->getText().c_str());
+        dial_munber_str = "";
+        mnumTextViewPtr->setText("");
+    }
     return false;
 }
 
@@ -259,26 +270,47 @@ static bool onButtonClick_delButton(ZKButton *pButton) {
     return false;
 }
 
-static bool onButtonClick_btDialButton(ZKButton *pButton) {
-    LOGD(" ButtonClick btDialButton !!!\n");
+static bool onButtonClick_queryMusicButton(ZKButton *pButton) {
+    LOGD(" ButtonClick queryMusicButton !!!\n");
+    EASYUICONTEXT->openActivity("btMusicActivity");
+    EASYUICONTEXT->closeActivity("btRecordsActivity");
     EASYUICONTEXT->closeActivity("btContactsActivity");
-    EASYUICONTEXT->closeActivity("btRecordslActivity");
+    EASYUICONTEXT->closeActivity("btDialActivity");
     return false;
 }
 
-static bool onButtonClick_btRecordsButton(ZKButton *pButton) {
-    LOGD(" ButtonClick btRecordsButton !!!\n");
+static bool onButtonClick_phoneButton(ZKButton *pButton) {
+    LOGD(" ButtonClick phoneButton !!!\n");
+    EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btRecordslActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
+    return false;
+}
+
+static bool onButtonClick_btrecordButton(ZKButton *pButton) {
+    LOGD(" ButtonClick btrecordButton !!!\n");
     EASYUICONTEXT->closeActivity("btDialActivity");
     EASYUICONTEXT->openActivity("btRecordsActivity");
     EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
     return false;
 }
 
-static bool onButtonClick_btContactsButton(ZKButton *pButton) {
-    LOGD(" ButtonClick btContactsButton !!!\n");
+static bool onButtonClick_btcontactsButton(ZKButton *pButton) {
+    LOGD(" ButtonClick btcontactsButton !!!\n");
     EASYUICONTEXT->closeActivity("btDialActivity");
     EASYUICONTEXT->closeActivity("btRecordsActivity");
     EASYUICONTEXT->openActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
     return false;
 }
 
+static bool onButtonClick_btsettingButton(ZKButton *pButton) {
+    LOGD(" ButtonClick btsettingButton !!!\n");
+    EASYUICONTEXT->openActivity("btsettingActivity");
+    EASYUICONTEXT->closeActivity("btRecordsActivity");
+    EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btDialActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
+    return false;
+}

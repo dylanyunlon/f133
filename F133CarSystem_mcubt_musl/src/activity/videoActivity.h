@@ -26,8 +26,12 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
-#define ID_VIDEO_TipTextView    50004
-#define ID_VIDEO_TipWindow    110007
+#define ID_VIDEO_TextView5    50004
+#define ID_VIDEO_TextView2    50005
+#define ID_VIDEO_TextView3    50006
+#define ID_VIDEO_TextView1    50008
+#define ID_VIDEO_TextView4    50009
+#define ID_VIDEO_SubItem1    24003
 #define ID_VIDEO_errorTextView    50014
 #define ID_VIDEO_errorWindow    110005
 #define ID_VIDEO_NextButton    20010
@@ -50,7 +54,6 @@
 #define ID_VIDEO_syncPointer    90001
 #define ID_VIDEO_scaningTextView    50012
 #define ID_VIDEO_scaningWindow    110003
-#define ID_VIDEO_sys_back   100
 #define ID_VIDEO_USB2Button    20004
 #define ID_VIDEO_SubItemIcon    24002
 #define ID_VIDEO_SubItemID    24001

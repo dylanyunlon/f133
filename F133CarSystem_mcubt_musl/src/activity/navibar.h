@@ -21,29 +21,27 @@
 #include "control/ZKVideoView.h"
 #include "window/ZKSlideWindow.h"
 /*TAG:Macro宏ID*/
-#define ID_NAVIBAR_screenoffBtn    20001
-#define ID_NAVIBAR_DigitalClock1    93001
+#define ID_NAVIBAR_btButton    20007
+#define ID_NAVIBAR_settingButton    20005
+#define ID_NAVIBAR_lightTextView    50003
+#define ID_NAVIBAR_volumeTextView    50002
+#define ID_NAVIBAR_lightNumTextView    50001
+#define ID_NAVIBAR_voiceNumTextView    50011
+#define ID_NAVIBAR_SoundButton    20009
+#define ID_NAVIBAR_screenoffBtn    20008
 #define ID_NAVIBAR_TextView7    50010
+#define ID_NAVIBAR_MeridiemTextView    50012
 #define ID_NAVIBAR_weekTextView    50009
 #define ID_NAVIBAR_dataTextView    50008
 #define ID_NAVIBAR_btTextView    50005
-#define ID_NAVIBAR_fmTextView    50002
-#define ID_NAVIBAR_cacheCircleBar    130001
-#define ID_NAVIBAR_releaseButton    20008
-#define ID_NAVIBAR_TextView2    50004
-#define ID_NAVIBAR_btButton    20007
-#define ID_NAVIBAR_TextView1    50003
+#define ID_NAVIBAR_fmTextView    50004
 #define ID_NAVIBAR_fmButton    20006
 #define ID_NAVIBAR_TextviewDDR    50007
 #define ID_NAVIBAR_TextView5    50006
-#define ID_NAVIBAR_sys_home   101
-#define ID_NAVIBAR_briButton    20005
-#define ID_NAVIBAR_callButton    20004
-#define ID_NAVIBAR_soundButton    20003
-#define ID_NAVIBAR_briSeekBar    91002
-#define ID_NAVIBAR_CpSeekBar    91003
+#define ID_NAVIBAR_soundButton    20004
+#define ID_NAVIBAR_briButton    20003
 #define ID_NAVIBAR_PlayVolSeekBar    91001
-#define ID_NAVIBAR_barWindow    110002
+#define ID_NAVIBAR_briSeekBar    91002
 #define ID_NAVIBAR_buttomWindow    110001
 /*TAG:Macro宏ID END*/
 class navibar : public BaseApp,

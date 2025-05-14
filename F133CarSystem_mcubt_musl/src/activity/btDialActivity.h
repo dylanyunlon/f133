@@ -26,9 +26,20 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
-#define ID_BTDIAL_btDialButton    20003
-#define ID_BTDIAL_btRecordsButton    20004
-#define ID_BTDIAL_btContactsButton    20005
+#define ID_BTDIAL_TextView20    50027
+#define ID_BTDIAL_TextView19    50026
+#define ID_BTDIAL_TextView18    50025
+#define ID_BTDIAL_TextView17    50024
+#define ID_BTDIAL_TextView16    50023
+#define ID_BTDIAL_TextView15    50002
+#define ID_BTDIAL_btsettingButton    20007
+#define ID_BTDIAL_btcontactsButton    20006
+#define ID_BTDIAL_btrecordButton    20002
+#define ID_BTDIAL_phoneButton    20008
+#define ID_BTDIAL_queryMusicButton    20010
+#define ID_BTDIAL_btAppWindow    110001
+#define ID_BTDIAL_TextView6    50004
+#define ID_BTDIAL_LongTipsWindow    110003
 #define ID_BTDIAL_delButton    20025
 #define ID_BTDIAL_keyXINGButton    20024
 #define ID_BTDIAL_keyJINGButton    20023
@@ -45,7 +56,6 @@
 #define ID_BTDIAL_dialButton    20012
 #define ID_BTDIAL_numTextView    50007
 #define ID_BTDIAL_dialWindow    110007
-#define ID_BTDIAL_sys_back   100
 /*TAG:Macro宏ID END*/
 
 class btDialActivity : public Activity, 

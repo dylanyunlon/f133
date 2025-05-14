@@ -26,6 +26,12 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_LINKHELP_aaTipTextView    50008
+#define ID_LINKHELP_apTipTextView    50006
+#define ID_LINKHELP_cpTipTextView    50005
+#define ID_LINKHELP_mcTipTextView    50004
+#define ID_LINKHELP_TextView2    50033
+#define ID_LINKHELP_acTipTextView    50034
 #define ID_LINKHELP_clStepTextView    50032
 #define ID_LINKHELP_acWindow    110006
 #define ID_LINKHELP_acStepTextView    50049
@@ -33,7 +39,6 @@
 #define ID_LINKHELP_apStepTextView    50042
 #define ID_LINKHELP_cpStepTextView    50041
 #define ID_LINKHELP_mcStepTextView    50040
-#define ID_LINKHELP_sys_back   100
 #define ID_LINKHELP_TextView1    50031
 #define ID_LINKHELP_cf4TextView    50029
 #define ID_LINKHELP_cf3TextView    50025
@@ -64,11 +69,6 @@
 #define ID_LINKHELP_cp1TextView    50007
 #define ID_LINKHELP_cpTextView    50015
 #define ID_LINKHELP_cpWindow    110002
-#define ID_LINKHELP_mc4TextView    50008
-#define ID_LINKHELP_mc3TextView    50004
-#define ID_LINKHELP_mc2TextView    50006
-#define ID_LINKHELP_mc1TextView    50010
-#define ID_LINKHELP_mcTextView    50005
 #define ID_LINKHELP_mcWindow    110007
 /*TAG:Macro宏ID END*/
 

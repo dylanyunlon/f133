@@ -536,4 +536,4 @@ wf_step2	2.按app提示,连接本机WiFi	2. Follow the app prompts to connect to
 wf_step3	WiFi名:	WiFi name:	Nom du Wi-Fi :	WLAN-Name:	WiFi名:	Nombre WiFi:	WiFi 이름:	WiFi名稱:
 wf_step4	密码:	password:	mot de passe:	Passwort:	パスワード：	contraseña:	비밀번호:	密碼:
 
-abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890《》？！，。~!@#$%^&*()_+-=\|[]{};:",.<>/?`、|￥×（）’“”‘：；【】²³μ㎡㎞㎝㎜㎏㎎℃—
+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890《》？！，。~!@#$%^&*()_+-=\|[]{};:",.<>/?`、|￥×（）’“”‘：；【】²³μ㎡㎞㎝㎜㎏㎎℃—〈〉·°

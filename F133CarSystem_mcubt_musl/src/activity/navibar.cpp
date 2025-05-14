@@ -2,29 +2,27 @@
 #include "entry/EasyUIContext.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKButton* mbtButtonPtr;
+static ZKButton* msettingButtonPtr;
+static ZKTextView* mlightTextViewPtr;
+static ZKTextView* mvolumeTextViewPtr;
+static ZKTextView* mlightNumTextViewPtr;
+static ZKTextView* mvoiceNumTextViewPtr;
+static ZKButton* mSoundButtonPtr;
 static ZKButton* mscreenoffBtnPtr;
-static ZKDigitalClock* mDigitalClock1Ptr;
 static ZKTextView* mTextView7Ptr;
+static ZKTextView* mMeridiemTextViewPtr;
 static ZKTextView* mweekTextViewPtr;
 static ZKTextView* mdataTextViewPtr;
 static ZKTextView* mbtTextViewPtr;
 static ZKTextView* mfmTextViewPtr;
-static ZKCircleBar* mcacheCircleBarPtr;
-static ZKButton* mreleaseButtonPtr;
-static ZKTextView* mTextView2Ptr;
-static ZKButton* mbtButtonPtr;
-static ZKTextView* mTextView1Ptr;
 static ZKButton* mfmButtonPtr;
 static ZKTextView* mTextviewDDRPtr;
 static ZKTextView* mTextView5Ptr;
-static ZKButton* msys_homePtr;
-static ZKButton* mbriButtonPtr;
-static ZKButton* mcallButtonPtr;
 static ZKButton* msoundButtonPtr;
-static ZKSeekBar* mbriSeekBarPtr;
-static ZKSeekBar* mCpSeekBarPtr;
+static ZKButton* mbriButtonPtr;
 static ZKSeekBar* mPlayVolSeekBarPtr;
-static ZKWindow* mbarWindowPtr;
+static ZKSeekBar* mbriSeekBarPtr;
 static ZKWindow* mbuttomWindowPtr;
 static navibar* mnavibarPtr;
 /* register sysapp */
@@ -63,14 +61,13 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
-    ID_NAVIBAR_screenoffBtn, onButtonClick_screenoffBtn,
-    ID_NAVIBAR_releaseButton, onButtonClick_releaseButton,
     ID_NAVIBAR_btButton, onButtonClick_btButton,
+    ID_NAVIBAR_settingButton, onButtonClick_settingButton,
+    ID_NAVIBAR_SoundButton, onButtonClick_SoundButton,
+    ID_NAVIBAR_screenoffBtn, onButtonClick_screenoffBtn,
     ID_NAVIBAR_fmButton, onButtonClick_fmButton,
-    ID_NAVIBAR_sys_home, onButtonClick_sys_home,
-    ID_NAVIBAR_briButton, onButtonClick_briButton,
-    ID_NAVIBAR_callButton, onButtonClick_callButton,
     ID_NAVIBAR_soundButton, onButtonClick_soundButton,
+    ID_NAVIBAR_briButton, onButtonClick_briButton,
 };
 /***************/
 
@@ -82,9 +79,8 @@ typedef struct {
 }S_ZKSeekBarCallback;
 /*TAG:SeekBarCallbackTab*/
 static S_ZKSeekBarCallback SZKSeekBarCallbackTab[] = {
-    ID_NAVIBAR_briSeekBar, onProgressChanged_briSeekBar,
-    ID_NAVIBAR_CpSeekBar, onProgressChanged_CpSeekBar,
     ID_NAVIBAR_PlayVolSeekBar, onProgressChanged_PlayVolSeekBar,
+    ID_NAVIBAR_briSeekBar, onProgressChanged_briSeekBar,
 };
 
 
@@ -142,29 +138,27 @@ navibar::~navibar() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mnavibarPtr = NULL;
+    mbtButtonPtr = NULL;
+    msettingButtonPtr = NULL;
+    mlightTextViewPtr = NULL;
+    mvolumeTextViewPtr = NULL;
+    mlightNumTextViewPtr = NULL;
+    mvoiceNumTextViewPtr = NULL;
+    mSoundButtonPtr = NULL;
     mscreenoffBtnPtr = NULL;
-    mDigitalClock1Ptr = NULL;
     mTextView7Ptr = NULL;
+    mMeridiemTextViewPtr = NULL;
     mweekTextViewPtr = NULL;
     mdataTextViewPtr = NULL;
     mbtTextViewPtr = NULL;
     mfmTextViewPtr = NULL;
-    mcacheCircleBarPtr = NULL;
-    mreleaseButtonPtr = NULL;
-    mTextView2Ptr = NULL;
-    mbtButtonPtr = NULL;
-    mTextView1Ptr = NULL;
     mfmButtonPtr = NULL;
     mTextviewDDRPtr = NULL;
     mTextView5Ptr = NULL;
-    msys_homePtr = NULL;
-    mbriButtonPtr = NULL;
-    mcallButtonPtr = NULL;
     msoundButtonPtr = NULL;
-    mbriSeekBarPtr = NULL;
-    mCpSeekBarPtr = NULL;
+    mbriButtonPtr = NULL;
     mPlayVolSeekBarPtr = NULL;
-    mbarWindowPtr = NULL;
+    mbriSeekBarPtr = NULL;
     mbuttomWindowPtr = NULL;
 }
 
@@ -175,29 +169,27 @@ const char* navibar::getAppName() const{
 //TAG:onCreate
 void navibar::onCreate() {
 	BaseApp::onCreate();
+    mbtButtonPtr = (ZKButton*)findControlByID(ID_NAVIBAR_btButton);
+    msettingButtonPtr = (ZKButton*)findControlByID(ID_NAVIBAR_settingButton);
+    mlightTextViewPtr = (ZKTextView*)findControlByID(ID_NAVIBAR_lightTextView);
+    mvolumeTextViewPtr = (ZKTextView*)findControlByID(ID_NAVIBAR_volumeTextView);
+    mlightNumTextViewPtr = (ZKTextView*)findControlByID(ID_NAVIBAR_lightNumTextView);
+    mvoiceNumTextViewPtr = (ZKTextView*)findControlByID(ID_NAVIBAR_voiceNumTextView);
+    mSoundButtonPtr = (ZKButton*)findControlByID(ID_NAVIBAR_SoundButton);
     mscreenoffBtnPtr = (ZKButton*)findControlByID(ID_NAVIBAR_screenoffBtn);
-    mDigitalClock1Ptr = (ZKDigitalClock*)findControlByID(ID_NAVIBAR_DigitalClock1);
     mTextView7Ptr = (ZKTextView*)findControlByID(ID_NAVIBAR_TextView7);
+    mMeridiemTextViewPtr = (ZKTextView*)findControlByID(ID_NAVIBAR_MeridiemTextView);
     mweekTextViewPtr = (ZKTextView*)findControlByID(ID_NAVIBAR_weekTextView);
     mdataTextViewPtr = (ZKTextView*)findControlByID(ID_NAVIBAR_dataTextView);
     mbtTextViewPtr = (ZKTextView*)findControlByID(ID_NAVIBAR_btTextView);
     mfmTextViewPtr = (ZKTextView*)findControlByID(ID_NAVIBAR_fmTextView);
-    mcacheCircleBarPtr = (ZKCircleBar*)findControlByID(ID_NAVIBAR_cacheCircleBar);
-    mreleaseButtonPtr = (ZKButton*)findControlByID(ID_NAVIBAR_releaseButton);
-    mTextView2Ptr = (ZKTextView*)findControlByID(ID_NAVIBAR_TextView2);
-    mbtButtonPtr = (ZKButton*)findControlByID(ID_NAVIBAR_btButton);
-    mTextView1Ptr = (ZKTextView*)findControlByID(ID_NAVIBAR_TextView1);
     mfmButtonPtr = (ZKButton*)findControlByID(ID_NAVIBAR_fmButton);
     mTextviewDDRPtr = (ZKTextView*)findControlByID(ID_NAVIBAR_TextviewDDR);
     mTextView5Ptr = (ZKTextView*)findControlByID(ID_NAVIBAR_TextView5);
-    msys_homePtr = (ZKButton*)findControlByID(ID_NAVIBAR_sys_home);
-    mbriButtonPtr = (ZKButton*)findControlByID(ID_NAVIBAR_briButton);
-    mcallButtonPtr = (ZKButton*)findControlByID(ID_NAVIBAR_callButton);
     msoundButtonPtr = (ZKButton*)findControlByID(ID_NAVIBAR_soundButton);
-    mbriSeekBarPtr = (ZKSeekBar*)findControlByID(ID_NAVIBAR_briSeekBar);if(mbriSeekBarPtr!= NULL){mbriSeekBarPtr->setSeekBarChangeListener(this);}
-    mCpSeekBarPtr = (ZKSeekBar*)findControlByID(ID_NAVIBAR_CpSeekBar);if(mCpSeekBarPtr!= NULL){mCpSeekBarPtr->setSeekBarChangeListener(this);}
+    mbriButtonPtr = (ZKButton*)findControlByID(ID_NAVIBAR_briButton);
     mPlayVolSeekBarPtr = (ZKSeekBar*)findControlByID(ID_NAVIBAR_PlayVolSeekBar);if(mPlayVolSeekBarPtr!= NULL){mPlayVolSeekBarPtr->setSeekBarChangeListener(this);}
-    mbarWindowPtr = (ZKWindow*)findControlByID(ID_NAVIBAR_barWindow);
+    mbriSeekBarPtr = (ZKSeekBar*)findControlByID(ID_NAVIBAR_briSeekBar);if(mbriSeekBarPtr!= NULL){mbriSeekBarPtr->setSeekBarChangeListener(this);}
     mbuttomWindowPtr = (ZKWindow*)findControlByID(ID_NAVIBAR_buttomWindow);
 	mnavibarPtr = this;
 	onUI_init();

@@ -292,6 +292,9 @@ void set_fm_frequency(int freq);
 
 bool get_fm_switch();
 void set_fm_switch(bool status);
+
+void set_time_format_24h(bool format_24h);
+bool is_time_format_24h();
 }
 
 }

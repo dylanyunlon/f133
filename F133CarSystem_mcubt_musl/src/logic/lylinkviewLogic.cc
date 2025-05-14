@@ -7,6 +7,7 @@
 #include "bt/context.h"
 #include "fy/os.hpp"
 #include "common.h"
+#include "sysapp_context.h"
 
 #define DELAY_PLAY_TIMER     1
 
@@ -247,6 +248,7 @@ static void onUI_show() {
   	// 进入互联界面释放一下内存
 //	system("echo 3 > /proc/sys/vm/drop_caches");
 	fy::drop_caches();
+	app::hide_topbar();
 }
 
 /*
@@ -255,6 +257,7 @@ static void onUI_show() {
 static void onUI_hide() {
 	mActivityPtr->unregisterUserTimer(DELAY_PLAY_TIMER);
 	_link_stop();
+	app::show_topbar();
 }
 
 /*
@@ -264,6 +267,7 @@ static void onUI_quit() {
 	_bt_remove_cb();
 	mVideoView1Ptr->setTouchListener(NULL);
 	_link_stop();
+	app::show_topbar();
 }
 
 /**
@@ -305,19 +309,6 @@ static bool onUI_Timer(int id){
  *            触摸事件将继续传递到控件上
  */
 static bool onlylinkviewActivityTouchEvent(const MotionEvent &ev) {
-	static MotionEvent last_ev;
-	int status = ev.mActionStatus;
-	LayoutPosition pos = EASYUICONTEXT->getNaviBar()->getPosition();
-	if (pos.mTop != -pos.mHeight) {	//导航栏下滑了
-		if (last_ev.mActionStatus == MotionEvent::E_ACTION_NONE) {
-			return false;
-		}
-		status = MotionEvent::E_ACTION_UP;
-	}
-
-	if (lk::get_lylink_type() == LINK_TYPE_MIRACAST) {
-		return false;
-	}
 	switch (ev.mActionStatus) {
 	case MotionEvent::E_ACTION_DOWN:	//触摸按下
 		//LOGD("时刻 = %ld 坐标  x = %d, y = %d", ev.mEventTime, ev.mX, ev.mY);

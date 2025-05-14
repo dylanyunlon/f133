@@ -26,6 +26,13 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_PHOTOALBUM_TextView6    50010
+#define ID_PHOTOALBUM_TextView4    50009
+#define ID_PHOTOALBUM_TextView1    50007
+#define ID_PHOTOALBUM_TextView3    50006
+#define ID_PHOTOALBUM_TextView2    50005
+#define ID_PHOTOALBUM_SubItem2    24003
+#define ID_PHOTOALBUM_TextView5    50008
 #define ID_PHOTOALBUM_back    20012
 #define ID_PHOTOALBUM_syncPointer    90001
 #define ID_PHOTOALBUM_scaningTextView    50012

@@ -4,6 +4,12 @@
 #include "linkhelpActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* maaTipTextViewPtr;
+static ZKTextView* mapTipTextViewPtr;
+static ZKTextView* mcpTipTextViewPtr;
+static ZKTextView* mmcTipTextViewPtr;
+static ZKTextView* mTextView2Ptr;
+static ZKTextView* macTipTextViewPtr;
 static ZKTextView* mclStepTextViewPtr;
 static ZKWindow* macWindowPtr;
 static ZKTextView* macStepTextViewPtr;
@@ -11,7 +17,6 @@ static ZKTextView* maaStepTextViewPtr;
 static ZKTextView* mapStepTextViewPtr;
 static ZKTextView* mcpStepTextViewPtr;
 static ZKTextView* mmcStepTextViewPtr;
-static ZKButton* msys_backPtr;
 static ZKTextView* mTextView1Ptr;
 static ZKTextView* mcf4TextViewPtr;
 static ZKTextView* mcf3TextViewPtr;
@@ -42,11 +47,6 @@ static ZKTextView* mcp2TextViewPtr;
 static ZKTextView* mcp1TextViewPtr;
 static ZKTextView* mcpTextViewPtr;
 static ZKWindow* mcpWindowPtr;
-static ZKTextView* mmc4TextViewPtr;
-static ZKTextView* mmc3TextViewPtr;
-static ZKTextView* mmc2TextViewPtr;
-static ZKTextView* mmc1TextViewPtr;
-static ZKTextView* mmcTextViewPtr;
 static ZKWindow* mmcWindowPtr;
 static linkhelpActivity* mActivityPtr;
 
@@ -85,7 +85,6 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
-    ID_LINKHELP_sys_back, onButtonClick_sys_back,
 };
 /***************/
 
@@ -158,6 +157,12 @@ linkhelpActivity::~linkhelpActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    maaTipTextViewPtr = NULL;
+    mapTipTextViewPtr = NULL;
+    mcpTipTextViewPtr = NULL;
+    mmcTipTextViewPtr = NULL;
+    mTextView2Ptr = NULL;
+    macTipTextViewPtr = NULL;
     mclStepTextViewPtr = NULL;
     macWindowPtr = NULL;
     macStepTextViewPtr = NULL;
@@ -165,7 +170,6 @@ linkhelpActivity::~linkhelpActivity() {
     mapStepTextViewPtr = NULL;
     mcpStepTextViewPtr = NULL;
     mmcStepTextViewPtr = NULL;
-    msys_backPtr = NULL;
     mTextView1Ptr = NULL;
     mcf4TextViewPtr = NULL;
     mcf3TextViewPtr = NULL;
@@ -196,11 +200,6 @@ linkhelpActivity::~linkhelpActivity() {
     mcp1TextViewPtr = NULL;
     mcpTextViewPtr = NULL;
     mcpWindowPtr = NULL;
-    mmc4TextViewPtr = NULL;
-    mmc3TextViewPtr = NULL;
-    mmc2TextViewPtr = NULL;
-    mmc1TextViewPtr = NULL;
-    mmcTextViewPtr = NULL;
     mmcWindowPtr = NULL;
 }
 
@@ -211,6 +210,12 @@ const char* linkhelpActivity::getAppName() const{
 //TAG:onCreate
 void linkhelpActivity::onCreate() {
 	Activity::onCreate();
+    maaTipTextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_aaTipTextView);
+    mapTipTextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_apTipTextView);
+    mcpTipTextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_cpTipTextView);
+    mmcTipTextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_mcTipTextView);
+    mTextView2Ptr = (ZKTextView*)findControlByID(ID_LINKHELP_TextView2);
+    macTipTextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_acTipTextView);
     mclStepTextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_clStepTextView);
     macWindowPtr = (ZKWindow*)findControlByID(ID_LINKHELP_acWindow);
     macStepTextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_acStepTextView);
@@ -218,7 +223,6 @@ void linkhelpActivity::onCreate() {
     mapStepTextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_apStepTextView);
     mcpStepTextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_cpStepTextView);
     mmcStepTextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_mcStepTextView);
-    msys_backPtr = (ZKButton*)findControlByID(ID_LINKHELP_sys_back);
     mTextView1Ptr = (ZKTextView*)findControlByID(ID_LINKHELP_TextView1);
     mcf4TextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_cf4TextView);
     mcf3TextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_cf3TextView);
@@ -249,11 +253,6 @@ void linkhelpActivity::onCreate() {
     mcp1TextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_cp1TextView);
     mcpTextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_cpTextView);
     mcpWindowPtr = (ZKWindow*)findControlByID(ID_LINKHELP_cpWindow);
-    mmc4TextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_mc4TextView);
-    mmc3TextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_mc3TextView);
-    mmc2TextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_mc2TextView);
-    mmc1TextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_mc1TextView);
-    mmcTextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_mcTextView);
     mmcWindowPtr = (ZKWindow*)findControlByID(ID_LINKHELP_mcWindow);
 	mActivityPtr = this;
 	onUI_init();

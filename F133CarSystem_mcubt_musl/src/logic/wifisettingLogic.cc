@@ -31,6 +31,7 @@
 
 #include "net/context.h"
 #include "net/NetManager.h"
+#include "sysapp_context.h"
 
 #define WIFIMANAGER			NETMANAGER->getWifiManager()
 
@@ -174,6 +175,7 @@ static void onUI_init() {
 	WIFIMANAGER->addWifiListener(&sMyWifiListener);
 
 	net::add_mode_update_cb(_net_mode_cb);
+	app::hide_topbar();
 }
 
 static void onUI_quit() {
@@ -182,6 +184,7 @@ static void onUI_quit() {
 
 	sWifiInfos.clear();
 	sWifiChangeAps.clear();
+	app::show_topbar();
 }
 
 static void onProtocolDataUpdate(const SProtocolData &data) {

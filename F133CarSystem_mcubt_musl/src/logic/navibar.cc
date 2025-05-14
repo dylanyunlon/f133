@@ -27,7 +27,6 @@
 *mListView1->refreshListView() 让mListView1 重新刷新，当列表数据变化后调用
 *mDashbroadView1->setTargetAngle(120) 在控件mDashbroadView1上指针显示角度调整到120度
 */
-
 #include "media/media_context.h"
 #include "media/audio_context.h"
 #include "utils/SlideManager.h"
@@ -37,52 +36,48 @@
 #include "link/context.h"
 #include "fy/os.hpp"
 #include "system/setting.h"
-#include "net/NetManager.h"
 #include "net/context.h"
 #include "utils/TimeHelper.h"
 #include "manager/LanguageManager.h"
-//#include "system/fm_emit.h"
 #include "system/reverse.h"
-
+#include "config.h"
 #include "uart/context.h"
+#include "mode_observer.h"
+#include "sysapp_context.h"
 
 
-#define WIFIMANAGER			NETMANAGER->getWifiManager()
 #define DELAY_INIT_TIMER     2
-#define DELAY_CLEAR_TIMER     3
-static bool release_flag = false;
-static int useag_value;
 static bt_cb_t _s_bt_cb;
 extern void setSettingFtu_BrillianceSeekBar(int progress);
-extern void setettingFtu_CallSeekBar(int progress);
-extern void setettingFtu_MediaSeekBar(int progress);
-extern void MainFtu_MediaSeekBar(int progress);
-static bool navibar_is_load = false;
+extern void setSettingFtu_MediaSeekBar(int progress);
+extern void set_ctrlbar_lightSeekBar(int progress);
+extern void set_ctrlbar_volumSeekBar(int progress);
+static bool Activity_is_load = false;
 
 void set_navibar_brightnessBar(int progress) {
-	if (navibar_is_load)
+	if (Activity_is_load)
 		mbriSeekBarPtr->setProgress(progress);
 }
 void set_navibar_PlayVolSeekBar(int progress) {
-	if (navibar_is_load)
+	if (Activity_is_load)
 		mPlayVolSeekBarPtr->setProgress(progress);
-}
-void set_navibar_CpSeekBar(int progress) {
-	if (navibar_is_load)
-		mCpSeekBarPtr->setProgress(progress);
-}
-
-// 显示导航栏home键
-void to_home_btn_show() {
-	msys_homePtr->setVisible(true);
 }
 
 static void sys_time_(tm t ) {
 	const char* week[] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 	char buf[128] = {0};
-	sprintf(buf, "%d-%02d-%02d", t.tm_year+1900, t.tm_mon+1, t.tm_mday);
+	int hour = t.tm_hour;
+	if (!sys::setting::is_time_format_24h()) {
+		mMeridiemTextViewPtr->setTextTr((hour >= 12) ? "PM" : "AM");
+		hour = (hour > 12) ? (hour % 12) : hour;
+	} else {
+		mMeridiemTextViewPtr->setText("");
+	}
+
+
+	sprintf(buf, "%02d-%02d %02d:%02d", t.tm_mon+1, t.tm_mday, hour, t.tm_min);
 	mdataTextViewPtr->setText(buf);
-	sprintf(buf, "%02d:%02d", t.tm_hour, t.tm_min);
+
 	mweekTextViewPtr->setText(LANGUAGEMANAGER->getValue(week[t.tm_wday%7]));
 }
 
@@ -90,30 +85,19 @@ void showSysInfo(ZKTextView* textViewPtr) {
 	struct sysinfo info;
 	sysinfo(&info);
 
-	long totoalMem = info.totalram;
 	long freeram = info.freeram;
 
 	if(freeram <= 5*1000*1000) {	//剩余内存小于5M时,释放缓存
 		fy::drop_caches();
-	}
-
-	char text[128];
-	sprintf(text,"freeram:%d totoal:%d (MB)  useag:%.2f%%"
-			, (int)(freeram>>20), (int)(totoalMem>>20), ((totoalMem-freeram)*1.0)/(totoalMem*1.0)*100) ;
-	textViewPtr->setText(text);
-	useag_value = (int)((totoalMem-freeram)*1.0)/(totoalMem*1.0)*100;
-	if(!release_flag){
-		mcacheCircleBarPtr->setProgress((int)((totoalMem-freeram)*1.0)/(totoalMem*1.0)*100);
 	}
 }
 
 static void _bt_power_cb(bt_power_state_e state) {
 	switch (state) {
 	case E_BT_POWER_STATE_OFF:
-		mbtTextViewPtr->setTextTr("Bluetooth");
-		mbtButtonPtr->setTextTr("ununited");
+		mbtButtonPtr->setTextTr("Bluetooth");
+		mbtTextViewPtr->setTextTr("ununited");
 
-		msys_homePtr->setVisible(true);
 		mbtButtonPtr->setInvalid(false);
 		mbtButtonPtr->setSelected(false);
 		break;
@@ -130,16 +114,15 @@ static void _bt_power_cb(bt_power_state_e state) {
 static void _bt_connect_cb(bt_connect_state_e state) {
 	switch (state) {
 	case E_BT_CONNECT_STATE_IDLE:               // 未连接
-		msys_homePtr->setVisible(true);
-		mbtTextViewPtr->setTextTr("Bluetooth");
-		mbtButtonPtr->setTextTr("ununited");
+		mbtButtonPtr->setTextTr("Bluetooth");
+		mbtTextViewPtr->setTextTr("ununited");
 		break;
 	case E_BT_CONNECT_STATE_CONNECTING:         // 连接中
-		mbtButtonPtr->setTextTr("connecting");
+		mbtTextViewPtr->setTextTr("connecting");
 		break;
 	case E_BT_CONNECT_STATE_CONNECTED:          // 已连接
-		mbtTextViewPtr->setText(bt::get_connect_dev().name);
-		mbtButtonPtr->setTextTr("connected");
+		mbtButtonPtr->setText(bt::get_connect_dev().name);
+		mbtTextViewPtr->setTextTr("connected");
 		break;
 	default:
 		break;
@@ -157,14 +140,11 @@ static void _bt_call_cb(bt_call_state_e state) {
 	case E_BT_CALL_STATE_TALKING:                	// 通话中
 	case E_BT_CALL_STATE_INCOMING:
 		can_long_click = false;
-		msys_homePtr->setVisible(false);
 		break;
 	case E_BT_CALL_STATE_IDLE:
-		msys_homePtr->setVisible(true);
 		can_long_click = true;
 		break;
 	default:
-		msys_homePtr->setVisible(true);
 		break;
 	}
 }
@@ -213,24 +193,16 @@ class SeekListener : public ZKSeekBar::ISeekBarChangeListener {
 public:
 	virtual void onProgressChanged(ZKSeekBar *pSeekBar, int progress) {
 		if (pSeekBar->getID() == mPlayVolSeekBarPtr->getID()) {
-			msoundButtonPtr->setSelected(progress < 1);
 			bool effect = bt::is_calling() || (lk::is_connected() && lk::get_is_call_state() != CallState_Hang);
 			audio::set_system_vol(progress / 10.f, !effect);
-			setettingFtu_MediaSeekBar(progress);
-			MainFtu_MediaSeekBar(progress);
-		} else if (pSeekBar->getID() == mCpSeekBarPtr->getID()) {
-			audio::set_lylink_call_vol(progress / 10.f, false);
-			if(bt::is_calling()){
-				bt::call_vol(progress / 10.f);
-			}else if((lk::is_connected() && lk::get_is_call_state() != CallState_Hang)){
-				audio::set_lylink_call_vol(progress / 10.f, true);
-			}
-			mcallButtonPtr->setSelected(progress < 1);
-			setettingFtu_CallSeekBar(progress);
+			mvoiceNumTextViewPtr->setText(progress*10);
+			setSettingFtu_MediaSeekBar(progress);
+			set_ctrlbar_volumSeekBar(progress);
 		} else if (pSeekBar->getID() == mbriSeekBarPtr->getID()) {
 			sys::setting::set_brightness(progress*10);
+			mlightNumTextViewPtr->setText(progress*10);
 			setSettingFtu_BrillianceSeekBar(progress);
-			mbriButtonPtr->setSelected(progress < 1);
+			set_ctrlbar_lightSeekBar(progress);;
 		}
 	}
 	virtual void onStartTrackingTouch(ZKSeekBar *pSeekBar) {
@@ -241,21 +213,12 @@ public:
 		if (pSeekBar->getID() == mPlayVolSeekBarPtr->getID()) {
 //			bool effect = bt::is_calling() || (lk::is_connected() && lk::get_is_call_state() != CallState_Hang);
 //			audio::set_system_vol(progress / 10.f, !effect);
-//			setettingFtu_MediaSeekBar(progress);
-			//MainFtu_MediaSeekBar(progress);
-		} else if (pSeekBar->getID() == mCpSeekBarPtr->getID()) {
-//			audio::set_lylink_call_vol(progress / 10.f, false);
-//			if(bt::is_calling()){
-//				bt::call_vol(progress / 10.f);
-//			}else if((lk::is_connected() && lk::get_is_call_state() != CallState_Hang)){
-//				audio::set_lylink_call_vol(progress / 10.f, true);
-//			}
-//			bool effect = bt::is_calling() || (lk::is_connected() && lk::get_is_call_state() != CallState_Hang);
-//			audio::set_lylink_call_vol(progress / 10.f, effect);
-			setettingFtu_CallSeekBar(progress);
+			setSettingFtu_MediaSeekBar(progress);
+			set_ctrlbar_volumSeekBar(progress);
 		} else if (pSeekBar->getID() == mbriSeekBarPtr->getID()) {
 //			sys::setting::set_brightness(progress*10);
-//			setSettingFtu_BrillianceSeekBar(progress);
+			setSettingFtu_BrillianceSeekBar(progress);
+			set_ctrlbar_lightSeekBar(progress);
 		}
 	}
 };
@@ -264,73 +227,65 @@ public:
 static SeekListener seekListener;
 static LongClickListener longButtonClickListenerWin;
 
-
-
-// 此种方式效果不太好，，实际失效时间有延迟，调节响应不跟手
-//static void _message_handler(const fy::message *msg, const void *user_data);
-//static fy::handler _s_handler(_message_handler, NULL);
-//
-//
-//#define PLAY_VOL       1
-//#define CALL_VOL       2
-//
-//static void _message_handler(const fy::message *msg, const void *user_data) {
-//	switch (msg->what) {
-//	case PLAY_VOL: {
-//		int progress = (int) msg->arg1;
-//		bool effect = bt::is_calling() || (lk::is_connected() && lk::get_is_call_state() != CallState_Hang);
-//		audio::set_system_vol(progress / 10.f, !effect);
-//		setettingFtu_MediaSeekBar(progress);
-//		MainFtu_MediaSeekBar(progress);
-//		break;
-//	}
-//	case CALL_VOL: {
-//		int progress = (int) msg->arg1;
-//		bool effect = bt::is_calling() || (lk::is_connected() && lk::get_is_call_state() != CallState_Hang);
-//		audio::set_lylink_call_vol(progress / 10.f, effect);
-//		setettingFtu_CallSeekBar(progress);
-//		break;
-//	}
-//	}
-//}
-
-
-
-
-
-
 static void _UI_init() {
 	mfmTextViewPtr->setTouchPass(true);
-	mTextView1Ptr->setTouchPass(true);
+//	mTextView1Ptr->setTouchPass(true);
 	mbtTextViewPtr->setTouchPass(true);
-	mTextView2Ptr->setTouchPass(true);
-
+//	mTextView2Ptr->setTouchPass(true);
+	msoundButtonPtr->setTouchPass(true);
+	mbriButtonPtr->setTouchPass(true);
 	mfmTextViewPtr->setLongMode(ZKTextView::E_LONG_MODE_DOTS);
-	mbtTextViewPtr->setLongMode(ZKTextView::E_LONG_MODE_DOTS);
+	mbtButtonPtr->setLongMode(ZKTextView::E_LONG_MODE_DOTS);
 }
 
-static void sys_play_mode_cb_(audio_player_mode_e mode) {
-	switch(mode) {
-	case E_AUDIO_PLAYER_MODE_FM:     // fm发射
-		mfmButtonPtr->setSelected(true);
-		mfmTextViewPtr->setTextTr("Turn on");
+static void _audio_output_mode_cb(audio_player_mode_e new_mode, audio_player_mode_e old_mode) {
+	LOGD("[navibar] audio output mode %d ---> %d\n", old_mode, new_mode);
+	switch (old_mode) {
+	case E_AUDIO_PLAYER_MODE_FM:
+		uart::fm_switch(false);
 		break;
-	case E_AUDIO_PLAYER_MODE_SPK:    // 扬声器
-	case E_AUDIO_PLAYER_MODE_HP:     // 耳机
-	case E_AUDIO_PLAYER_MODE_BT: 	 // 蓝牙发射
+	default:
+		break;
+	}
+
+	switch (new_mode) {
+	case E_AUDIO_PLAYER_MODE_FM:
+		uart::fm_switch(true);
+		break;
+	default:
+		break;
+	}
+}
+
+static void _sound_mode_cb(sound_mode_e mode) {
+	switch (mode) {
+	case E_SOUND_MODE_SPK:
 		mfmButtonPtr->setSelected(false);
 		mfmTextViewPtr->setTextTr("Turn off");
+		audio::change_output_mode(E_AUDIO_PLAYER_MODE_SPK);
+		break;
+	case E_SOUND_MODE_LINK:
+		mfmButtonPtr->setSelected(false);
+		mfmTextViewPtr->setTextTr("Turn off");
+//		audio::change_output_mode(E_AUDIO_PLAYER_MODE_BT);
+		break;
+	case E_SOUND_MODE_FM:
+		mfmButtonPtr->setSelected(true);
+		mfmTextViewPtr->setTextTr("Turn on");
+		audio::change_output_mode(E_AUDIO_PLAYER_MODE_FM);
+		break;
+	case E_SOUND_MODE_AUX:
+		mfmButtonPtr->setSelected(false);
+		mfmTextViewPtr->setTextTr("Turn off");
+		audio::change_output_mode(E_AUDIO_PLAYER_MODE_AUX);
+		break;
+	default:
 		break;
 	}
 }
 
-static void fm_status_cb(bool status){
-	mfmButtonPtr->setSelected(status);
-	if(status) {
-		mfmTextViewPtr->setTextTr("Turn on");
-	} else {
-		mfmTextViewPtr->setTextTr("Turn off");
-	}
+static void _change_sound_mode(sound_mode_e mode) {
+	mode::set_sound_mode(mode);
 }
 
 /**
@@ -348,15 +303,16 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
  */
 static void onUI_init() {
     //Tips :添加 UI初始化的显示代码到这里,如:mText1->setText("123");
+	LOGD("topbar show");
 	_UI_init();
 
 	mfmButtonPtr->setLongClickListener(&longButtonClickListenerWin);
 	mbtButtonPtr->setLongClickListener(&longButtonClickListenerWin);
 
-	navibar_is_load = true;
+	Activity_is_load = true;
 	mnavibarPtr->show();
 	mPlayVolSeekBarPtr->setSeekBarChangeListener(&seekListener);
-	mCpSeekBarPtr->setSeekBarChangeListener(&seekListener);
+//	mCpSeekBarPtr->setSeekBarChangeListener(&seekListener);
 	mbriSeekBarPtr->setSeekBarChangeListener(&seekListener);
 
 
@@ -366,30 +322,50 @@ static void onUI_init() {
 
 	_bt_add_cb();
 
-	// 收音机发射
-	uart::fm_switch(sys::setting::get_fm_switch());
-	uart::add_fm_state_cb(fm_status_cb);
-	uart::query_fmswitch();
-//	mfmButtonPtr->setSelected(sys::fm_is_enable());
-
 	mfmTextViewPtr->setTextTr(mfmButtonPtr->isSelected() ? "Turn on" : "Turn off");
-	sys::setting::add_play_state_cb(sys_play_mode_cb_);
+
+	_sound_mode_cb(mode::get_sound_mode());
+	audio::add_output_mode_cb(_audio_output_mode_cb);
+	mode::add_sound_mode_cb(_sound_mode_cb);
 
 	//注册定时器
 	mnavibarPtr->registerUserTimer(DELAY_INIT_TIMER, 0);
+}
+
+/**
+ * 当切换到该界面时触发
+ */
+static void onUI_intent(const Intent *intentPtr) {
+    if (intentPtr != NULL) {
+        //TODO
+    }
+}
+
+/*
+ * 当界面显示时触发
+ */
+static void onUI_show() {
+
+}
+
+/*
+ * 当界面隐藏时触发
+ */
+static void onUI_hide() {
+
 }
 
 /*
  * 当界面完全退出时触发
  */
 static void onUI_quit() {
-	navibar_is_load = false;
+	Activity_is_load = false;
 	mPlayVolSeekBarPtr->setSeekBarChangeListener(NULL);
-	mCpSeekBarPtr->setSeekBarChangeListener(NULL);
 	mbriSeekBarPtr->setSeekBarChangeListener(NULL);
 	mfmButtonPtr->setLongClickListener(NULL);
 	mbtButtonPtr->setLongClickListener(NULL);
-	sys::setting::remove_play_state_cb(sys_play_mode_cb_);
+	audio::remove_output_mode_cb(_audio_output_mode_cb);
+	mode::remove_sound_mode_cb(_sound_mode_cb);
 	_bt_remove_cb();
 }
 
@@ -420,23 +396,8 @@ static bool onUI_Timer(int id) {
 	case DELAY_INIT_TIMER: 		//等待初始化完成
 		mbriSeekBarPtr->setProgress(sys::setting::get_brightness() / 10);
 		mPlayVolSeekBarPtr->setProgress(audio::get_system_vol() * 10);
-		mCpSeekBarPtr->setProgress(audio::get_lylink_call_vol() * 10);
 		EASYUICONTEXT->showNaviBar();
 		return false;			//只执行一次
-	case DELAY_CLEAR_TIMER:{
-		static int value;
-		if(++value <= useag_value){
-			mcacheCircleBarPtr->setProgress(value);
-		}else{
-			value = 0;
-			release_flag = false;
-			return false;
-		}
-
-	}
-
-
-		break;
 		default:
 			break;
 	}
@@ -453,23 +414,29 @@ static bool onUI_Timer(int id) {
  *            触摸事件将继续传递到控件上
  */
 static bool onnavibarActivityTouchEvent(const MotionEvent &ev) {
-	 if (sys::reverse_does_enter_status()){
+	if (sys::reverse_does_enter_status()){
 		return false;
-	 }
+	}
+	if (mPlayVolSeekBarPtr->isPressed()) {
+		return false;
+	}
+	if (mbriSeekBarPtr->isPressed()) {
+		return false;
+	 	 }
 	SLIDEMANAGER->onTouchEvent(ev, mnavibarPtr);
-    switch (ev.mActionStatus) {
-		case MotionEvent::E_ACTION_DOWN://触摸按下
-			//LOGD("时刻 = %ld 坐标  x = %d, y = %d", ev.mEventTime, ev.mX, ev.mY);
-			break;
-		case MotionEvent::E_ACTION_MOVE://触摸滑动
-			break;
-		case MotionEvent::E_ACTION_UP:  //触摸抬起
-			//LOGD("--%d-- --%s-- --isNaviBarShow:%d--", __LINE__, __FILE__, EASYUICONTEXT->isNaviBarShow());
-			SLIDEMANAGER->setCanSlide(true);
-			break;
-		default:
-			SLIDEMANAGER->setCanSlide(true);
-			break;
+	static MotionEvent last;
+	switch (ev.mActionStatus) {
+	case MotionEvent::E_ACTION_DOWN://触摸按下
+//		 LOGD("时刻 = %ld 坐标  x = %d, y = %d", ev.mEventTime, ev.mX, ev.mY);
+		break;
+	case MotionEvent::E_ACTION_MOVE://触摸滑动
+		break;
+	case MotionEvent::E_ACTION_UP:  //触摸抬起
+		SLIDEMANAGER->setCanSlide(true);
+		break;
+	default:
+		SLIDEMANAGER->setCanSlide(true);
+		break;
 	}
 	return false;
 }
@@ -481,12 +448,12 @@ static void onProgressChanged_PlayVolSeekBar(ZKSeekBar *pSeekBar, int progress) 
 //	_s_handler.send_message(_s_message);
 }
 
-static void onProgressChanged_CpSeekBar(ZKSeekBar *pSeekBar, int progress) {
+//static void onProgressChanged_CpSeekBar(ZKSeekBar *pSeekBar, int progress) {
     //LOGD(" ProgressChanged CpSeekBar %d !!!\n", progress);
 //	mcallButtonPtr->setSelected(progress < 1);
 //	fy::message _s_message(CALL_VOL, NULL, progress);
 //	_s_handler.send_message(_s_message);
-}
+//}
 
 static void onProgressChanged_briSeekBar(ZKSeekBar *pSeekBar, int progress) {
     //LOGD(" ProgressChanged RecSeekBar %d !!!\n", progress);
@@ -495,21 +462,8 @@ static void onProgressChanged_briSeekBar(ZKSeekBar *pSeekBar, int progress) {
 //	setSettingFtu_BrillianceSeekBar(progress);
 }
 
-static bool onButtonClick_sys_home(ZKButton *pButton) {
-    LOGD(" ButtonClick sys_home !!!\n");
-	LayoutPosition pos = mnavibarPtr->getPosition();
-	pos.mTop = -pos.mHeight;
-	mnavibarPtr->setPosition(pos);
-    return false;
-}
-
 static bool onButtonClick_soundButton(ZKButton *pButton) {
     LOGD(" ButtonClick soundButton !!!\n");
-    return false;
-}
-
-static bool onButtonClick_callButton(ZKButton *pButton) {
-    LOGD(" ButtonClick callButton !!!\n");
     return false;
 }
 
@@ -524,22 +478,13 @@ static bool onButtonClick_btButton(ZKButton *pButton) {
     return false;
 }
 
-static bool onButtonClick_releaseButton(ZKButton *pButton) {
-    LOGD(" ButtonClick releaseButton !!!\n");
-    if(!release_flag){
-    	mcacheCircleBarPtr->setProgress(0);
-    	release_flag = true;
-        fy::drop_caches();
-        mnavibarPtr->registerUserTimer(DELAY_CLEAR_TIMER, 20);
-    }
-    return false;
-}
-
 static bool onButtonClick_fmButton(ZKButton *pButton) {
     LOGD(" ButtonClick fmButton !!!\n");
-//    sys::fm_set_mute(sys::fm_is_enable());
-    uart::fm_switch(!pButton->isSelected());
-    sys::setting::set_fm_switch(!pButton->isSelected());
+    if (mode::get_sound_mode() == E_SOUND_MODE_FM) {
+    	_change_sound_mode(E_SOUND_MODE_SPK);
+    } else {
+    	_change_sound_mode(E_SOUND_MODE_FM);
+    }
     return false;
 }
 
@@ -552,5 +497,23 @@ static bool onButtonClick_screenoffBtn(ZKButton *pButton) {
     	EASYUICONTEXT->openActivity("screenOffActivity");
     }
 
+    return false;
+}
+static bool onButtonClick_SoundButton(ZKButton *pButton) {
+    LOGD(" ButtonClick SoundButton !!!\n");
+    EASYUICONTEXT->openActivity("soundEffectActivity");
+	fold_statusbar();
+    return false;
+}
+
+static bool onButtonClick_settingButton(ZKButton *pButton) {
+    LOGD(" ButtonClick settingButton !!!\n");
+    EASYUICONTEXT->openActivity("settingsActivity");
+	fold_statusbar();
+    return false;
+}
+
+static bool onButtonClick_Button1(ZKButton *pButton) {
+    LOGD(" ButtonClick Button1 !!!\n");
     return false;
 }

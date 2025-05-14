@@ -405,6 +405,7 @@ static void _proc_hfp_state(const char *data, int len) {
 	case '3':
 		LOGD("[bt] HFP state: 连接成功\n");
 		_notify_connect_cb(E_BT_CONNECT_STATE_CONNECTED);
+		query_matched();
 		break;
 	case '4':
 		LOGD("[bt] HFP state: 电话拨出\n");
@@ -511,7 +512,7 @@ static void _proc_hangup(const char *data, int len) {
 	if (_s_bt_info.calling) { audio::handle_phone(E_AUDIO_TYPE_BT_PHONE, false); }
 	_s_bt_info.calling = false;
 	DELAY(500);
-	bt::download_call_record();
+	bt::download_call_record(BT_RECORD_RECENT);
 }
 
 static void _proc_a2dp_state(const char *data, int len) {
@@ -1206,9 +1207,30 @@ bool download_phone_book() {
 	return false;
 }
 
-bool download_call_record() {
-//	LOGD("--%d-- --%s-- is_downloading = %d \n", __LINE__, __FILE__, _s_bt_info.is_downloading);
+bool delete_phone_book() {
+	Mutex::Autolock _l(_s_info_mutex);
+	_s_bt_info.is_downloading_phone = false;
+	_s_bt_info.contact_list.clear();
+	return false;
+}
 
+bool download_call_record(int record) {
+//	LOGD("--%d-- --%s-- is_downloading = %d \n", __LINE__, __FILE__, _s_bt_info.is_downloading);
+	const char *cmd;
+	switch (record) {
+	case BT_RECORD_OUTGOING:
+		cmd = BT_CMD_RECORD_OUTGOING;
+		break;
+	case BT_RECORD_INCOMING:
+		cmd = BT_CMD_RECORD_INCOMING;
+		break;
+	case BT_RECORD_MISSED:
+		cmd = BT_CMD_RECORD_MISSED;
+		break;
+	case BT_RECORD_RECENT:
+		cmd = BT_CMD_RECORD_RECENT;
+		break;
+	}
 	if (!_s_bt_info.is_downloading_record && !_s_bt_info.is_downloading_phone) {
 		{
 			Mutex::Autolock _l(_s_info_mutex);
@@ -1216,8 +1238,15 @@ bool download_call_record() {
 			_s_bt_info.record_list.clear();
 		}
 
-		return _send_cmd(BT_CMD_RECORD_RECENT);
+		return _send_cmd(cmd);
 	}
+	return false;
+}
+
+bool delete_call_record() {
+	Mutex::Autolock _l(_s_info_mutex);
+	_s_bt_info.is_downloading_record = false;
+	_s_bt_info.record_list.clear();
 	return false;
 }
 

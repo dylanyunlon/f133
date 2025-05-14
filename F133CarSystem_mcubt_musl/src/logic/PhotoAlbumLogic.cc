@@ -11,6 +11,7 @@
 #include "media/media_context.h"
 #include "fy/os.hpp"
 #include "fy/files.hpp"
+#include "sysapp_context.h"
 
 #define MAX_PATH_LEN  					256										//相片路径最大长度
 #define STORAGE_TYPE_SIZE 				3										//外置存储类型数
@@ -73,7 +74,7 @@ static void Horizontal_Vertical_Center_Pic(ZKTextView *zkbase,Photos pts){//cons
 	}else{
 		zkbase->setBackgroundPic("");
 		zkbase->setPosition(LayoutPosition(0,0,SCREENRESOULUTION_WIDTH,SCREENRESOULUTION_HEIGHT));
-		zkbase->setText("不支持显示该图片！");
+		zkbase->setTextTr("This image is not supported for display!");
 	}
 
 }
@@ -130,6 +131,8 @@ static void SetDisplayOpposite(bool isVisible){
 	mCarouselPicPtr->setVisible(isVisible);
 	mamplifyBtnPtr->setVisible(isVisible);
 	mreduceBtnPtr->setVisible(isVisible);
+	mTextView5Ptr->setVisible(isVisible);
+	mbackPtr->setVisible(isVisible);
 }
 
 /**
@@ -310,6 +313,10 @@ static void onUI_init(){
 	PAsw.Set_SwitchSpeed(300);
 	media::add_scan_cb(_media_scan_cb);
 	SelectAlbum();
+
+	mTextView2Ptr->setTouchPass(true);
+	mTextView3Ptr->setTouchPass(true);
+	mTextView4Ptr->setTouchPass(true);
 }
 
 /**
@@ -538,6 +545,11 @@ static bool onButtonClick_CarouselPic(ZKButton *pButton) {
 
 static int getListItemCount_ImagesListView(const ZKListView *pListView) {
     //LOGD("getListItemCount_ImagesListView !\n");
+	if (media::get_image_list_size(albumtype) == 0) {
+		mTextView6Ptr->setTextTr("No files");
+	} else {
+		mTextView6Ptr->setText("");
+	}
     return media::get_image_list_size(albumtype);
 }
 
@@ -568,12 +580,14 @@ static void onListItemClick_ImagesListView(ZKListView *pListView, int index, int
 			ImagesFilter(media::get_image_file(albumtype,(IndexPic < (size-1))?IndexPic+1:0)));
 	SetDisplayOpposite(true);
 	mAlbumClassificationPtr->hideWnd();
+	app::hide_topbar();
 }
 
 static bool onButtonClick_back(ZKButton *pButton) {
     LOGD(" ButtonClick back !!!\n");
     if(!mAlbumClassificationPtr->isWndShow()){
     	mAlbumClassificationPtr->showWnd();
+    	app::show_topbar();
         is_sel = true;
         mImagesListViewPtr->setSelection(IndexPic);
 
@@ -585,8 +599,6 @@ static bool onButtonClick_back(ZKButton *pButton) {
 
         	mCarouselPicPtr->setSelected(false);
         }
-    }else{
-    	EASYUICONTEXT->openActivity("mainActivity");
     }
     return false;
 }

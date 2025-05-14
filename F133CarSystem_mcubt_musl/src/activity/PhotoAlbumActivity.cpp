@@ -4,6 +4,12 @@
 #include "PhotoAlbumActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextView6Ptr;
+static ZKTextView* mTextView4Ptr;
+static ZKTextView* mTextView1Ptr;
+static ZKTextView* mTextView3Ptr;
+static ZKTextView* mTextView2Ptr;
+static ZKTextView* mTextView5Ptr;
 static ZKButton* mbackPtr;
 static ZKPointer* msyncPointerPtr;
 static ZKTextView* mscaningTextViewPtr;
@@ -153,6 +159,12 @@ PhotoAlbumActivity::~PhotoAlbumActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    mTextView6Ptr = NULL;
+    mTextView4Ptr = NULL;
+    mTextView1Ptr = NULL;
+    mTextView3Ptr = NULL;
+    mTextView2Ptr = NULL;
+    mTextView5Ptr = NULL;
     mbackPtr = NULL;
     msyncPointerPtr = NULL;
     mscaningTextViewPtr = NULL;
@@ -188,6 +200,12 @@ const char* PhotoAlbumActivity::getAppName() const{
 //TAG:onCreate
 void PhotoAlbumActivity::onCreate() {
 	Activity::onCreate();
+    mTextView6Ptr = (ZKTextView*)findControlByID(ID_PHOTOALBUM_TextView6);
+    mTextView4Ptr = (ZKTextView*)findControlByID(ID_PHOTOALBUM_TextView4);
+    mTextView1Ptr = (ZKTextView*)findControlByID(ID_PHOTOALBUM_TextView1);
+    mTextView3Ptr = (ZKTextView*)findControlByID(ID_PHOTOALBUM_TextView3);
+    mTextView2Ptr = (ZKTextView*)findControlByID(ID_PHOTOALBUM_TextView2);
+    mTextView5Ptr = (ZKTextView*)findControlByID(ID_PHOTOALBUM_TextView5);
     mbackPtr = (ZKButton*)findControlByID(ID_PHOTOALBUM_back);
     msyncPointerPtr = (ZKPointer*)findControlByID(ID_PHOTOALBUM_syncPointer);
     mscaningTextViewPtr = (ZKTextView*)findControlByID(ID_PHOTOALBUM_scaningTextView);

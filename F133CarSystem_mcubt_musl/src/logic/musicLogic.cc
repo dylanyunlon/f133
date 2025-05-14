@@ -45,8 +45,8 @@
 static storage_type_e _s_select_storage = E_STORAGE_TYPE_SD; //E_STORAGE_TYPE_INVALID;	//选中的文件仓库
 static storage_type_e _s_play_storage = E_STORAGE_TYPE_SD; //E_STORAGE_TYPE_INVALID;		//播放的文件仓库
 
-static const char* play_mode_path[] = {"MusicPlayer/cycle_n.png", "MusicPlayer/single_n.png", "MusicPlayer/random_n.png"};
-static const char* play_mode_press_path[] = {"MusicPlayer/cycle_p.png", "MusicPlayer/single_p.png", "MusicPlayer/random_p.png"};
+static const char* play_mode_path[] = {"media_player/cycle_n.png", "media_player/single_n.png", "media_player/random_n.png"};
+static const char* play_mode_press_path[] = {"media_player/cycle_p.png", "media_player/single_p.png", "media_player/random_p.png"};
 
 static bool is_tracking = false;
 static int track_progress = -1;
@@ -187,6 +187,9 @@ static void ctrl_init() {
 	mtitleTextViewPtr->setLongMode(ZKTextView::E_LONG_MODE_DOTS);
 	martistTextViewPtr->setLongMode(ZKTextView::E_LONG_MODE_DOTS);
 	malbumTextViewPtr->setLongMode(ZKTextView::E_LONG_MODE_DOTS);
+	mTextView2Ptr->setTouchPass(true);
+	mTextView3Ptr->setTouchPass(true);
+	mTextView4Ptr->setTouchPass(true);
 }
 
 /**
@@ -317,12 +320,6 @@ static bool onmusicActivityTouchEvent(const MotionEvent &ev) {
 	}
 	return false;
 }
-
-static bool onButtonClick_sys_back(ZKButton *pButton) {
-    LOGD(" ButtonClick sys_back !!!\n");
-    return false;
-}
-
 static bool onButtonClick_SDButton(ZKButton *pButton) {
     LOGD(" ButtonClick SDButton !!!\n");
     _s_select_storage = E_STORAGE_TYPE_SD;
@@ -352,6 +349,11 @@ static bool onButtonClick_USB2Button(ZKButton *pButton) {
 
 static int getListItemCount_musicListView(const ZKListView *pListView) {
     //LOGD("getListItemCount_musicListView !\n");
+	if (media::get_audio_list_size(_s_select_storage) == 0) {
+		mTextView7Ptr->setTextTr("No files");
+	} else {
+		mTextView7Ptr->setText("");
+	}
     return media::get_audio_list_size(_s_select_storage);
 }
 
@@ -441,10 +443,5 @@ static bool onButtonClick_ButtonPlay(ZKButton *pButton) {
 static bool onButtonClick_NextButton(ZKButton *pButton) {
     LOGD(" ButtonClick NextButton !!!\n");
     media::music_next(true);
-    return false;
-}
-
-static bool onButtonClick_PlayMode(ZKButton *pButton) {
-    LOGD(" ButtonClick PlayMode !!!\n");
     return false;
 }

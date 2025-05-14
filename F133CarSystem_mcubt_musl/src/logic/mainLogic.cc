@@ -50,6 +50,7 @@
 #include "os/MountMonitor.h"
 #include "system/usb_monitor.h"
 #include "tire/tire_parse.h"
+#include "sysapp_context.h"
 
 
 #define WIFIMANAGER			NETMANAGER->getWifiManager()
@@ -60,6 +61,14 @@
 
 static bt_cb_t _s_bt_cb;
 static bool _s_need_reopen_linkview;
+
+static void _register_timer_fun(int id, int time) {
+	mActivityPtr->registerUserTimer(id, time); // @suppress("无效参数")
+}
+
+static void _unregister_timer_fun(int id) {
+	mActivityPtr->unregisterUserTimer(id); // @suppress("无效参数")
+}
 
 static void entry_lylink_ftu() {
 	if (!sys::reverse_does_enter_status()) {
@@ -208,7 +217,7 @@ static void ctrl_UI_init() {
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-//	{0,  1000}, //定时器id=0, 时间间隔1秒
+	{0,  1000}, //定时器id=0, 时间间隔1秒
 	{QUERY_LINK_AUTH_TIMER, 6000},
 	{SWITCH_ADB_TIMER, 2000}, // 延迟打开ADB
 };
@@ -240,6 +249,8 @@ static void onUI_init() {
 	lk::add_lylink_callback(_lylink_callback);
 	lk::start_lylink();
 
+	app::attach_timer(_register_timer_fun, _unregister_timer_fun);
+
 	// 启动倒车检测
 	sys::reverse_add_status_cb(_reverse_status_cb);
 	sys::reverse_detect_start();
@@ -263,6 +274,9 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
+	if (!app::is_show_topbar()) {
+		app::show_topbar();
+	}
 	EASYUICONTEXT->openActivity("desktopActivity");
 }
 
@@ -300,6 +314,9 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  *             停止运行当前定时器
  */
 static bool onUI_Timer(int id) {
+	if (app::on_timer(id)) {
+		return false;
+	}
 	switch (id) {
 	case 0: {
 		unsigned long freeram = 0;

@@ -4,13 +4,32 @@
 #include "FMemitActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
-static ZKSeekBar* minvalidSeekBarPtr;
+static ZKButton* mtipCancelPtr;
+static ZKButton* mtipSurePtr;
+static ZKTextView* mLinkSwitchTipTextViewPtr;
+static ZKTextView* mTextView10Ptr;
+static ZKWindow* mLinkTipWindowPtr;
+static ZKTextView* mTextView9Ptr;
+static ZKTextView* mTextView8Ptr;
+static ZKWindow* mLinkWindowPtr;
+static ZKTextView* mTextView7Ptr;
+static ZKTextView* mTextView6Ptr;
+static ZKWindow* mAUXWindowPtr;
 static ZKTextView* mTextView5Ptr;
+static ZKTextView* mTextView4Ptr;
+static ZKWindow* mARMWindowPtr;
+static ZKTextView* mTextView2Ptr;
+static ZKWindow* mFMWindowPtr;
+static ZKTextView* mTextViewCPPtr;
+static ZKTextView* mTextViewARMPtr;
+static ZKTextView* mTextViewAUXPtr;
+static ZKTextView* mTextViewFMPtr;
+static ZKButton* mBTButtonPtr;
+static ZKButton* mARMButtonPtr;
+static ZKButton* mAUXButtonPtr;
 static ZKSeekBar* mfmSeekBarPtr;
-static ZKButton* msys_backPtr;
 static ZKButton* maddButtonPtr;
 static ZKButton* mdecButtonPtr;
-static ZKTextView* mTextView2Ptr;
 static ZKTextView* mTextView1Ptr;
 static ZKButton* mButtonFMPtr;
 static ZKEditText* mEditTextFmFreqPtr;
@@ -52,7 +71,11 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
-    ID_FMEMIT_sys_back, onButtonClick_sys_back,
+    ID_FMEMIT_tipCancel, onButtonClick_tipCancel,
+    ID_FMEMIT_tipSure, onButtonClick_tipSure,
+    ID_FMEMIT_BTButton, onButtonClick_BTButton,
+    ID_FMEMIT_ARMButton, onButtonClick_ARMButton,
+    ID_FMEMIT_AUXButton, onButtonClick_AUXButton,
     ID_FMEMIT_addButton, onButtonClick_addButton,
     ID_FMEMIT_decButton, onButtonClick_decButton,
     ID_FMEMIT_ButtonFM, onButtonClick_ButtonFM,
@@ -67,7 +90,6 @@ typedef struct {
 }S_ZKSeekBarCallback;
 /*TAG:SeekBarCallbackTab*/
 static S_ZKSeekBarCallback SZKSeekBarCallbackTab[] = {
-    ID_FMEMIT_invalidSeekBar, onProgressChanged_invalidSeekBar,
     ID_FMEMIT_fmSeekBar, onProgressChanged_fmSeekBar,
 };
 
@@ -131,13 +153,32 @@ FMemitActivity::~FMemitActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
-    minvalidSeekBarPtr = NULL;
+    mtipCancelPtr = NULL;
+    mtipSurePtr = NULL;
+    mLinkSwitchTipTextViewPtr = NULL;
+    mTextView10Ptr = NULL;
+    mLinkTipWindowPtr = NULL;
+    mTextView9Ptr = NULL;
+    mTextView8Ptr = NULL;
+    mLinkWindowPtr = NULL;
+    mTextView7Ptr = NULL;
+    mTextView6Ptr = NULL;
+    mAUXWindowPtr = NULL;
     mTextView5Ptr = NULL;
+    mTextView4Ptr = NULL;
+    mARMWindowPtr = NULL;
+    mTextView2Ptr = NULL;
+    mFMWindowPtr = NULL;
+    mTextViewCPPtr = NULL;
+    mTextViewARMPtr = NULL;
+    mTextViewAUXPtr = NULL;
+    mTextViewFMPtr = NULL;
+    mBTButtonPtr = NULL;
+    mARMButtonPtr = NULL;
+    mAUXButtonPtr = NULL;
     mfmSeekBarPtr = NULL;
-    msys_backPtr = NULL;
     maddButtonPtr = NULL;
     mdecButtonPtr = NULL;
-    mTextView2Ptr = NULL;
     mTextView1Ptr = NULL;
     mButtonFMPtr = NULL;
     mEditTextFmFreqPtr = NULL;
@@ -151,13 +192,32 @@ const char* FMemitActivity::getAppName() const{
 //TAG:onCreate
 void FMemitActivity::onCreate() {
 	Activity::onCreate();
-    minvalidSeekBarPtr = (ZKSeekBar*)findControlByID(ID_FMEMIT_invalidSeekBar);if(minvalidSeekBarPtr!= NULL){minvalidSeekBarPtr->setSeekBarChangeListener(this);}
+    mtipCancelPtr = (ZKButton*)findControlByID(ID_FMEMIT_tipCancel);
+    mtipSurePtr = (ZKButton*)findControlByID(ID_FMEMIT_tipSure);
+    mLinkSwitchTipTextViewPtr = (ZKTextView*)findControlByID(ID_FMEMIT_LinkSwitchTipTextView);
+    mTextView10Ptr = (ZKTextView*)findControlByID(ID_FMEMIT_TextView10);
+    mLinkTipWindowPtr = (ZKWindow*)findControlByID(ID_FMEMIT_LinkTipWindow);
+    mTextView9Ptr = (ZKTextView*)findControlByID(ID_FMEMIT_TextView9);
+    mTextView8Ptr = (ZKTextView*)findControlByID(ID_FMEMIT_TextView8);
+    mLinkWindowPtr = (ZKWindow*)findControlByID(ID_FMEMIT_LinkWindow);
+    mTextView7Ptr = (ZKTextView*)findControlByID(ID_FMEMIT_TextView7);
+    mTextView6Ptr = (ZKTextView*)findControlByID(ID_FMEMIT_TextView6);
+    mAUXWindowPtr = (ZKWindow*)findControlByID(ID_FMEMIT_AUXWindow);
     mTextView5Ptr = (ZKTextView*)findControlByID(ID_FMEMIT_TextView5);
+    mTextView4Ptr = (ZKTextView*)findControlByID(ID_FMEMIT_TextView4);
+    mARMWindowPtr = (ZKWindow*)findControlByID(ID_FMEMIT_ARMWindow);
+    mTextView2Ptr = (ZKTextView*)findControlByID(ID_FMEMIT_TextView2);
+    mFMWindowPtr = (ZKWindow*)findControlByID(ID_FMEMIT_FMWindow);
+    mTextViewCPPtr = (ZKTextView*)findControlByID(ID_FMEMIT_TextViewCP);
+    mTextViewARMPtr = (ZKTextView*)findControlByID(ID_FMEMIT_TextViewARM);
+    mTextViewAUXPtr = (ZKTextView*)findControlByID(ID_FMEMIT_TextViewAUX);
+    mTextViewFMPtr = (ZKTextView*)findControlByID(ID_FMEMIT_TextViewFM);
+    mBTButtonPtr = (ZKButton*)findControlByID(ID_FMEMIT_BTButton);
+    mARMButtonPtr = (ZKButton*)findControlByID(ID_FMEMIT_ARMButton);
+    mAUXButtonPtr = (ZKButton*)findControlByID(ID_FMEMIT_AUXButton);
     mfmSeekBarPtr = (ZKSeekBar*)findControlByID(ID_FMEMIT_fmSeekBar);if(mfmSeekBarPtr!= NULL){mfmSeekBarPtr->setSeekBarChangeListener(this);}
-    msys_backPtr = (ZKButton*)findControlByID(ID_FMEMIT_sys_back);
     maddButtonPtr = (ZKButton*)findControlByID(ID_FMEMIT_addButton);
     mdecButtonPtr = (ZKButton*)findControlByID(ID_FMEMIT_decButton);
-    mTextView2Ptr = (ZKTextView*)findControlByID(ID_FMEMIT_TextView2);
     mTextView1Ptr = (ZKTextView*)findControlByID(ID_FMEMIT_TextView1);
     mButtonFMPtr = (ZKButton*)findControlByID(ID_FMEMIT_ButtonFM);
     mEditTextFmFreqPtr = (ZKEditText*)findControlByID(ID_FMEMIT_EditTextFmFreq);if(mEditTextFmFreqPtr!= NULL){mEditTextFmFreqPtr->setTextChangeListener(this);}

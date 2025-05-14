@@ -4,6 +4,7 @@
     <string name="Video">Video</string>
     <string name="PhoneLink">PhoneLink</string>
     <string name="Bluetooth">Bluetooth</string>
+    <string name="volume">volume</string>
     <string name="Music volume">Music volume</string>
     <string name="Carplay call volume">Carplay call volume</string>
     <string name="Recording volume">Recording volume</string>
@@ -55,6 +56,7 @@
     <string name="link">link</string>
     <string name="voice">voice</string>
     <string name="reverse">reverse</string>
+    <string name="factory">factory</string>
     <string name="system">system</string>
     <string name="more">more</string>
     <string name="Camera parameters">Camera parameters</string>
@@ -169,4 +171,13 @@ function</string>
 	<string name="Lylink is auto">Lylink is auto</string>
 	<string name="Specifies whether to go to the MCU upgrade page">Specifies whether to go to the MCU upgrade page</string>
 	<string name="No signal">No signal</string>
+	<string name="PM">PM</string>
+	<string name="AM">AM</string>
+	<string name="Audio output from the speaker">Audio output from the speaker</string>
+	<string name="auxtips">Audio output from AUX</string>
+	<string name="Carplay/Auto audio is output from your phone's Bluetooth">Carplay/Auto audio is output from your phone's Bluetooth</string>
+	<string name="Do you want to delete the contact?">Do you want to delete the contact?</string>
+	<string name="This image is not supported for display!">This image is not supported for display!</string>
+	<string name="No files">No files</string>
+	<string name="Display parameter adjustment">Display parameter adjustment</string>
 </resources>

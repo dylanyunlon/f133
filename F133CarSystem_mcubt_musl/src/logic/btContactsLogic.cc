@@ -79,7 +79,15 @@ static void _bt_remove_cb() {
 	bt::remove_cb(&_s_bt_cb);
 }
 
-
+static void _textview_touchpass(bool pass) {
+	mTextView1Ptr->setTouchPass(pass);
+	mTextView2Ptr->setTouchPass(pass);
+	mTextView16Ptr->setTouchPass(pass);
+	mTextView17Ptr->setTouchPass(pass);
+	mTextView18Ptr->setTouchPass(pass);
+	mTextView19Ptr->setTouchPass(pass);
+	mTextView20Ptr->setTouchPass(pass);
+}
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -114,7 +122,7 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
-
+	_textview_touchpass(true);
 }
 
 /*
@@ -231,30 +239,6 @@ static void onListItemClick_charJump(ZKListView *pListView, int index, int id) {
 
 }
 
-static bool onButtonClick_btDialButton(ZKButton *pButton) {
-    LOGD(" ButtonClick btDialButton !!!\n");
-    EASYUICONTEXT->openActivity("btDialActivity");
-    EASYUICONTEXT->closeActivity("btRecordsActivity");
-    EASYUICONTEXT->closeActivity("btContactsActivity");
-    return false;
-}
-
-static bool onButtonClick_btRecordsButton(ZKButton *pButton) {
-    LOGD(" ButtonClick btRecordsButton !!!\n");
-    EASYUICONTEXT->closeActivity("btDialActivity");
-    EASYUICONTEXT->openActivity("btRecordsActivity");
-    EASYUICONTEXT->closeActivity("btContactsActivity");
-    return false;
-}
-
-static bool onButtonClick_btContactsButton(ZKButton *pButton) {
-    LOGD(" ButtonClick btContactsButton !!!\n");
-    EASYUICONTEXT->closeActivity("btDialActivity");
-    EASYUICONTEXT->closeActivity("btRecordsActivity");
-    return false;
-}
-
-
 static bool onButtonClick_downloadButton(ZKButton *pButton) {
     LOGD(" ButtonClick downloadButton !!!\n");
     bt::download_phone_book();
@@ -280,4 +264,70 @@ static void onProgressChanged_charSeekBar(ZKSeekBar *pSeekBar, int progress) {
 	}
 	mindexTipPtr->setVisible(true);
 	mcharJumpPtr->refreshListView();
+}
+static bool onButtonClick_deleteButton(ZKButton *pButton) {
+    LOGD(" ButtonClick deleteButton !!!\n");
+    if (bt::get_contact_size() == 0) {
+    	return false;
+    }
+    mDeleteTipsWindowPtr->showWnd();
+    return false;
+}
+
+static bool onButtonClick_queryMusicButton(ZKButton *pButton) {
+    LOGD(" ButtonClick queryMusicButton !!!\n");
+    EASYUICONTEXT->openActivity("btMusicActivity");
+    EASYUICONTEXT->closeActivity("btRecordsActivity");
+    EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btDialActivity");
+    return false;
+}
+
+static bool onButtonClick_phoneButton(ZKButton *pButton) {
+    LOGD(" ButtonClick phoneButton !!!\n");
+    EASYUICONTEXT->openActivity("btDialActivity");
+    EASYUICONTEXT->closeActivity("btRecordsActivity");
+    EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
+    return false;
+}
+
+static bool onButtonClick_btrecordButton(ZKButton *pButton) {
+    LOGD(" ButtonClick btrecordButton !!!\n");
+    EASYUICONTEXT->closeActivity("btDialActivity");
+    EASYUICONTEXT->openActivity("btRecordsActivity");
+    EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
+    return false;
+}
+
+static bool onButtonClick_btcontactsButton(ZKButton *pButton) {
+    LOGD(" ButtonClick btcontactsButton !!!\n");
+    EASYUICONTEXT->closeActivity("btDialActivity");
+    EASYUICONTEXT->closeActivity("btRecordsActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
+    return false;
+}
+
+static bool onButtonClick_btsettingButton(ZKButton *pButton) {
+    LOGD(" ButtonClick btsettingButton !!!\n");
+    EASYUICONTEXT->openActivity("btsettingActivity");
+    EASYUICONTEXT->closeActivity("btRecordsActivity");
+    EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btDialActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
+    return false;
+}
+static bool onButtonClick_cancelButton(ZKButton *pButton) {
+    LOGD(" ButtonClick cancelButton !!!\n");
+    mDeleteTipsWindowPtr->hideWnd();
+    return false;
+}
+
+static bool onButtonClick_sureButton(ZKButton *pButton) {
+    LOGD(" ButtonClick sureButton !!!\n");
+    bt::delete_phone_book();
+    mcontactsListViewPtr->refreshListView();
+    mDeleteTipsWindowPtr->hideWnd();
+    return false;
 }

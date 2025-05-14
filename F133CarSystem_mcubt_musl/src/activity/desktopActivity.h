@@ -27,6 +27,7 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_DESKTOP_TextView1    50002
 #define ID_DESKTOP_appSlideWindow    30001
 #define ID_DESKTOP_TextView3    50006
 #define ID_DESKTOP_Window1    110005
@@ -34,7 +35,6 @@
 #define ID_DESKTOP_TextView6    50013
 #define ID_DESKTOP_Window5    110011
 #define ID_DESKTOP_linkTipsWindow    110010
-#define ID_DESKTOP_DigitalClock2    93002
 #define ID_DESKTOP_soundButton    20034
 #define ID_DESKTOP_NetButton    20033
 #define ID_DESKTOP_btStatusButton    20032

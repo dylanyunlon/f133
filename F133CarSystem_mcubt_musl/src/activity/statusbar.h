@@ -21,6 +21,7 @@
 #include "control/ZKVideoView.h"
 #include "window/ZKSlideWindow.h"
 /*TAG:Macro宏ID*/
+#define ID_STATUSBAR_numTextView    50001
 #define ID_STATUSBAR_answerButton    20002
 #define ID_STATUSBAR_nameTextViewButton    20003
 #define ID_STATUSBAR_rejectButton    20004

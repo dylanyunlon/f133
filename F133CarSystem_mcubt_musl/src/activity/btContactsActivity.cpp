@@ -4,20 +4,34 @@
 #include "btContactsActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTipsTextViewPtr;
+static ZKWindow* mDeleteTipsWindowPtr;
+static ZKButton* msureButtonPtr;
+static ZKButton* mcancelButtonPtr;
+static ZKTextView* mnumberTextViewPtr;
+static ZKTextView* mTextView20Ptr;
+static ZKTextView* mTextView19Ptr;
+static ZKTextView* mTextView18Ptr;
+static ZKTextView* mTextView17Ptr;
+static ZKTextView* mTextView16Ptr;
+static ZKTextView* mTextView15Ptr;
+static ZKButton* mbtsettingButtonPtr;
+static ZKButton* mbtcontactsButtonPtr;
+static ZKButton* mbtrecordButtonPtr;
+static ZKButton* mphoneButtonPtr;
+static ZKButton* mqueryMusicButtonPtr;
+static ZKWindow* mbtAppWindowPtr;
+static ZKTextView* mTextView1Ptr;
+static ZKButton* mdeleteButtonPtr;
+static ZKTextView* mTextView2Ptr;
 static ZKPointer* msyncPointerPtr;
 static ZKTextView* mscaningTextViewPtr;
 static ZKWindow* mscaningWindowPtr;
 static ZKSeekBar* mcharSeekBarPtr;
-static ZKButton* mbtRecordsButtonPtr;
-static ZKButton* mbtContactsButtonPtr;
-static ZKButton* mbtDialButtonPtr;
 static ZKButton* mdownloadButtonPtr;
 static ZKListView* mcontactsListViewPtr;
 static ZKListView* mcharJumpPtr;
 static ZKTextView* mindexTipPtr;
-static ZKTextView* msortTipsTextViewPtr;
-static ZKWindow* msortTipsWindowPtr;
-static ZKButton* msys_backPtr;
 static btContactsActivity* mActivityPtr;
 
 /*register activity*/
@@ -55,11 +69,15 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
-    ID_BTCONTACTS_btRecordsButton, onButtonClick_btRecordsButton,
-    ID_BTCONTACTS_btContactsButton, onButtonClick_btContactsButton,
-    ID_BTCONTACTS_btDialButton, onButtonClick_btDialButton,
+    ID_BTCONTACTS_sureButton, onButtonClick_sureButton,
+    ID_BTCONTACTS_cancelButton, onButtonClick_cancelButton,
+    ID_BTCONTACTS_btsettingButton, onButtonClick_btsettingButton,
+    ID_BTCONTACTS_btcontactsButton, onButtonClick_btcontactsButton,
+    ID_BTCONTACTS_btrecordButton, onButtonClick_btrecordButton,
+    ID_BTCONTACTS_phoneButton, onButtonClick_phoneButton,
+    ID_BTCONTACTS_queryMusicButton, onButtonClick_queryMusicButton,
+    ID_BTCONTACTS_deleteButton, onButtonClick_deleteButton,
     ID_BTCONTACTS_downloadButton, onButtonClick_downloadButton,
-    ID_BTCONTACTS_sys_back, onButtonClick_sys_back,
 };
 /***************/
 
@@ -135,20 +153,34 @@ btContactsActivity::~btContactsActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    mTipsTextViewPtr = NULL;
+    mDeleteTipsWindowPtr = NULL;
+    msureButtonPtr = NULL;
+    mcancelButtonPtr = NULL;
+    mnumberTextViewPtr = NULL;
+    mTextView20Ptr = NULL;
+    mTextView19Ptr = NULL;
+    mTextView18Ptr = NULL;
+    mTextView17Ptr = NULL;
+    mTextView16Ptr = NULL;
+    mTextView15Ptr = NULL;
+    mbtsettingButtonPtr = NULL;
+    mbtcontactsButtonPtr = NULL;
+    mbtrecordButtonPtr = NULL;
+    mphoneButtonPtr = NULL;
+    mqueryMusicButtonPtr = NULL;
+    mbtAppWindowPtr = NULL;
+    mTextView1Ptr = NULL;
+    mdeleteButtonPtr = NULL;
+    mTextView2Ptr = NULL;
     msyncPointerPtr = NULL;
     mscaningTextViewPtr = NULL;
     mscaningWindowPtr = NULL;
     mcharSeekBarPtr = NULL;
-    mbtRecordsButtonPtr = NULL;
-    mbtContactsButtonPtr = NULL;
-    mbtDialButtonPtr = NULL;
     mdownloadButtonPtr = NULL;
     mcontactsListViewPtr = NULL;
     mcharJumpPtr = NULL;
     mindexTipPtr = NULL;
-    msortTipsTextViewPtr = NULL;
-    msortTipsWindowPtr = NULL;
-    msys_backPtr = NULL;
 }
 
 const char* btContactsActivity::getAppName() const{
@@ -158,20 +190,34 @@ const char* btContactsActivity::getAppName() const{
 //TAG:onCreate
 void btContactsActivity::onCreate() {
 	Activity::onCreate();
+    mTipsTextViewPtr = (ZKTextView*)findControlByID(ID_BTCONTACTS_TipsTextView);
+    mDeleteTipsWindowPtr = (ZKWindow*)findControlByID(ID_BTCONTACTS_DeleteTipsWindow);
+    msureButtonPtr = (ZKButton*)findControlByID(ID_BTCONTACTS_sureButton);
+    mcancelButtonPtr = (ZKButton*)findControlByID(ID_BTCONTACTS_cancelButton);
+    mnumberTextViewPtr = (ZKTextView*)findControlByID(ID_BTCONTACTS_numberTextView);
+    mTextView20Ptr = (ZKTextView*)findControlByID(ID_BTCONTACTS_TextView20);
+    mTextView19Ptr = (ZKTextView*)findControlByID(ID_BTCONTACTS_TextView19);
+    mTextView18Ptr = (ZKTextView*)findControlByID(ID_BTCONTACTS_TextView18);
+    mTextView17Ptr = (ZKTextView*)findControlByID(ID_BTCONTACTS_TextView17);
+    mTextView16Ptr = (ZKTextView*)findControlByID(ID_BTCONTACTS_TextView16);
+    mTextView15Ptr = (ZKTextView*)findControlByID(ID_BTCONTACTS_TextView15);
+    mbtsettingButtonPtr = (ZKButton*)findControlByID(ID_BTCONTACTS_btsettingButton);
+    mbtcontactsButtonPtr = (ZKButton*)findControlByID(ID_BTCONTACTS_btcontactsButton);
+    mbtrecordButtonPtr = (ZKButton*)findControlByID(ID_BTCONTACTS_btrecordButton);
+    mphoneButtonPtr = (ZKButton*)findControlByID(ID_BTCONTACTS_phoneButton);
+    mqueryMusicButtonPtr = (ZKButton*)findControlByID(ID_BTCONTACTS_queryMusicButton);
+    mbtAppWindowPtr = (ZKWindow*)findControlByID(ID_BTCONTACTS_btAppWindow);
+    mTextView1Ptr = (ZKTextView*)findControlByID(ID_BTCONTACTS_TextView1);
+    mdeleteButtonPtr = (ZKButton*)findControlByID(ID_BTCONTACTS_deleteButton);
+    mTextView2Ptr = (ZKTextView*)findControlByID(ID_BTCONTACTS_TextView2);
     msyncPointerPtr = (ZKPointer*)findControlByID(ID_BTCONTACTS_syncPointer);
     mscaningTextViewPtr = (ZKTextView*)findControlByID(ID_BTCONTACTS_scaningTextView);
     mscaningWindowPtr = (ZKWindow*)findControlByID(ID_BTCONTACTS_scaningWindow);
     mcharSeekBarPtr = (ZKSeekBar*)findControlByID(ID_BTCONTACTS_charSeekBar);if(mcharSeekBarPtr!= NULL){mcharSeekBarPtr->setSeekBarChangeListener(this);}
-    mbtRecordsButtonPtr = (ZKButton*)findControlByID(ID_BTCONTACTS_btRecordsButton);
-    mbtContactsButtonPtr = (ZKButton*)findControlByID(ID_BTCONTACTS_btContactsButton);
-    mbtDialButtonPtr = (ZKButton*)findControlByID(ID_BTCONTACTS_btDialButton);
     mdownloadButtonPtr = (ZKButton*)findControlByID(ID_BTCONTACTS_downloadButton);
     mcontactsListViewPtr = (ZKListView*)findControlByID(ID_BTCONTACTS_contactsListView);if(mcontactsListViewPtr!= NULL){mcontactsListViewPtr->setListAdapter(this);mcontactsListViewPtr->setItemClickListener(this);}
     mcharJumpPtr = (ZKListView*)findControlByID(ID_BTCONTACTS_charJump);if(mcharJumpPtr!= NULL){mcharJumpPtr->setListAdapter(this);mcharJumpPtr->setItemClickListener(this);}
     mindexTipPtr = (ZKTextView*)findControlByID(ID_BTCONTACTS_indexTip);
-    msortTipsTextViewPtr = (ZKTextView*)findControlByID(ID_BTCONTACTS_sortTipsTextView);
-    msortTipsWindowPtr = (ZKWindow*)findControlByID(ID_BTCONTACTS_sortTipsWindow);
-    msys_backPtr = (ZKButton*)findControlByID(ID_BTCONTACTS_sys_back);
 	mActivityPtr = this;
 	onUI_init();
   registerProtocolDataUpdateListener(onProtocolDataUpdate);

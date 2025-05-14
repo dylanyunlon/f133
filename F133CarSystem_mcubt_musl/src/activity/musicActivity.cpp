@@ -4,9 +4,15 @@
 #include "musicActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextView7Ptr;
+static ZKTextView* mTextView5Ptr;
+static ZKTextView* mTextView6Ptr;
+static ZKTextView* mTextView3Ptr;
+static ZKTextView* mTextView4Ptr;
+static ZKTextView* mTextView2Ptr;
+static ZKTextView* mTextView1Ptr;
 static ZKTextView* merrorTextViewPtr;
 static ZKWindow* merrorWindowPtr;
-static ZKButton* mPlayModePtr;
 static ZKTextView* mTextViewPtr;
 static ZKTextView* mpicTextViewPtr;
 static ZKTextView* malbumTextViewPtr;
@@ -30,7 +36,6 @@ static ZKListView* mmusicListViewPtr;
 static ZKButton* mUSB2ButtonPtr;
 static ZKButton* mUSB1ButtonPtr;
 static ZKButton* mSDButtonPtr;
-static ZKButton* msys_backPtr;
 static musicActivity* mActivityPtr;
 
 /*register activity*/
@@ -68,7 +73,6 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
-    ID_MUSIC_PlayMode, onButtonClick_PlayMode,
     ID_MUSIC_NextButton, onButtonClick_NextButton,
     ID_MUSIC_ButtonPlay, onButtonClick_ButtonPlay,
     ID_MUSIC_PrevButton, onButtonClick_PrevButton,
@@ -79,7 +83,6 @@ static S_ButtonCallback sButtonCallbackTab[] = {
     ID_MUSIC_USB2Button, onButtonClick_USB2Button,
     ID_MUSIC_USB1Button, onButtonClick_USB1Button,
     ID_MUSIC_SDButton, onButtonClick_SDButton,
-    ID_MUSIC_sys_back, onButtonClick_sys_back,
 };
 /***************/
 
@@ -154,9 +157,15 @@ musicActivity::~musicActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    mTextView7Ptr = NULL;
+    mTextView5Ptr = NULL;
+    mTextView6Ptr = NULL;
+    mTextView3Ptr = NULL;
+    mTextView4Ptr = NULL;
+    mTextView2Ptr = NULL;
+    mTextView1Ptr = NULL;
     merrorTextViewPtr = NULL;
     merrorWindowPtr = NULL;
-    mPlayModePtr = NULL;
     mpicTextViewPtr = NULL;
     malbumTextViewPtr = NULL;
     martistTextViewPtr = NULL;
@@ -179,7 +188,6 @@ musicActivity::~musicActivity() {
     mUSB2ButtonPtr = NULL;
     mUSB1ButtonPtr = NULL;
     mSDButtonPtr = NULL;
-    msys_backPtr = NULL;
 }
 
 const char* musicActivity::getAppName() const{
@@ -189,9 +197,15 @@ const char* musicActivity::getAppName() const{
 //TAG:onCreate
 void musicActivity::onCreate() {
 	Activity::onCreate();
+    mTextView7Ptr = (ZKTextView*)findControlByID(ID_MUSIC_TextView7);
+    mTextView5Ptr = (ZKTextView*)findControlByID(ID_MUSIC_TextView5);
+    mTextView6Ptr = (ZKTextView*)findControlByID(ID_MUSIC_TextView6);
+    mTextView3Ptr = (ZKTextView*)findControlByID(ID_MUSIC_TextView3);
+    mTextView4Ptr = (ZKTextView*)findControlByID(ID_MUSIC_TextView4);
+    mTextView2Ptr = (ZKTextView*)findControlByID(ID_MUSIC_TextView2);
+    mTextView1Ptr = (ZKTextView*)findControlByID(ID_MUSIC_TextView1);
     merrorTextViewPtr = (ZKTextView*)findControlByID(ID_MUSIC_errorTextView);
     merrorWindowPtr = (ZKWindow*)findControlByID(ID_MUSIC_errorWindow);
-    mPlayModePtr = (ZKButton*)findControlByID(ID_MUSIC_PlayMode);
     mTextViewPtr = (ZKTextView*)findControlByID(ID_MUSIC_TextView);
     mpicTextViewPtr = (ZKTextView*)findControlByID(ID_MUSIC_picTextView);
     malbumTextViewPtr = (ZKTextView*)findControlByID(ID_MUSIC_albumTextView);
@@ -215,7 +229,6 @@ void musicActivity::onCreate() {
     mUSB2ButtonPtr = (ZKButton*)findControlByID(ID_MUSIC_USB2Button);
     mUSB1ButtonPtr = (ZKButton*)findControlByID(ID_MUSIC_USB1Button);
     mSDButtonPtr = (ZKButton*)findControlByID(ID_MUSIC_SDButton);
-    msys_backPtr = (ZKButton*)findControlByID(ID_MUSIC_sys_back);
 	mActivityPtr = this;
 	onUI_init();
   registerProtocolDataUpdateListener(onProtocolDataUpdate);

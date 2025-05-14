@@ -76,28 +76,35 @@ static void _confirm_link_mode(link_mode_e mode) {
 
 static void _select_link_mode(link_mode_e mode) {
 	LOGD("get choose id = %s", sys::setting::get_link_mode_str(mode));
+	net_mode_e set_mode = E_NET_MODE_NULL;
 	switch (mode) {
 	case E_LINK_MODE_ANDROIDAUTO:
 		maaWindowPtr->showWnd();
+		set_mode = E_NET_MODE_AP;
 		break;
 	case E_LINK_MODE_AIRPLAY:
 		mapWindowPtr->showWnd();
+		set_mode = E_NET_MODE_AP;
 		break;
 	case E_LINK_MODE_CARLIFE:
 		mcfWindowPtr->showWnd();
+		set_mode = E_NET_MODE_WIFI;
 		break;
 	case E_LINK_MODE_MIRACAST:
 		mmcWindowPtr->showWnd();
+		set_mode = E_NET_MODE_P2P;
 		break;
 	case E_LINK_MODE_LYLINK:
 		macWindowPtr->showWnd();
+		set_mode = E_NET_MODE_P2P;
 		break;
 	case E_LINK_MODE_CARPLAY:
 	default:
 		mcpWindowPtr->showWnd();
+		set_mode = E_NET_MODE_AP;
 		break;
 	}
-	if(sys::setting::get_link_mode() == mode && lk::is_lylink_started()){
+	if((sys::setting::get_link_mode() == mode) && (net::get_mode() == set_mode)){
 		return;
 	}
 	_confirm_link_mode(mode);
@@ -107,42 +114,35 @@ static void _update_layout() {
 	std::string bt_name = sys::setting::get_bt_name();
 	std::string dev_name = sys::setting::get_dev_name();
 
-	std::string cpStep = LTOV("cp_help") + "\n\n"
-					   +LTOV("cp_step1") + "\n"
+	std::string cpStep = LTOV("cp_step1") + "\n"
 					   + bt_name + "\n\n"
 					   + LTOV("cp_step2");
 
-	std::string aaStep = LTOV("aa_help") + "\n\n"
-					   +LTOV("aa_step1") +  "\n\n"
+	std::string aaStep = LTOV("aa_step1") +  "\n\n"
 					   + LTOV("aa_step2") + "\n"
 					   + bt_name;
 
-	std::string apStep = LTOV("ap_help") + "\n\n"
-					   +LTOV("ap_step1") + "\n" + dev_name + "\n\n"
+	std::string apStep = LTOV("ap_step1") + "\n" + dev_name + "\n\n"
 					   + LTOV("ap_step2") + std::string("12345678") + "\n\n"
 					   + LTOV("ap_step3") + "\n" + dev_name;
 
-	std::string mcStep = LTOV("mc_help") + "\n\n"
-					   +LTOV("mc_step1") +  "\n\n"
+	std::string mcStep = LTOV("mc_step1") +  "\n\n"
 					   + LTOV("mc_step2") +  "\n\n"
 					   + LTOV("mc_step3") + dev_name;
 
-	std::string acStep = LTOV("ac_help") + "\n\n"
-					   +LTOV("ac_step1") +  "\n\n"
+	std::string acStep = LTOV("ac_step1") +  "\n\n"
 					   + LTOV("ac_step2") +  "\n\n"
 					   + LTOV("ac_step3") + dev_name;
-
-	std::string clStep =  LTOV("cl_help") + "\n\n"
-						+LTOV("cl_step1") + "\n\n"
-						+ LTOV("cl_step2") + "\n\n"
-						+ LTOV("cl_step3") + "\n\n"
-						+ LTOV("cl_step4");
+	mcpTipTextViewPtr->setText(LTOV("cp_help"));
 	mcpStepTextViewPtr->setText(cpStep);
+	maaTipTextViewPtr->setText(LTOV("aa_help"));
 	maaStepTextViewPtr->setText(aaStep);
+	mapTipTextViewPtr->setText(LTOV("ap_help"));
 	mapStepTextViewPtr->setText(apStep);
+	mmcTipTextViewPtr->setText(LTOV("mc_help"));
 	mmcStepTextViewPtr->setText(mcStep);
+	macTipTextViewPtr->setText(LTOV("ac_help"));
 	macStepTextViewPtr->setText(acStep);
-	mclStepTextViewPtr->setText(clStep);
 }
 
 /**

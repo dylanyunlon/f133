@@ -4,6 +4,22 @@
 #include "btMusicActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextView2Ptr;
+static ZKTextView* mTextView14Ptr;
+static ZKWindow* mbtTipsWindowPtr;
+static ZKTextView* mTextView1Ptr;
+static ZKTextView* mTextView20Ptr;
+static ZKTextView* mTextView19Ptr;
+static ZKTextView* mTextView18Ptr;
+static ZKTextView* mTextView17Ptr;
+static ZKTextView* mTextView16Ptr;
+static ZKTextView* mTextView15Ptr;
+static ZKButton* mbtsettingButtonPtr;
+static ZKButton* mbtcontactsButtonPtr;
+static ZKButton* mbtrecordButtonPtr;
+static ZKButton* mphoneButtonPtr;
+static ZKButton* mqueryMusicButtonPtr;
+static ZKWindow* mbtAppWindowPtr;
 static ZKTextView* mtittleTextViewPtr;
 static ZKTextView* martistTextViewPtr;
 static ZKTextView* malbumTextViewPtr;
@@ -15,7 +31,6 @@ static ZKButton* mprevButtonPtr;
 static ZKButton* mplayButtonPtr;
 static ZKSeekBar* mmusicSeekBarPtr;
 static ZKTextView* mlyricTextViewPtr;
-static ZKButton* msys_backPtr;
 static btMusicActivity* mActivityPtr;
 
 /*register activity*/
@@ -53,10 +68,14 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_BTMUSIC_btsettingButton, onButtonClick_btsettingButton,
+    ID_BTMUSIC_btcontactsButton, onButtonClick_btcontactsButton,
+    ID_BTMUSIC_btrecordButton, onButtonClick_btrecordButton,
+    ID_BTMUSIC_phoneButton, onButtonClick_phoneButton,
+    ID_BTMUSIC_queryMusicButton, onButtonClick_queryMusicButton,
     ID_BTMUSIC_nextButton, onButtonClick_nextButton,
     ID_BTMUSIC_prevButton, onButtonClick_prevButton,
     ID_BTMUSIC_playButton, onButtonClick_playButton,
-    ID_BTMUSIC_sys_back, onButtonClick_sys_back,
 };
 /***************/
 
@@ -130,6 +149,22 @@ btMusicActivity::~btMusicActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    mTextView2Ptr = NULL;
+    mTextView14Ptr = NULL;
+    mbtTipsWindowPtr = NULL;
+    mTextView1Ptr = NULL;
+    mTextView20Ptr = NULL;
+    mTextView19Ptr = NULL;
+    mTextView18Ptr = NULL;
+    mTextView17Ptr = NULL;
+    mTextView16Ptr = NULL;
+    mTextView15Ptr = NULL;
+    mbtsettingButtonPtr = NULL;
+    mbtcontactsButtonPtr = NULL;
+    mbtrecordButtonPtr = NULL;
+    mphoneButtonPtr = NULL;
+    mqueryMusicButtonPtr = NULL;
+    mbtAppWindowPtr = NULL;
     mtittleTextViewPtr = NULL;
     martistTextViewPtr = NULL;
     malbumTextViewPtr = NULL;
@@ -141,7 +176,6 @@ btMusicActivity::~btMusicActivity() {
     mplayButtonPtr = NULL;
     mmusicSeekBarPtr = NULL;
     mlyricTextViewPtr = NULL;
-    msys_backPtr = NULL;
 }
 
 const char* btMusicActivity::getAppName() const{
@@ -151,6 +185,22 @@ const char* btMusicActivity::getAppName() const{
 //TAG:onCreate
 void btMusicActivity::onCreate() {
 	Activity::onCreate();
+    mTextView2Ptr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextView2);
+    mTextView14Ptr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextView14);
+    mbtTipsWindowPtr = (ZKWindow*)findControlByID(ID_BTMUSIC_btTipsWindow);
+    mTextView1Ptr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextView1);
+    mTextView20Ptr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextView20);
+    mTextView19Ptr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextView19);
+    mTextView18Ptr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextView18);
+    mTextView17Ptr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextView17);
+    mTextView16Ptr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextView16);
+    mTextView15Ptr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextView15);
+    mbtsettingButtonPtr = (ZKButton*)findControlByID(ID_BTMUSIC_btsettingButton);
+    mbtcontactsButtonPtr = (ZKButton*)findControlByID(ID_BTMUSIC_btcontactsButton);
+    mbtrecordButtonPtr = (ZKButton*)findControlByID(ID_BTMUSIC_btrecordButton);
+    mphoneButtonPtr = (ZKButton*)findControlByID(ID_BTMUSIC_phoneButton);
+    mqueryMusicButtonPtr = (ZKButton*)findControlByID(ID_BTMUSIC_queryMusicButton);
+    mbtAppWindowPtr = (ZKWindow*)findControlByID(ID_BTMUSIC_btAppWindow);
     mtittleTextViewPtr = (ZKTextView*)findControlByID(ID_BTMUSIC_tittleTextView);
     martistTextViewPtr = (ZKTextView*)findControlByID(ID_BTMUSIC_artistTextView);
     malbumTextViewPtr = (ZKTextView*)findControlByID(ID_BTMUSIC_albumTextView);
@@ -162,7 +212,6 @@ void btMusicActivity::onCreate() {
     mplayButtonPtr = (ZKButton*)findControlByID(ID_BTMUSIC_playButton);
     mmusicSeekBarPtr = (ZKSeekBar*)findControlByID(ID_BTMUSIC_musicSeekBar);if(mmusicSeekBarPtr!= NULL){mmusicSeekBarPtr->setSeekBarChangeListener(this);}
     mlyricTextViewPtr = (ZKTextView*)findControlByID(ID_BTMUSIC_lyricTextView);
-    msys_backPtr = (ZKButton*)findControlByID(ID_BTMUSIC_sys_back);
 	mActivityPtr = this;
 	onUI_init();
   registerProtocolDataUpdateListener(onProtocolDataUpdate);

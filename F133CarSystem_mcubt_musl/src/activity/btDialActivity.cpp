@@ -4,9 +4,20 @@
 #include "btDialActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
-static ZKButton* mbtDialButtonPtr;
-static ZKButton* mbtRecordsButtonPtr;
-static ZKButton* mbtContactsButtonPtr;
+static ZKTextView* mTextView20Ptr;
+static ZKTextView* mTextView19Ptr;
+static ZKTextView* mTextView18Ptr;
+static ZKTextView* mTextView17Ptr;
+static ZKTextView* mTextView16Ptr;
+static ZKTextView* mTextView15Ptr;
+static ZKButton* mbtsettingButtonPtr;
+static ZKButton* mbtcontactsButtonPtr;
+static ZKButton* mbtrecordButtonPtr;
+static ZKButton* mphoneButtonPtr;
+static ZKButton* mqueryMusicButtonPtr;
+static ZKWindow* mbtAppWindowPtr;
+static ZKTextView* mTextView6Ptr;
+static ZKWindow* mLongTipsWindowPtr;
 static ZKButton* mdelButtonPtr;
 static ZKButton* mkeyXINGButtonPtr;
 static ZKButton* mkeyJINGButtonPtr;
@@ -23,7 +34,6 @@ static ZKButton* mkey1ButtonPtr;
 static ZKButton* mdialButtonPtr;
 static ZKTextView* mnumTextViewPtr;
 static ZKWindow* mdialWindowPtr;
-static ZKButton* msys_backPtr;
 static btDialActivity* mActivityPtr;
 
 /*register activity*/
@@ -61,9 +71,11 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
-    ID_BTDIAL_btDialButton, onButtonClick_btDialButton,
-    ID_BTDIAL_btRecordsButton, onButtonClick_btRecordsButton,
-    ID_BTDIAL_btContactsButton, onButtonClick_btContactsButton,
+    ID_BTDIAL_btsettingButton, onButtonClick_btsettingButton,
+    ID_BTDIAL_btcontactsButton, onButtonClick_btcontactsButton,
+    ID_BTDIAL_btrecordButton, onButtonClick_btrecordButton,
+    ID_BTDIAL_phoneButton, onButtonClick_phoneButton,
+    ID_BTDIAL_queryMusicButton, onButtonClick_queryMusicButton,
     ID_BTDIAL_delButton, onButtonClick_delButton,
     ID_BTDIAL_keyXINGButton, onButtonClick_keyXINGButton,
     ID_BTDIAL_keyJINGButton, onButtonClick_keyJINGButton,
@@ -78,7 +90,6 @@ static S_ButtonCallback sButtonCallbackTab[] = {
     ID_BTDIAL_key2Button, onButtonClick_key2Button,
     ID_BTDIAL_key1Button, onButtonClick_key1Button,
     ID_BTDIAL_dialButton, onButtonClick_dialButton,
-    ID_BTDIAL_sys_back, onButtonClick_sys_back,
 };
 /***************/
 
@@ -151,9 +162,20 @@ btDialActivity::~btDialActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
-    mbtDialButtonPtr = NULL;
-    mbtRecordsButtonPtr = NULL;
-    mbtContactsButtonPtr = NULL;
+    mTextView20Ptr = NULL;
+    mTextView19Ptr = NULL;
+    mTextView18Ptr = NULL;
+    mTextView17Ptr = NULL;
+    mTextView16Ptr = NULL;
+    mTextView15Ptr = NULL;
+    mbtsettingButtonPtr = NULL;
+    mbtcontactsButtonPtr = NULL;
+    mbtrecordButtonPtr = NULL;
+    mphoneButtonPtr = NULL;
+    mqueryMusicButtonPtr = NULL;
+    mbtAppWindowPtr = NULL;
+    mTextView6Ptr = NULL;
+    mLongTipsWindowPtr = NULL;
     mdelButtonPtr = NULL;
     mkeyXINGButtonPtr = NULL;
     mkeyJINGButtonPtr = NULL;
@@ -170,7 +192,6 @@ btDialActivity::~btDialActivity() {
     mdialButtonPtr = NULL;
     mnumTextViewPtr = NULL;
     mdialWindowPtr = NULL;
-    msys_backPtr = NULL;
 }
 
 const char* btDialActivity::getAppName() const{
@@ -180,9 +201,20 @@ const char* btDialActivity::getAppName() const{
 //TAG:onCreate
 void btDialActivity::onCreate() {
 	Activity::onCreate();
-    mbtDialButtonPtr = (ZKButton*)findControlByID(ID_BTDIAL_btDialButton);
-    mbtRecordsButtonPtr = (ZKButton*)findControlByID(ID_BTDIAL_btRecordsButton);
-    mbtContactsButtonPtr = (ZKButton*)findControlByID(ID_BTDIAL_btContactsButton);
+    mTextView20Ptr = (ZKTextView*)findControlByID(ID_BTDIAL_TextView20);
+    mTextView19Ptr = (ZKTextView*)findControlByID(ID_BTDIAL_TextView19);
+    mTextView18Ptr = (ZKTextView*)findControlByID(ID_BTDIAL_TextView18);
+    mTextView17Ptr = (ZKTextView*)findControlByID(ID_BTDIAL_TextView17);
+    mTextView16Ptr = (ZKTextView*)findControlByID(ID_BTDIAL_TextView16);
+    mTextView15Ptr = (ZKTextView*)findControlByID(ID_BTDIAL_TextView15);
+    mbtsettingButtonPtr = (ZKButton*)findControlByID(ID_BTDIAL_btsettingButton);
+    mbtcontactsButtonPtr = (ZKButton*)findControlByID(ID_BTDIAL_btcontactsButton);
+    mbtrecordButtonPtr = (ZKButton*)findControlByID(ID_BTDIAL_btrecordButton);
+    mphoneButtonPtr = (ZKButton*)findControlByID(ID_BTDIAL_phoneButton);
+    mqueryMusicButtonPtr = (ZKButton*)findControlByID(ID_BTDIAL_queryMusicButton);
+    mbtAppWindowPtr = (ZKWindow*)findControlByID(ID_BTDIAL_btAppWindow);
+    mTextView6Ptr = (ZKTextView*)findControlByID(ID_BTDIAL_TextView6);
+    mLongTipsWindowPtr = (ZKWindow*)findControlByID(ID_BTDIAL_LongTipsWindow);
     mdelButtonPtr = (ZKButton*)findControlByID(ID_BTDIAL_delButton);
     mkeyXINGButtonPtr = (ZKButton*)findControlByID(ID_BTDIAL_keyXINGButton);
     mkeyJINGButtonPtr = (ZKButton*)findControlByID(ID_BTDIAL_keyJINGButton);
@@ -199,7 +231,6 @@ void btDialActivity::onCreate() {
     mdialButtonPtr = (ZKButton*)findControlByID(ID_BTDIAL_dialButton);
     mnumTextViewPtr = (ZKTextView*)findControlByID(ID_BTDIAL_numTextView);
     mdialWindowPtr = (ZKWindow*)findControlByID(ID_BTDIAL_dialWindow);
-    msys_backPtr = (ZKButton*)findControlByID(ID_BTDIAL_sys_back);
 	mActivityPtr = this;
 	onUI_init();
   registerProtocolDataUpdateListener(onProtocolDataUpdate);

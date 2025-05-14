@@ -4,8 +4,11 @@
 #include "videoActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
-static ZKTextView* mTipTextViewPtr;
-static ZKWindow* mTipWindowPtr;
+static ZKTextView* mTextView5Ptr;
+static ZKTextView* mTextView2Ptr;
+static ZKTextView* mTextView3Ptr;
+static ZKTextView* mTextView1Ptr;
+static ZKTextView* mTextView4Ptr;
 static ZKTextView* merrorTextViewPtr;
 static ZKWindow* merrorWindowPtr;
 static ZKButton* mNextButtonPtr;
@@ -28,7 +31,6 @@ static ZKWindow* mvideoPlayWindowPtr;
 static ZKPointer* msyncPointerPtr;
 static ZKTextView* mscaningTextViewPtr;
 static ZKWindow* mscaningWindowPtr;
-static ZKButton* msys_backPtr;
 static ZKButton* mUSB2ButtonPtr;
 static ZKListView* mvideoListViewPtr;
 static ZKButton* mUSB1ButtonPtr;
@@ -79,7 +81,6 @@ static S_ButtonCallback sButtonCallbackTab[] = {
     ID_VIDEO_backButton, onButtonClick_backButton,
     ID_VIDEO_hideButton, onButtonClick_hideButton,
     ID_VIDEO_VideoCtrlButton, onButtonClick_VideoCtrlButton,
-    ID_VIDEO_sys_back, onButtonClick_sys_back,
     ID_VIDEO_USB2Button, onButtonClick_USB2Button,
     ID_VIDEO_USB1Button, onButtonClick_USB1Button,
     ID_VIDEO_SDButton, onButtonClick_SDButton,
@@ -158,8 +159,11 @@ videoActivity::~videoActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
-    mTipTextViewPtr = NULL;
-    mTipWindowPtr = NULL;
+    mTextView5Ptr = NULL;
+    mTextView2Ptr = NULL;
+    mTextView3Ptr = NULL;
+    mTextView1Ptr = NULL;
+    mTextView4Ptr = NULL;
     merrorTextViewPtr = NULL;
     merrorWindowPtr = NULL;
     mNextButtonPtr = NULL;
@@ -182,7 +186,6 @@ videoActivity::~videoActivity() {
     msyncPointerPtr = NULL;
     mscaningTextViewPtr = NULL;
     mscaningWindowPtr = NULL;
-    msys_backPtr = NULL;
     mUSB2ButtonPtr = NULL;
     mvideoListViewPtr = NULL;
     mUSB1ButtonPtr = NULL;
@@ -197,8 +200,11 @@ const char* videoActivity::getAppName() const{
 //TAG:onCreate
 void videoActivity::onCreate() {
 	Activity::onCreate();
-    mTipTextViewPtr = (ZKTextView*)findControlByID(ID_VIDEO_TipTextView);
-    mTipWindowPtr = (ZKWindow*)findControlByID(ID_VIDEO_TipWindow);
+    mTextView5Ptr = (ZKTextView*)findControlByID(ID_VIDEO_TextView5);
+    mTextView2Ptr = (ZKTextView*)findControlByID(ID_VIDEO_TextView2);
+    mTextView3Ptr = (ZKTextView*)findControlByID(ID_VIDEO_TextView3);
+    mTextView1Ptr = (ZKTextView*)findControlByID(ID_VIDEO_TextView1);
+    mTextView4Ptr = (ZKTextView*)findControlByID(ID_VIDEO_TextView4);
     merrorTextViewPtr = (ZKTextView*)findControlByID(ID_VIDEO_errorTextView);
     merrorWindowPtr = (ZKWindow*)findControlByID(ID_VIDEO_errorWindow);
     mNextButtonPtr = (ZKButton*)findControlByID(ID_VIDEO_NextButton);
@@ -221,7 +227,6 @@ void videoActivity::onCreate() {
     msyncPointerPtr = (ZKPointer*)findControlByID(ID_VIDEO_syncPointer);
     mscaningTextViewPtr = (ZKTextView*)findControlByID(ID_VIDEO_scaningTextView);
     mscaningWindowPtr = (ZKWindow*)findControlByID(ID_VIDEO_scaningWindow);
-    msys_backPtr = (ZKButton*)findControlByID(ID_VIDEO_sys_back);
     mUSB2ButtonPtr = (ZKButton*)findControlByID(ID_VIDEO_USB2Button);
     mvideoListViewPtr = (ZKListView*)findControlByID(ID_VIDEO_videoListView);if(mvideoListViewPtr!= NULL){mvideoListViewPtr->setListAdapter(this);mvideoListViewPtr->setItemClickListener(this);}
     mUSB1ButtonPtr = (ZKButton*)findControlByID(ID_VIDEO_USB1Button);

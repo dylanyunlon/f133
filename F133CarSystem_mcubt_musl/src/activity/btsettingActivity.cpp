@@ -4,6 +4,16 @@
 #include "btsettingActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKButton* mbtrecordButtonPtr;
+static ZKTextView* mTextView20Ptr;
+static ZKTextView* mTextView19Ptr;
+static ZKTextView* mTextView18Ptr;
+static ZKTextView* mTextView17Ptr;
+static ZKTextView* mTextView16Ptr;
+static ZKTextView* mTextView15Ptr;
+static ZKButton* mbtsettingButtonPtr;
+static ZKButton* mbtcontactsButtonPtr;
+static ZKWindow* mbtsetWindowPtr;
 static ZKPointer* msyncPointerPtr;
 static ZKTextView* mscaningTextViewPtr;
 static ZKWindow* mscaningWindowPtr;
@@ -23,7 +33,6 @@ static ZKTextView* mTextView9Ptr;
 static ZKTextView* mbtSwitchTextViewPtr;
 static ZKTextView* mconnDevTipsTextViewPtr;
 static ZKButton* mconnDevButtonPtr;
-static ZKButton* msys_backPtr;
 static ZKButton* menableButtonPtr;
 static ZKEditText* mbtNameEditTextPtr;
 static ZKTextView* mdevNameTipsTextViewPtr;
@@ -50,7 +59,6 @@ static ZKTextView* mTextView13Ptr;
 static ZKWindow* mautoWindowPtr;
 static ZKTextView* mmatchTextViewPtr;
 static ZKTextView* mscanDevTextViewPtr;
-static ZKTextView* mbarTextViewPtr;
 static ZKWindow* mbtEnableWindowPtr;
 static ZKWindow* mbtSettingWindowPtr;
 static btsettingActivity* mActivityPtr;
@@ -90,10 +98,12 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_BTSETTING_btrecordButton, onButtonClick_btrecordButton,
+    ID_BTSETTING_btsettingButton, onButtonClick_btsettingButton,
+    ID_BTSETTING_btcontactsButton, onButtonClick_btcontactsButton,
     ID_BTSETTING_disconCancelButton, onButtonClick_disconCancelButton,
     ID_BTSETTING_disConnectButton, onButtonClick_disConnectButton,
     ID_BTSETTING_connDevButton, onButtonClick_connDevButton,
-    ID_BTSETTING_sys_back, onButtonClick_sys_back,
     ID_BTSETTING_enableButton, onButtonClick_enableButton,
     ID_BTSETTING_queryMusicButton, onButtonClick_queryMusicButton,
     ID_BTSETTING_phoneButton, onButtonClick_phoneButton,
@@ -176,6 +186,16 @@ btsettingActivity::~btsettingActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    mbtrecordButtonPtr = NULL;
+    mTextView20Ptr = NULL;
+    mTextView19Ptr = NULL;
+    mTextView18Ptr = NULL;
+    mTextView17Ptr = NULL;
+    mTextView16Ptr = NULL;
+    mTextView15Ptr = NULL;
+    mbtsettingButtonPtr = NULL;
+    mbtcontactsButtonPtr = NULL;
+    mbtsetWindowPtr = NULL;
     msyncPointerPtr = NULL;
     mscaningTextViewPtr = NULL;
     mscaningWindowPtr = NULL;
@@ -195,7 +215,6 @@ btsettingActivity::~btsettingActivity() {
     mbtSwitchTextViewPtr = NULL;
     mconnDevTipsTextViewPtr = NULL;
     mconnDevButtonPtr = NULL;
-    msys_backPtr = NULL;
     menableButtonPtr = NULL;
     mbtNameEditTextPtr = NULL;
     mdevNameTipsTextViewPtr = NULL;
@@ -222,7 +241,6 @@ btsettingActivity::~btsettingActivity() {
     mautoWindowPtr = NULL;
     mmatchTextViewPtr = NULL;
     mscanDevTextViewPtr = NULL;
-    mbarTextViewPtr = NULL;
     mbtEnableWindowPtr = NULL;
     mbtSettingWindowPtr = NULL;
 }
@@ -234,6 +252,16 @@ const char* btsettingActivity::getAppName() const{
 //TAG:onCreate
 void btsettingActivity::onCreate() {
 	Activity::onCreate();
+    mbtrecordButtonPtr = (ZKButton*)findControlByID(ID_BTSETTING_btrecordButton);
+    mTextView20Ptr = (ZKTextView*)findControlByID(ID_BTSETTING_TextView20);
+    mTextView19Ptr = (ZKTextView*)findControlByID(ID_BTSETTING_TextView19);
+    mTextView18Ptr = (ZKTextView*)findControlByID(ID_BTSETTING_TextView18);
+    mTextView17Ptr = (ZKTextView*)findControlByID(ID_BTSETTING_TextView17);
+    mTextView16Ptr = (ZKTextView*)findControlByID(ID_BTSETTING_TextView16);
+    mTextView15Ptr = (ZKTextView*)findControlByID(ID_BTSETTING_TextView15);
+    mbtsettingButtonPtr = (ZKButton*)findControlByID(ID_BTSETTING_btsettingButton);
+    mbtcontactsButtonPtr = (ZKButton*)findControlByID(ID_BTSETTING_btcontactsButton);
+    mbtsetWindowPtr = (ZKWindow*)findControlByID(ID_BTSETTING_btsetWindow);
     msyncPointerPtr = (ZKPointer*)findControlByID(ID_BTSETTING_syncPointer);
     mscaningTextViewPtr = (ZKTextView*)findControlByID(ID_BTSETTING_scaningTextView);
     mscaningWindowPtr = (ZKWindow*)findControlByID(ID_BTSETTING_scaningWindow);
@@ -253,7 +281,6 @@ void btsettingActivity::onCreate() {
     mbtSwitchTextViewPtr = (ZKTextView*)findControlByID(ID_BTSETTING_btSwitchTextView);
     mconnDevTipsTextViewPtr = (ZKTextView*)findControlByID(ID_BTSETTING_connDevTipsTextView);
     mconnDevButtonPtr = (ZKButton*)findControlByID(ID_BTSETTING_connDevButton);
-    msys_backPtr = (ZKButton*)findControlByID(ID_BTSETTING_sys_back);
     menableButtonPtr = (ZKButton*)findControlByID(ID_BTSETTING_enableButton);
     mbtNameEditTextPtr = (ZKEditText*)findControlByID(ID_BTSETTING_btNameEditText);if(mbtNameEditTextPtr!= NULL){mbtNameEditTextPtr->setTextChangeListener(this);}
     mdevNameTipsTextViewPtr = (ZKTextView*)findControlByID(ID_BTSETTING_devNameTipsTextView);
@@ -280,7 +307,6 @@ void btsettingActivity::onCreate() {
     mautoWindowPtr = (ZKWindow*)findControlByID(ID_BTSETTING_autoWindow);
     mmatchTextViewPtr = (ZKTextView*)findControlByID(ID_BTSETTING_matchTextView);
     mscanDevTextViewPtr = (ZKTextView*)findControlByID(ID_BTSETTING_scanDevTextView);
-    mbarTextViewPtr = (ZKTextView*)findControlByID(ID_BTSETTING_barTextView);
     mbtEnableWindowPtr = (ZKWindow*)findControlByID(ID_BTSETTING_btEnableWindow);
     mbtSettingWindowPtr = (ZKWindow*)findControlByID(ID_BTSETTING_btSettingWindow);
 	mActivityPtr = this;

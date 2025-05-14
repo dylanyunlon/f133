@@ -218,13 +218,15 @@ std::string get_pin();
  * 电话本、通话记录
  */
 bool download_phone_book();
-bool download_call_record();
+bool download_call_record(int record);
 bool start_download();
 uint32_t get_contact_size();
 bool get_contact_by_index(int index, bt_contact_t &contact);
 uint32_t get_record_size();
 bool get_record_by_index(int index, bt_record_t &record);
 int find_first_contact_by_initial(char initial);
+bool delete_phone_book();
+bool delete_call_record();
 
 
 /**

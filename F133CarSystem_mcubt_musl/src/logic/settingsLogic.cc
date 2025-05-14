@@ -23,7 +23,7 @@
 
 static bt_cb_t _s_bt_cb;
 
-static const char* settingsTextTab[] = {"show", "link", "voice", "reverse", "system"};//,"more"
+static const char* settingsTextTab[] = {"show", "link", "voice", "reverse", "factory", "system"};//,"more"
 static const char* showTextTab[] = {"brightness","color system"};
 static const char* reverseTextTab[] = {"Camera parameters"};
 static const char* systemTextTab[] = {"language","data","wifi","Debug"};
@@ -54,9 +54,9 @@ static c_cam_format_tab cam_format_tab[] = {
 static std::string adjustText[] = {
 	"luminance","hue","saturation","contrast"
 };
-static ZKWindow **wndtab[] = {&mshowWndPtr,&mlinkWndPtr,&mvoiceWndPtr,&mreverseWndPtr,&msystemWndPtr,&mmoreWndPtr};
+static ZKWindow **wndtab[] = {&mshowWndPtr,&mlinkWndPtr,&mvoiceWndPtr,&mreverseWndPtr,&mmoreWndPtr,&msystemWndPtr};
 static ZKWindow **systemwndtab[] = {&mLanguageWndPtr,&mSetdataWndPtr};
-static ZKWindow **reversewndtab[] = {&mCameraWndPtr};
+static ZKScrollWindow **reversewndtab[] = {&mCameraScrollWindowPtr};  // mCameraWndPtr
 static ZKWindow **morewndtab[] = {&mdeveloperWndPtr};
 
 typedef enum {
@@ -70,8 +70,9 @@ typedef enum {
 typedef enum {
 	SHOWINDEX_E,	// 显示
 	LINKINDEX_E,	// 互联
-//	VOICEINDEX_E,	// 声音
+	VOICEINDEX_E,	// 声音
 	REVERSEINDEX_E,	// 倒车
+	FACTORY_E,		// 工厂
 	SYSTEMINDEX_E,	// 系统
 	MOREINDEX_E,	// 更多
 }SETTINGTYPE;
@@ -87,9 +88,6 @@ typedef enum {
 	BRIGHTNESS_E,	// 亮度
 	COLOR_E,		// 丽色系统
 }SETTINGSHOWTYPE;
-typedef enum {
-	CAMERA_E,		// 摄像头参数
-}REVERSETYPE;
 
 typedef enum {
 	DEVELOPER_E,	// 开发者选项
@@ -108,7 +106,6 @@ typedef enum {
 
 static SETTINGTYPE s_setting_type;
 static SETTINGSHOWTYPE s_show_type;
-static REVERSETYPE s_reverse_type;
 static LANGUAGETYPE s_language_type;
 static MORETYPE s_more_type;
 static SHOWTYPE showtype;//显示类型：亮度，对比度等
@@ -122,7 +119,9 @@ static LINK_SETTING link_setting = LINK_TYPE;
 
 extern void set_navibar_brightnessBar(int progress);
 extern void set_navibar_PlayVolSeekBar(int progress);
-extern void set_navibar_CpSeekBar(int progress);
+extern void set_ctrlbar_lightSeekBar(int progress);
+extern void set_ctrlbar_volumSeekBar(int progress);
+//extern void set_navibar_CpSeekBar(int progress);
 
 static bool setting_ftu_isLoad = false;
 
@@ -132,11 +131,11 @@ void setSettingFtu_BrillianceSeekBar(int progress) {
 		mBrightnessSeekBarPtr->setProgress(progress);
 	}
 }
-void setettingFtu_CallSeekBar(int progress) {
+void setSettingFtu_CallSeekBar(int progress) {
 	if (setting_ftu_isLoad)
 		mPhoneSeekBarPtr->setProgress(progress);
 }
-void setettingFtu_MediaSeekBar(int progress) {
+void setSettingFtu_MediaSeekBar(int progress) {
 	if (setting_ftu_isLoad)
 		mMediaSeekBarPtr->setProgress(progress);
 }
@@ -148,6 +147,7 @@ public:
 			bool effect = bt::is_calling() || (lk::is_connected() && lk::get_is_call_state() != CallState_Hang);
 			audio::set_system_vol(progress / 10.f, !effect);
 			set_navibar_PlayVolSeekBar(progress);
+			set_ctrlbar_volumSeekBar(progress);
 		}else if(pSeekBar->getID() == mPhoneSeekBarPtr->getID()){
 			audio::set_lylink_call_vol(progress / 10.f, false);
 			if(bt::is_calling()){
@@ -155,11 +155,12 @@ public:
 			}else if((lk::is_connected() && lk::get_is_call_state() != CallState_Hang)){
 				audio::set_lylink_call_vol(progress / 10.f, true);
 			}
-			set_navibar_CpSeekBar(progress);
+//			set_navibar_CpSeekBar(progress);
 		}else if(pSeekBar->getID() == mBrightnessSeekBarPtr->getID()){
 			sys::setting::set_brightness(progress*10);
 			mBrightnessTextPtr->setText(progress*10);
 			set_navibar_brightnessBar(progress);
+			set_ctrlbar_lightSeekBar(progress);
 		}
 	}
 	virtual void onStopTrackingTouch(ZKSeekBar *pSeekBar) {
@@ -255,14 +256,14 @@ static void query_authorization_state() {
 	bool blink_is_authorized = bt::get_is_authorized();
 	bool lylink_is_authorized = lk::get_is_authorized();
 //	bool mfi_is_ok = lk::get_mfi_is_OK();
-//	bool is_use_carlife = sys::setting::get_is_use_link_carlife();
+	bool is_use_carlife = sys::setting::get_is_use_link_carlife();
 
 	mbtAuthorizeButtonPtr->setSelected(blink_is_authorized);
 	mbtAuthorizeButtonPtr->setText(blink_is_authorized ? "蓝牙已授权" : "蓝牙未授权");
 	mlinkAuthorizeButtonPtr->setSelected(lylink_is_authorized);
 	mlinkAuthorizeButtonPtr->setTextTr(lylink_is_authorized ? "Lylink is auto" : "Lylink is not auto");
 //	mmfiTextViewPtr->setVisible(!mfi_is_ok);
-//	mcfButtonPtr->setSelected(is_use_carlife);
+	mcfButtonPtr->setSelected(is_use_carlife);
 }
 
 
@@ -297,6 +298,93 @@ static void _lylink_callback(LYLINKAPI_EVENT evt, int para0, void *para1) {
 			mmfiTextViewPtr->setVisible(true);
 			break;
 		default:
+			break;
+		}
+	}
+}
+
+static void setting_camera() {
+	mskipTextViewPtr->setText(sys::setting::get_camera_skip());
+	switch(sys::setting::get_camera_rot()) {
+	case 0:
+		mrotTextViewPtr->setText("0°");
+		break;
+	case 1:
+		mrotTextViewPtr->setText("90°");
+		break;
+	case 2:
+		mrotTextViewPtr->setText("180°");
+		break;
+	case 3:
+		mrotTextViewPtr->setText("270°");
+		break;
+	}
+	mcaminfoListViewPtr->setSelection(s_format_index);
+	if(strcmp(sys::setting::get_camera_dev(),"/dev/video4") == 0){
+		mCutcvbsButtonPtr->setSelected(true);
+		mCutCameraBtnPtr->setSelected(false);
+		mcvbsButtonPtr->setVisible(true);
+	}else if(strcmp(sys::setting::get_camera_dev(),"/dev/video0") == 0){
+		mCutCameraBtnPtr->setSelected(true);
+		mCutcvbsButtonPtr->setSelected(false);
+		mcvbsButtonPtr->setVisible(false);
+	}
+}
+
+static void set_skip_or_rot(bool _s_skip, bool _s_skip_add, bool _s_rot, bool _s_rot_add) {
+	if (_s_skip) {
+		int skip = std::stoi(mskipTextViewPtr->getText());
+		if (_s_skip_add) {
+			skip++;
+			sys::setting::set_camera_skip(skip);
+		} else {
+			skip--;
+			if (skip <= 0) {
+				skip = 0;
+				sys::setting::set_camera_skip(skip);
+			} else {
+				sys::setting::set_camera_skip(skip);
+			}
+		}
+		mskipTextViewPtr->setText(skip);
+	}
+	if (_s_rot) {
+		int rot = sys::setting::get_camera_rot();
+		if (_s_rot_add) {
+			rot++;
+			if (rot >= 3) {
+				rot = 3;
+				sys::setting::set_camera_rot(rot);
+			} else if (rot <= 0) {
+				rot = 0;
+				sys::setting::set_camera_rot(rot);
+			} else {
+				sys::setting::set_camera_rot(rot);
+			}
+		} else {
+			rot--;
+			if (rot >= 3) {
+				rot = 3;
+				sys::setting::set_camera_rot(rot);
+			} else if (rot <= 0) {
+				rot = 0;
+				sys::setting::set_camera_rot(rot);
+			} else {
+				sys::setting::set_camera_rot(rot);
+			}
+		}
+		switch(rot) {
+		case 0:
+			mrotTextViewPtr->setText("0°");
+			break;
+		case 1:
+			mrotTextViewPtr->setText("90°");
+			break;
+		case 2:
+			mrotTextViewPtr->setText("180°");
+			break;
+		case 3:
+			mrotTextViewPtr->setText("270°");
 			break;
 		}
 	}
@@ -341,6 +429,11 @@ static void onUI_init(){
 
 	mMediaSeekBarPtr->setProgress(audio::get_system_vol() * 10);
 	mPhoneSeekBarPtr->setProgress(audio::get_lylink_call_vol() * 10);
+
+	mhourButton12Ptr->setSelected(!sys::setting::is_time_format_24h());
+	mhourButton24Ptr->setSelected(sys::setting::is_time_format_24h());
+
+	setting_camera();
 	for (unsigned int i=0; i<TABLESIZE(cam_format_tab); i++) {
 		if(cam_format_tab[i].wide == sys::setting::get_camera_wide() &&
 			cam_format_tab[i].high == sys::setting::get_camera_high()&&cam_format_tab[i].rate == sys::setting::get_camera_rate()){
@@ -379,7 +472,7 @@ static void onUI_hide() {
 static void onUI_quit() {
 	_bt_remove_cb();
 	lk::remove_lylink_callback(_lylink_callback);
-
+	EASYUICONTEXT->showNaviBar();
 	setting_ftu_isLoad = false;
 	mBrillianceSeekBarPtr->setSeekBarChangeListener(NULL);
 	mBrightnessSeekBarPtr->setSeekBarChangeListener(NULL);
@@ -461,14 +554,6 @@ static bool onsettingsActivityTouchEvent(const MotionEvent &ev) {
 
 }
 
-static void reverseWnd_index(int &index){
-	for (unsigned int i=0; i<TABLESIZE(reversewndtab); i++) {
-		if((*reversewndtab[i])->isVisible()){
-			index = i;
-		}
-	}
-}
-
 static void systemWnd_index(int &index){
 	for (unsigned int i=0; i<TABLESIZE(systemwndtab); i++) {
 		if((*systemwndtab[i])->isVisible()){
@@ -493,14 +578,12 @@ static void Wnd_Hidden(int &index){
     		mBrightnessWndPtr->hideWnd();
     	}
     	break;
-//    case VOICEINDEX_E:
-//    	break;
+    case VOICEINDEX_E:
+    	break;
     case REVERSEINDEX_E:
-    	reverseWnd_index(index);
-        if(index >= 0){
-        	(*reversewndtab[index])->setVisible(false);
-        }
         break;
+    case FACTORY_E:
+    	break;
     case SYSTEMINDEX_E:
     	systemWnd_index(index);
         if(index >= 0){
@@ -530,9 +613,9 @@ static bool onButtonClick_ReturnBtn(ZKButton *pButton) {
 static void Get_picpath(const char *settings,bool isselect,char *realpic){
 	char picpath[30] = {0};
 	if(isselect){
-		sprintf(picpath,"setting/%s_s.png",settings);
+		sprintf(picpath,"set/%s_p.png",settings);
 	}else{
-		sprintf(picpath,"setting/%s_n.png",settings);
+		sprintf(picpath,"set/%s_n.png",settings);
 	}
 	strcpy(realpic,picpath);
 }
@@ -563,11 +646,11 @@ static void obtainListItemData_SettingListView(ZKListView *pListView,ZKListView:
 	Get_picpath(settingsTextTab[index],false,npicpath);
 	ZKListView::ZKListSubItem* SettingpicSub = pListItem->findSubItemByID(ID_SETTINGS_SettingpicSub);
 	ZKListView::ZKListSubItem* settingTextSub = pListItem->findSubItemByID(ID_SETTINGS_settingTextSub);
-	ZKListView::ZKListSubItem* SubItem7 = pListItem->findSubItemByID(ID_SETTINGS_SubItem7);
+//	ZKListView::ZKListSubItem* SubItem7 = pListItem->findSubItemByID(ID_SETTINGS_SubItem7);
 	settingTextSub->setTextTr(settingsTextTab[index]);
 	SettingpicSub->setButtonStatusPic(ZK_CONTROL_STATUS_SELECTED,spicpath);
 	SettingpicSub->setButtonStatusPic(ZK_CONTROL_STATUS_NORMAL,npicpath);
-	SubItem7->setSelected(s_setting_type == index);
+//	SubItem7->setSelected(s_setting_type == index);
 	SettingpicSub->setSelected(s_setting_type == index);
 	settingTextSub->setSelected(s_setting_type == index);
 }
@@ -618,38 +701,6 @@ static bool onButtonClick_colorButton(ZKButton *pButton) {
     return false;
 }
 
-static int getListItemCount_ReverseListView(const ZKListView *pListView) {
-    //LOGD("getListItemCount_ReverseListView !\n");
-	 return TABLESIZE(reverseTextTab);
-}
-
-static void obtainListItemData_ReverseListView(ZKListView *pListView,ZKListView::ZKListItem *pListItem, int index) {
-    //LOGD(" obtainListItemData_ ReverseListView  !!!\n");
-	ZKListView::ZKListSubItem* reverseTextSub = pListItem->findSubItemByID(ID_SETTINGS_reverseTextSub);
-	//ZKListView::ZKListSubItem* showpic = pListItem->findSubItemByID(ID_SETTINGS_showpic);
-	reverseTextSub->setTextTr(reverseTextTab[index]);
-}
-
-static void onListItemClick_ReverseListView(ZKListView *pListView, int index, int id) {
-    //LOGD(" onListItemClick_ ReverseListView  !!!\n");
-	s_reverse_type = (REVERSETYPE)index;
-	if(s_reverse_type == CAMERA_E) {
-		mSkipEditTextPtr->setText(sys::setting::get_camera_skip());
-		mrotvalueEditTextPtr->setText(sys::setting::get_camera_rot());
-		mcaminfoListViewPtr->setSelection(s_format_index);
-		if(strcmp(sys::setting::get_camera_dev(),"/dev/video4") == 0){
-			mCameraTypeTextPtr->setText("CVBS");
-			mcvbsButtonPtr->setVisible(true);
-		}else if(strcmp(sys::setting::get_camera_dev(),"/dev/video0") == 0){
-			mCameraTypeTextPtr->setText("AHD");
-			mcvbsButtonPtr->setVisible(false);
-		}
-	}
-	for (unsigned int i=0; i<TABLESIZE(reversewndtab); i++) {
-		(*reversewndtab[i])->setVisible(s_reverse_type == i);
-	}
-}
-
 static int getListItemCount_LanguageListView(const ZKListView *pListView) {
     //LOGD("getListItemCount_LanguageListView !\n");
 	return TABLESIZE(languaueTextTab);
@@ -685,6 +736,7 @@ static void obtainListItemData_hourListView(ZKListView *pListView,ZKListView::ZK
 	//保存选中项日期
 	if(index == (pListView->getFirstVisibleItemIndex()+1) % pListView->getListItemCount()) {
 		ptm.tm_hour = index;
+		sys::setting::set_DateTime(&ptm);
 	}
 }
 
@@ -708,6 +760,7 @@ static void obtainListItemData_minListView(ZKListView *pListView,ZKListView::ZKL
 	//保存选中项日期
 	if(index == (pListView->getFirstVisibleItemIndex()+1) % pListView->getListItemCount()) {
 		ptm.tm_min = index;
+		sys::setting::set_DateTime(&ptm);
 	}
 }
 
@@ -728,6 +781,7 @@ static void obtainListItemData_yearListView(ZKListView *pListView,ZKListView::ZK
 	pListItem->setTextSize(index == (pListView->getFirstVisibleItemIndex()+1)%pListView->getListItemCount() ? TIMEBIGSIZE : TIMESMALLSIZE);
 	if(index == (pListView->getFirstVisibleItemIndex()+1) % pListView->getListItemCount()) {
 		ptm.tm_year = atoi(pListItem->getText().c_str()) - 1900;
+		sys::setting::set_DateTime(&ptm);
 	}
 	updateDay();
 }
@@ -752,6 +806,7 @@ static void obtainListItemData_monthListView(ZKListView *pListView,ZKListView::Z
 	//保存选中项月份
 	if(index == (pListView->getFirstVisibleItemIndex()+1)%pListView->getListItemCount()) {
 		ptm.tm_mon = atoi(pListItem->getText().c_str()) - 1;
+		sys::setting::set_DateTime(&ptm);
 	}
 	updateDay();
 }
@@ -778,6 +833,7 @@ static void obtainListItemData_dayListView(ZKListView *pListView,ZKListView::ZKL
 	//保存选中项日期
 	if(index == (pListView->getFirstVisibleItemIndex()+1)%pListView->getListItemCount()) {
 		ptm.tm_mday = index+1;
+		sys::setting::set_DateTime(&ptm);
 	}
 }
 
@@ -806,8 +862,9 @@ static int getListItemCount_caminfoListView(const ZKListView *pListView) {
 
 static void obtainListItemData_caminfoListView(ZKListView *pListView,ZKListView::ZKListItem *pListItem, int index) {
     //LOGD(" obtainListItemData_ caminfoListView  !!!\n");
-	pListItem->setText(cam_format_tab[index].format);
-	pListItem->setSelected(s_format_index == index);
+	ZKListView::ZKListSubItem* SubItem9 = pListItem->findSubItemByID(ID_SETTINGS_SubItem9);
+	SubItem9->setText(cam_format_tab[index].format);
+	SubItem9->setSelected(s_format_index == index);
 }
 
 static void onListItemClick_caminfoListView(ZKListView *pListView, int index, int id) {
@@ -824,8 +881,9 @@ static int getListItemCount_ChannelListView(const ZKListView *pListView) {
 
 static void obtainListItemData_ChannelListView(ZKListView *pListView,ZKListView::ZKListItem *pListItem, int index) {
     //LOGD(" obtainListItemData_ ChannelListView  !!!\n");
-	pListItem->setText(index);
-	pListItem->setSelected(sys::setting::get_camera_chn() == index);
+	ZKListView::ZKListSubItem* SubItem10 = pListItem->findSubItemByID(ID_SETTINGS_SubItem10);
+	SubItem10->setText(index);
+	SubItem10->setSelected(sys::setting::get_camera_chn() == index);
 }
 
 static void onListItemClick_ChannelListView(ZKListView *pListView, int index, int id) {
@@ -835,17 +893,21 @@ static void onListItemClick_ChannelListView(ZKListView *pListView, int index, in
 
 static bool onButtonClick_CutCameraBtn(ZKButton *pButton) {
     LOGD(" ButtonClick CutCameraBtn !!!\n");
-	if(strcmp(sys::setting::get_camera_dev(),"/dev/video4") == 0){
-		LOGD("设置为AHD");
-		sys::setting::set_camera_dev("/dev/video0");
-		mCameraTypeTextPtr->setText("AHD");
-		mcvbsButtonPtr->setVisible(false);
-	}else if(strcmp(sys::setting::get_camera_dev(),"/dev/video0") == 0){
-		sys::setting::set_camera_dev("/dev/video4");
-		LOGD("设置为CVBS");
-		mCameraTypeTextPtr->setText("CVBS");
-		mcvbsButtonPtr->setVisible(true);
-	}
+    sys::setting::set_camera_dev("/dev/video0");
+    LOGD("设置为AHD");
+    mcvbsButtonPtr->setVisible(false);
+    mCutcvbsButtonPtr->setSelected(false);
+    pButton->setSelected(!mCutcvbsButtonPtr->isSelected());
+    return false;
+}
+
+static bool onButtonClick_CutcvbsButton(ZKButton *pButton) {
+    LOGD(" ButtonClick CutcvbsButton !!!\n");
+    sys::setting::set_camera_dev("/dev/video4");
+    LOGD("设置为CVBS");
+    mcvbsButtonPtr->setVisible(true);
+    mCutCameraBtnPtr->setSelected(false);
+    pButton->setSelected(!mCutCameraBtnPtr->isSelected());
     return false;
 }
 
@@ -928,14 +990,16 @@ static bool onButtonClick_BtnRight(ZKButton *pButton) {
 static void onProgressChanged_BrightnessSeekBar(ZKSeekBar *pSeekBar, int progress) {
     //LOGD(" ProgressChanged BrightnessSeekBar %d !!!\n", progress);
 	set_navibar_brightnessBar(progress);
+	set_ctrlbar_lightSeekBar(progress);
 }
 static void onProgressChanged_MediaSeekBar(ZKSeekBar *pSeekBar, int progress) {
     //LOGD(" ProgressChanged MediaSeekBar %d !!!\n", progress);
 	set_navibar_PlayVolSeekBar(progress);
+	set_ctrlbar_volumSeekBar(progress);
 }
 static void onProgressChanged_PhoneSeekBar(ZKSeekBar *pSeekBar, int progress) {
     //LOGD(" ProgressChanged PhoneSeekBar %d !!!\n", progress);
-	set_navibar_CpSeekBar(progress);
+//	set_navibar_CpSeekBar(progress);
 }
 
 static int getListItemCount_systemListView(const ZKListView *pListView) {
@@ -977,23 +1041,25 @@ static void onListItemClick_systemListView(ZKListView *pListView, int index, int
 	}
 }
 
-
-static bool onButtonClick_SkipSureBtn(ZKButton *pButton) {
-    LOGD(" ButtonClick SkipSureBtn !!!\n");
-//    sys::setting::set_camera_skip(atoi(mSkipEditTextPtr->getText().c_str()));
+static bool onButtonClick_skipreduceButton(ZKButton *pButton) {
+    LOGD(" ButtonClick skipreduceButton !!!\n");
+	set_skip_or_rot(true, false, false, false);
     return false;
 }
-static void onEditTextChanged_SkipEditText(const std::string &text) {
-    //LOGD(" onEditTextChanged_ SkipEditText %s !!!\n", text.c_str());
-}
-static bool onButtonClick_SetRotBtn(ZKButton *pButton) {
-    LOGD(" ButtonClick SetRotBtn !!!\n");
-//    sys::setting::set_camera_rot(atoi(mrotvalueEditTextPtr->getText().c_str()));
+static bool onButtonClick_skipaddButton(ZKButton *pButton) {
+    LOGD(" ButtonClick skipaddButton !!!\n");
+    set_skip_or_rot(true, true, false, false);
     return false;
 }
-
-static void onEditTextChanged_rotvalueEditText(const std::string &text) {
-    //LOGD(" onEditTextChanged_ rotvalueEditText %s !!!\n", text.c_str());
+static bool onButtonClick_rotdownButton(ZKButton *pButton) {
+    LOGD(" ButtonClick rotdownButton !!!\n");
+    set_skip_or_rot(false, false, true, false);
+    return false;
+}
+static bool onButtonClick_rotnextButton(ZKButton *pButton) {
+    LOGD(" ButtonClick rotnextButton !!!\n");
+    set_skip_or_rot(false, false, true, true);
+    return false;
 }
 
 static bool onButtonClick_SetLinkVoiceBtn(ZKButton *pButton) {
@@ -1190,4 +1256,19 @@ static void onEditTextChanged_ValueEditTextG(const std::string &text) {
 
 static void onEditTextChanged_ValueEditTextQ(const std::string &text) {
     //LOGD(" onEditTextChanged_ ValueEditTextQ %s !!!\n", text.c_str());
+}
+static bool onButtonClick_hourButton12(ZKButton *pButton) {
+    LOGD(" ButtonClick hourButton12 !!!\n");
+    sys::setting::set_time_format_24h(false);
+    mhourButton24Ptr->setSelected(false);
+    pButton->setSelected(!sys::setting::is_time_format_24h());
+    return false;
+}
+
+static bool onButtonClick_hourButton24(ZKButton *pButton) {
+    LOGD(" ButtonClick hourButton24 !!!\n");
+    sys::setting::set_time_format_24h(true);
+    mhourButton12Ptr->setSelected(false);
+    pButton->setSelected(sys::setting::is_time_format_24h());
+    return false;
 }

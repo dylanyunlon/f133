@@ -73,7 +73,6 @@ static void _bt_info_init() {
 	mbtEnableWindowPtr->setVisible(bt::is_on());
 
 	LOGD("--%d-- --%s-- connect_state:%d\n", __LINE__, __FILE__, bt::get_connect_state());
-	mbtAppWindowPtr->setVisible(bt::get_connect_state() == E_BT_CONNECT_STATE_CONNECTED);
 
 	mautoAnswerButtonPtr->setSelected(bt::is_auto_answer());
 	mautoConnButtonPtr->setSelected(bt::is_auto_connect());
@@ -82,7 +81,6 @@ static void _bt_info_init() {
 //关闭蓝牙应用及界面
 static void close_bt_appActivity() {
 	mdisConnectWindowPtr->hideWnd();
-	mbtAppWindowPtr->hideWnd();
 
 	EASYUICONTEXT->closeActivity("callingActivity");
 	EASYUICONTEXT->closeActivity("btMusicActivity");
@@ -128,7 +126,6 @@ static void _bt_connect_cb(bt_connect_state_e state) {
 	switch (state) {
 	case E_BT_CONNECT_STATE_IDLE:
 		close_bt_appActivity();
-		mbtAppWindowPtr->hideWnd();
 		mconnDevButtonPtr->setTextTr("ununited");
 		if (next_connect_bt_info.addr != "") {
 			bt::connect(next_connect_bt_info.addr.c_str());
@@ -142,7 +139,6 @@ static void _bt_connect_cb(bt_connect_state_e state) {
 		break;
 	case E_BT_CONNECT_STATE_CONNECTED:
 		DEBUG
-		mbtAppWindowPtr->showWnd();
 		mconnDevButtonPtr->setText(bt::get_connect_dev().name);
 		mscanButtonPtr->setTouchable(true);
 		break;
@@ -206,6 +202,14 @@ static void _bt_remove_cb() {
 	bt::remove_cb(&_s_bt_cb);
 }
 
+static void _textview_touchpass(bool pass) {
+	mTextView16Ptr->setTouchPass(pass);
+	mTextView17Ptr->setTouchPass(pass);
+	mTextView18Ptr->setTouchPass(pass);
+	mTextView19Ptr->setTouchPass(pass);
+	mTextView20Ptr->setTouchPass(pass);
+}
+
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -251,6 +255,7 @@ static void onUI_intent(const Intent *intentPtr) {
 static void onUI_show() {
 	iconRotate.SetCtrl(mopeningPointerPtr, mopeningWndPtr);
 	_bt_info_init();
+	_textview_touchpass(true);
 }
 
 /*
@@ -320,34 +325,6 @@ static bool onbtsettingActivityTouchEvent(const MotionEvent &ev) {
 			break;
 	}
 	return false;
-}
-
-static bool onButtonClick_queryMusicButton(ZKButton *pButton) {
-    LOGD(" ButtonClick queryMusicButton !!!\n");
-    if (lk::is_connected()) {
-    	mbtTipsWindowPtr->showWnd();
-    	return false;
-    }
-//    uart::set_sound_channel(SOUND_CHANNEL_BT);
-    audio::change_audio_type(E_AUDIO_TYPE_BT_MUSIC);
-    bt::set_bt_mute(false, true);
-    EASYUICONTEXT->openActivity("btMusicActivity");
-    return false;
-}
-
-static bool onButtonClick_phoneButton(ZKButton *pButton) {
-    LOGD(" ButtonClick Button5 !!!\n");
-    if (lk::is_connected()) {
-    	mbtTipsWindowPtr->showWnd();
-    	return false;
-    }
-    EASYUICONTEXT->openActivity("btDialActivity");
-    return false;
-}
-
-static bool onButtonClick_sys_back(ZKButton *pButton) {
-    LOGD(" ButtonClick sys_back !!!\n");
-    return false;
 }
 
 static int getListItemCount_matchedListView(const ZKListView *pListView) {
@@ -492,5 +469,56 @@ static void onEditTextChanged_PinEditText(const std::string &text) {
 	if (text != bt::get_pin()) {
 		bt::modify_pin(text.c_str());
 	}
+}
+
+static bool onButtonClick_queryMusicButton(ZKButton *pButton) {
+    LOGD(" ButtonClick queryMusicButton !!!\n");
+    if (lk::is_connected()) {
+    	mbtTipsWindowPtr->showWnd();
+    	return false;
+    }
+//    uart::set_sound_channel(SOUND_CHANNEL_BT);
+    audio::change_audio_type(E_AUDIO_TYPE_BT_MUSIC);
+    bt::set_bt_mute(false, true);
+    EASYUICONTEXT->openActivity("btMusicActivity");
+    return false;
+}
+
+static bool onButtonClick_phoneButton(ZKButton *pButton) {
+    LOGD(" ButtonClick Button5 !!!\n");
+    if (lk::is_connected()) {
+    	mbtTipsWindowPtr->showWnd();
+    	return false;
+    }
+    EASYUICONTEXT->openActivity("btDialActivity");
+    return false;
+}
+
+static bool onButtonClick_btrecordButton(ZKButton *pButton) {
+    LOGD(" ButtonClick btrecordButton !!!\n");
+    if (lk::is_connected()) {
+    	mbtTipsWindowPtr->showWnd();
+    	return false;
+    }
+    EASYUICONTEXT->openActivity("btRecordsActivity");
+    return false;
+}
+
+static bool onButtonClick_btcontactsButton(ZKButton *pButton) {
+    LOGD(" ButtonClick btcontactsButton !!!\n");
+    if (lk::is_connected()) {
+    	mbtTipsWindowPtr->showWnd();
+    	return false;
+    }
+    EASYUICONTEXT->openActivity("btContactsActivity");
+    return false;
+}
+
+static bool onButtonClick_btsettingButton(ZKButton *pButton) {
+    LOGD(" ButtonClick btsettingButton !!!\n");
+    EASYUICONTEXT->closeActivity("btDialActivity");
+    EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btRectcordsActivity");
+    return false;
 }
 

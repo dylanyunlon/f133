@@ -33,6 +33,7 @@
 #include "bt/context.h"
 #include "Manager/ConfigManager.h"
 #include "utils/Loading_icon.hpp"
+#include "config.h"
 
 static const char* records_status_pic[] = {"bt_n/out.png", "bt_n/in.png", "bt_n/no.png"};
 
@@ -59,6 +60,18 @@ static void _bt_remove_cb() {
 	bt::remove_cb(&_s_bt_cb);
 }
 
+static void _textview_touchpass(bool pass) {
+	mTextView1Ptr->setTouchPass(pass);
+	mTextView2Ptr->setTouchPass(pass);
+	mTextView3Ptr->setTouchPass(pass);
+	mTextView4Ptr->setTouchPass(pass);
+	mTextView5Ptr->setTouchPass(pass);
+	mTextView16Ptr->setTouchPass(pass);
+	mTextView17Ptr->setTouchPass(pass);
+	mTextView18Ptr->setTouchPass(pass);
+	mTextView19Ptr->setTouchPass(pass);
+	mTextView20Ptr->setTouchPass(pass);
+}
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -91,7 +104,7 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
-
+	_textview_touchpass(true);
 }
 
 /*
@@ -194,32 +207,90 @@ static void onListItemClick_recordsListView(ZKListView *pListView, int index, in
     EASYUICONTEXT->closeActivity("btRecordsActivity");
 }
 
-static bool onButtonClick_btDialButton(ZKButton *pButton) {
-    LOGD(" ButtonClick btDialButton !!!\n");
+static bool onButtonClick_downloadButton(ZKButton *pButton) {
+    LOGD(" ButtonClick downloadButton !!!\n");
+    bt::download_call_record(BT_RECORD_RECENT);
+    return false;
+}
+static bool onButtonClick_DeleteButton(ZKButton *pButton) {
+    LOGD(" ButtonClick DeleteButton !!!\n");
+    mDeleteTipsWindowPtr->showWnd();
+    return false;
+}
+
+static bool onButtonClick_missButton(ZKButton *pButton) {
+    LOGD(" ButtonClick missButton !!!\n");
+    bt::download_call_record(BT_RECORD_MISSED);
+    return false;
+}
+
+static bool onButtonClick_inButton(ZKButton *pButton) {
+    LOGD(" ButtonClick inButton !!!\n");
+    bt::download_call_record(BT_RECORD_INCOMING);
+    return false;
+}
+
+static bool onButtonClick_outButton(ZKButton *pButton) {
+    LOGD(" ButtonClick outButton !!!\n");
+    bt::download_call_record(BT_RECORD_OUTGOING);
+    return false;
+}
+
+static bool onButtonClick_queryMusicButton(ZKButton *pButton) {
+    LOGD(" ButtonClick queryMusicButton !!!\n");
+    EASYUICONTEXT->openActivity("btMusicActivity");
+    EASYUICONTEXT->closeActivity("btRecordsActivity");
+    EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btDialActivity");
+    return false;
+}
+
+static bool onButtonClick_phoneButton(ZKButton *pButton) {
+    LOGD(" ButtonClick phoneButton !!!\n");
     EASYUICONTEXT->openActivity("btDialActivity");
     EASYUICONTEXT->closeActivity("btRecordsActivity");
     EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
     return false;
 }
 
-static bool onButtonClick_btRecordsButton(ZKButton *pButton) {
-    LOGD(" ButtonClick btRecordsButton !!!\n");
+static bool onButtonClick_btrecordButton(ZKButton *pButton) {
+    LOGD(" ButtonClick btrecordButton !!!\n");
     EASYUICONTEXT->closeActivity("btDialActivity");
     EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
     return false;
 }
 
-static bool onButtonClick_btContactsButton(ZKButton *pButton) {
-    LOGD(" ButtonClick btContactsButton !!!\n");
+static bool onButtonClick_btcontactsButton(ZKButton *pButton) {
+    LOGD(" ButtonClick btcontactsButton !!!\n");
     EASYUICONTEXT->closeActivity("btDialActivity");
     EASYUICONTEXT->closeActivity("btRecordsActivity");
     EASYUICONTEXT->openActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
     return false;
 }
 
+static bool onButtonClick_btsettingButton(ZKButton *pButton) {
+    LOGD(" ButtonClick btsettingButton !!!\n");
+    EASYUICONTEXT->openActivity("btsettingActivity");
+    EASYUICONTEXT->closeActivity("btRecordsActivity");
+    EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btDialActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
+    return false;
+}
 
-static bool onButtonClick_downloadButton(ZKButton *pButton) {
-    LOGD(" ButtonClick downloadButton !!!\n");
-    bt::download_call_record();
+static bool onButtonClick_cancelButton(ZKButton *pButton) {
+    LOGD(" ButtonClick cancelButton !!!\n");
+    mDeleteTipsWindowPtr->hideWnd();
+    return false;
+}
+
+static bool onButtonClick_sureButton(ZKButton *pButton) {
+    LOGD(" ButtonClick sureButton !!!\n");
+    bt::delete_phone_book();
+    mrecordsListViewPtr->refreshListView();
+    mDeleteTipsWindowPtr->hideWnd();
     return false;
 }

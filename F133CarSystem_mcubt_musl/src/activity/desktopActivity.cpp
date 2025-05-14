@@ -4,6 +4,7 @@
 #include "desktopActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextView1Ptr;
 static ZKSlideWindow* mappSlideWindowPtr;
 static ZKTextView* mTextView3Ptr;
 static ZKWindow* mWindow1Ptr;
@@ -11,7 +12,6 @@ static ZKWindow* mbtTipsWindowPtr;
 static ZKTextView* mTextView6Ptr;
 static ZKWindow* mWindow5Ptr;
 static ZKWindow* mlinkTipsWindowPtr;
-static ZKDigitalClock* mDigitalClock2Ptr;
 static ZKButton* msoundButtonPtr;
 static ZKButton* mNetButtonPtr;
 static ZKButton* mbtStatusButtonPtr;
@@ -175,6 +175,7 @@ desktopActivity::~desktopActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    mTextView1Ptr = NULL;
     mappSlideWindowPtr = NULL;
     mTextView3Ptr = NULL;
     mWindow1Ptr = NULL;
@@ -182,7 +183,6 @@ desktopActivity::~desktopActivity() {
     mTextView6Ptr = NULL;
     mWindow5Ptr = NULL;
     mlinkTipsWindowPtr = NULL;
-    mDigitalClock2Ptr = NULL;
     msoundButtonPtr = NULL;
     mNetButtonPtr = NULL;
     mbtStatusButtonPtr = NULL;
@@ -218,6 +218,7 @@ const char* desktopActivity::getAppName() const{
 //TAG:onCreate
 void desktopActivity::onCreate() {
 	Activity::onCreate();
+    mTextView1Ptr = (ZKTextView*)findControlByID(ID_DESKTOP_TextView1);
     mappSlideWindowPtr = (ZKSlideWindow*)findControlByID(ID_DESKTOP_appSlideWindow);if(mappSlideWindowPtr!= NULL){mappSlideWindowPtr->setSlideItemClickListener(this);}
     mTextView3Ptr = (ZKTextView*)findControlByID(ID_DESKTOP_TextView3);
     mWindow1Ptr = (ZKWindow*)findControlByID(ID_DESKTOP_Window1);
@@ -225,7 +226,6 @@ void desktopActivity::onCreate() {
     mTextView6Ptr = (ZKTextView*)findControlByID(ID_DESKTOP_TextView6);
     mWindow5Ptr = (ZKWindow*)findControlByID(ID_DESKTOP_Window5);
     mlinkTipsWindowPtr = (ZKWindow*)findControlByID(ID_DESKTOP_linkTipsWindow);
-    mDigitalClock2Ptr = (ZKDigitalClock*)findControlByID(ID_DESKTOP_DigitalClock2);
     msoundButtonPtr = (ZKButton*)findControlByID(ID_DESKTOP_soundButton);
     mNetButtonPtr = (ZKButton*)findControlByID(ID_DESKTOP_NetButton);
     mbtStatusButtonPtr = (ZKButton*)findControlByID(ID_DESKTOP_btStatusButton);

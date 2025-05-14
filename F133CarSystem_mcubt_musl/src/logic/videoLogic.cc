@@ -41,7 +41,7 @@
 #include "fy/strings.hpp"
 #include <sys/sysinfo.h>
 #include "net/context.h"
-
+#include "sysapp_context.h"
 #include "fy/os.hpp"
 
 #define LOOP_TIMER            1
@@ -58,8 +58,8 @@ static storage_type_e _s_play_storage = E_STORAGE_TYPE_SD;			//播放的文件�
 static int _s_play_index = -1;
 static media_play_mode_e _s_play_mode = E_MEDIA_PLAY_MODE_CYCLE;	//播放模式
 
-static std::string play_mode_path[] = {"MusicPlayer/cycle_n.png", "MusicPlayer/single_n.png", "MusicPlayer/random_n.png"};
-static std::string play_mode_press_path[] = {"MusicPlayer/cycle_p.png", "MusicPlayer/single_p.png", "MusicPlayer/random_p.png"};
+static std::string play_mode_path[] = {"media_player/cycle_n.png", "media_player/single_n.png", "media_player/random_n.png"};
+static std::string play_mode_press_path[] = {"media_player/cycle_p.png", "media_player/single_p.png", "media_player/random_p.png"};
 
 static bool is_pause = false;
 static bool is_tracking_ = false;
@@ -146,7 +146,6 @@ static bool video_ctrl_play(const char* file, int msec = 0) {
 	} else if (fy::strings::endswith(file, "wmv") || fy::strings::endswith(file, "avi")) { 	// 不支持文件格式
 		mVideoviewTTPtr->pause();
 		mPlayButtonPtr->setSelected(false);
-		mTipWindowPtr->showWnd();
 		merrorWindowPtr->showWnd();
 		mActivityPtr->registerUserTimer(VIDEO_AUTO_NEXT_FORMAT, 2500);
 		is_play_error = true;
@@ -154,6 +153,7 @@ static bool video_ctrl_play(const char* file, int msec = 0) {
 	} else {
 		if(!mvideoPlayWindowPtr->isWndShow()) {
 			mvideoPlayWindowPtr->showWnd();
+			app::hide_topbar();
 		}
 		mVideoviewTTPtr->setVisible(true);
 //		mDisplayButton1Ptr->setVisible(true);
@@ -231,6 +231,9 @@ static void seek_to_current_play() {
 //控件初始化
 static void ctrl_init() {
 	mtittleTextViewPtr->setLongMode(ZKTextView::E_LONG_MODE_SCROLL_CIRCULAR);
+	mTextView2Ptr->setTouchPass(true);
+	mTextView3Ptr->setTouchPass(true);
+	mTextView4Ptr->setTouchPass(true);
 }
 
 static bool _show_sys_info(unsigned long *freeram) {
@@ -395,7 +398,6 @@ static bool onUI_Timer(int id){
 	case VIDEO_AUTO_NEXT_FORMAT:
 	case VIDEO_AUTO_NEXT_ERROR:
 		LOGD("[video] VIDEO_AUTO_NEXT_ERROR");
-		mTipWindowPtr->hideWnd();
 		merrorWindowPtr->hideWnd();
 		is_play_error = false;
 //		video_next(true);
@@ -472,6 +474,11 @@ static bool onButtonClick_USB2Button(ZKButton *pButton) {
 
 static int getListItemCount_videoListView(const ZKListView *pListView) {
     //LOGD("getListItemCount_videoListView !\n");
+	if (media::get_video_list_size(_s_select_storage) == 0) {
+		mTextView5Ptr->setTextTr("No files");
+	} else {
+		mTextView5Ptr->setText("");
+	}
     return media::get_video_list_size(_s_select_storage);
 }
 
@@ -488,7 +495,7 @@ static void obtainListItemData_videoListView(ZKListView *pListView,ZKListView::Z
 
 static void onListItemClick_videoListView(ZKListView *pListView, int index, int id) {
     //LOGD(" onListItemClick_ videoListView  !!!\n");
-	uart::set_sound_channel(SOUND_CHANNEL_ARM);
+//	uart::set_sound_channel(SOUND_CHANNEL_ARM);
 	std::string file = media::get_video_file(_s_select_storage, index);
 	if (_s_play_index == index && _s_select_storage == _s_play_storage) {
 		video_ctrl_play(file.c_str(), track_progress_);
@@ -570,6 +577,7 @@ static bool onButtonClick_backButton(ZKButton *pButton) {
     mWindowMaskPtr->setVisible(true);
     mvideoPlayWindowPtr->hideWnd();
     mVideoCtrlWindowPtr->hideWnd();
+    app::show_topbar();
     return false;
 }
 
@@ -586,6 +594,7 @@ static bool onButtonClick_videoListButton(ZKButton *pButton) {
     seek_to_current_play();
     mvideoListViewPtr->refreshListView();
     mvideoPlayWindowPtr->hideWnd();
+    app::show_topbar();
     return false;
 }
 

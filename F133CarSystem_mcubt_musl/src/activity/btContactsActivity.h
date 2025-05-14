@@ -26,21 +26,36 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_BTCONTACTS_TipsTextView    50011
+#define ID_BTCONTACTS_DeleteTipsWindow    110010
+#define ID_BTCONTACTS_sureButton    20004
+#define ID_BTCONTACTS_cancelButton    20003
+#define ID_BTCONTACTS_numberTextView    50005
+#define ID_BTCONTACTS_TextView20    50027
+#define ID_BTCONTACTS_TextView19    50026
+#define ID_BTCONTACTS_TextView18    50025
+#define ID_BTCONTACTS_TextView17    50024
+#define ID_BTCONTACTS_TextView16    50023
+#define ID_BTCONTACTS_TextView15    50002
+#define ID_BTCONTACTS_btsettingButton    20007
+#define ID_BTCONTACTS_btcontactsButton    20006
+#define ID_BTCONTACTS_btrecordButton    20002
+#define ID_BTCONTACTS_phoneButton    20008
+#define ID_BTCONTACTS_queryMusicButton    20010
+#define ID_BTCONTACTS_btAppWindow    110001
+#define ID_BTCONTACTS_TextView1    50003
+#define ID_BTCONTACTS_deleteButton    20009
+#define ID_BTCONTACTS_TextView2    50004
+#define ID_BTCONTACTS_SubItem1    24001
 #define ID_BTCONTACTS_syncPointer    90001
 #define ID_BTCONTACTS_scaningTextView    50001
 #define ID_BTCONTACTS_scaningWindow    110003
 #define ID_BTCONTACTS_charSeekBar    91001
-#define ID_BTCONTACTS_btRecordsButton    20004
-#define ID_BTCONTACTS_btContactsButton    20005
-#define ID_BTCONTACTS_btDialButton    20003
 #define ID_BTCONTACTS_downloadButton    20001
 #define ID_BTCONTACTS_cIdSubItem    24002
 #define ID_BTCONTACTS_contactsListView    80003
 #define ID_BTCONTACTS_charJump    80006
 #define ID_BTCONTACTS_indexTip    50012
-#define ID_BTCONTACTS_sortTipsTextView    50011
-#define ID_BTCONTACTS_sortTipsWindow    110010
-#define ID_BTCONTACTS_sys_back   100
 /*TAG:Macro宏ID END*/
 
 class btContactsActivity : public Activity, 

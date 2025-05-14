@@ -26,6 +26,16 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_BTSETTING_btrecordButton    20001
+#define ID_BTSETTING_TextView20    50027
+#define ID_BTSETTING_TextView19    50026
+#define ID_BTSETTING_TextView18    50025
+#define ID_BTSETTING_TextView17    50024
+#define ID_BTSETTING_TextView16    50023
+#define ID_BTSETTING_TextView15    50001
+#define ID_BTSETTING_btsettingButton    20003
+#define ID_BTSETTING_btcontactsButton    20002
+#define ID_BTSETTING_btsetWindow    110010
 #define ID_BTSETTING_syncPointer    90001
 #define ID_BTSETTING_scaningTextView    50012
 #define ID_BTSETTING_scaningWindow    110008
@@ -45,7 +55,6 @@
 #define ID_BTSETTING_btSwitchTextView    50013
 #define ID_BTSETTING_connDevTipsTextView    50018
 #define ID_BTSETTING_connDevButton    20009
-#define ID_BTSETTING_sys_back   100
 #define ID_BTSETTING_enableButton    20011
 #define ID_BTSETTING_btNameEditText    51001
 #define ID_BTSETTING_devNameTipsTextView    50015
@@ -74,7 +83,6 @@
 #define ID_BTSETTING_autoWindow    110007
 #define ID_BTSETTING_matchTextView    50014
 #define ID_BTSETTING_scanDevTextView    50016
-#define ID_BTSETTING_barTextView    50001
 #define ID_BTSETTING_btEnableWindow    110012
 #define ID_BTSETTING_btSettingWindow    110011
 /*TAG:Macro宏ID END*/
