@@ -32,6 +32,9 @@
 
 #include "bt/context.h"
 #include "link/context.h"
+#include "system/setting.h"
+#include "utils/BitmapHelper.h"
+#include "manager/ConfigManager.h"
 
 static bt_cb_t _s_bt_cb;
 
@@ -65,6 +68,7 @@ static void _bt_music_cb(bt_music_state_e state) {
 		_update_music_progress();
 		mtittleTextViewPtr->setTextColor(0xFF00FF40);
 		mplayButtonPtr->setSelected(true);
+		sys::setting::set_music_play_dev(E_AUDIO_TYPE_BT_MUSIC);
 	} else {
 		mtittleTextViewPtr->setTextColor(0xFFFFFFFF);
 		mplayButtonPtr->setSelected(false);
@@ -79,15 +83,6 @@ static void _bt_add_cb() {
 static void _bt_remove_cb() {
 	bt::remove_cb(&_s_bt_cb);
 }
-
-static void _textview_touchpass(bool pass) {
-	mTextView16Ptr->setTouchPass(pass);
-	mTextView17Ptr->setTouchPass(pass);
-	mTextView18Ptr->setTouchPass(pass);
-	mTextView19Ptr->setTouchPass(pass);
-	mTextView20Ptr->setTouchPass(pass);
-}
-
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -103,8 +98,10 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
  */
 static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
-
 	_bt_add_cb();
+	if (bt::music_is_playing()) {
+		sys::setting::set_music_play_dev(E_AUDIO_TYPE_BT_MUSIC);
+	}
 	mplayButtonPtr->setSelected(bt::music_is_playing());
 	mtittleTextViewPtr->setTextColor(bt::music_is_playing() ? 0xFF00FF40 : 0xFFFFFFFF);
 	_update_music_info();		// 音乐信息
@@ -124,7 +121,7 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
-	_textview_touchpass(true);
+
 }
 
 /*
@@ -225,8 +222,13 @@ static bool onButtonClick_phoneButton(ZKButton *pButton) {
     	mbtTipsWindowPtr->showWnd();
     	return false;
     }
+    if (bt::is_calling()) {
+    	EASYUICONTEXT->openActivity("callingActivity");
+        EASYUICONTEXT->closeActivity("btDialActivity");
+    } else {
+        EASYUICONTEXT->openActivity("btDialActivity");
+    }
     EASYUICONTEXT->closeActivity("btContactsActivity");
-    EASYUICONTEXT->openActivity("btDialActivity");
     EASYUICONTEXT->closeActivity("btRecordsActivity");
     EASYUICONTEXT->closeActivity("btMusicActivity");
     return false;

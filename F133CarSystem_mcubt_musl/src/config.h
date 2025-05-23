@@ -153,7 +153,7 @@
 // 倒车轨迹线
 #define REVERSE_LINE_WIDTH       4    // 倒车线宽
 #define REVERSE_LINE_CORNER_LEN  50
-#define REVERSE_LINE_DEF_LTX     620  // 左上角x坐标
+#define REVERSE_LINE_DEF_LTX     380  // 左上角x坐标
 #define REVERSE_LINE_DEF_LTY     220  // 左上角y坐标
 #define REVERSE_LINE_DEF_RTX     (SCREEN_WIDTH - REVERSE_LINE_DEF_LTX)  // 右上角x坐标
 #define REVERSE_LINE_DEF_RTY     REVERSE_LINE_DEF_LTY  // 右上角y坐标

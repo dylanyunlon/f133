@@ -26,6 +26,7 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_PHOTOALBUM_TextViewBg    50017
 #define ID_PHOTOALBUM_TextView6    50010
 #define ID_PHOTOALBUM_TextView4    50009
 #define ID_PHOTOALBUM_TextView1    50007

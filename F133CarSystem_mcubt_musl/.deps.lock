@@ -42,6 +42,16 @@
       "id": "zknet",
       "version": "1.0.0",
       "revision": "1.0.0"
+    },
+    {
+      "repository": {
+        "id": "public",
+        "url": "https://package.flythings.cn"
+      },
+      "platform": "F133",
+      "id": "ntp",
+      "version": "1.0.1",
+      "revision": "1.0.1"
     }
   ]
 }

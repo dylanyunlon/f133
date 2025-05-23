@@ -4,6 +4,11 @@
 #include "screenOffActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextCenterPtr;
+static ZKPointer* mPointHourPtr;
+static ZKPointer* mPointSecondPtr;
+static ZKPointer* mPointMinutePtr;
+static ZKTextView* mTextBgPtr;
 static screenOffActivity* mActivityPtr;
 
 /*register activity*/
@@ -113,6 +118,11 @@ screenOffActivity::~screenOffActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    mTextCenterPtr = NULL;
+    mPointHourPtr = NULL;
+    mPointSecondPtr = NULL;
+    mPointMinutePtr = NULL;
+    mTextBgPtr = NULL;
 }
 
 const char* screenOffActivity::getAppName() const{
@@ -122,6 +132,11 @@ const char* screenOffActivity::getAppName() const{
 //TAG:onCreate
 void screenOffActivity::onCreate() {
 	Activity::onCreate();
+    mTextCenterPtr = (ZKTextView*)findControlByID(ID_SCREENOFF_TextCenter);
+    mPointHourPtr = (ZKPointer*)findControlByID(ID_SCREENOFF_PointHour);
+    mPointSecondPtr = (ZKPointer*)findControlByID(ID_SCREENOFF_PointSecond);
+    mPointMinutePtr = (ZKPointer*)findControlByID(ID_SCREENOFF_PointMinute);
+    mTextBgPtr = (ZKTextView*)findControlByID(ID_SCREENOFF_TextBg);
 	mActivityPtr = this;
 	onUI_init();
   registerProtocolDataUpdateListener(onProtocolDataUpdate);

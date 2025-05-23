@@ -4,10 +4,18 @@
 #include "misc/storage.h"
 #include "common.h"
 #include "utils/BrightnessHelper.h"
+#include "link/context.h"
+#include "bt/context.h"
+#include "media/audio_context.h"
+#include "media/audio_linein.h"
+#include "media/music_player.h"
+#include "sysapp_context.h"
+#include "fy/os.hpp"
 
 static int _s_signal_check_count;
-extern void screenOn_event();
+//extern void screenOn_event();
 extern void fold_statusbar();
+//static float vol = 0.0;
 namespace {
 
 class MyPictureCallback : public ZKCameraView::IPictureCallback {
@@ -63,7 +71,135 @@ static cam_info_t _s_cam_info_tab[] = {
 static MyPictureCallback sMyPictureCallback;
 static MyErrorCodeCallback sMyErrorCodeCallback;
 
+static void _draw_reverse_line() {
+	SZKPoint lt, rt, lb, rb;
+	sys::setting::get_reverse_line_point(lt, rt, lb, rb);
 
+	SZKPoint points[3];
+
+	int h = lb.y - lt.y;  // 垂直高度, 限制不为0
+	int gh = REVERSE_LINE_G_RATIO * h;
+	int yh = REVERSE_LINE_Y_RATIO * h;
+
+	mLinePainterPtr->setLineWidth(REVERSE_LINE_WIDTH);
+
+	// draw left
+	int w = lb.x - lt.x;
+	float ratio = (float) w / h;
+
+	points[0].x = lt.x + REVERSE_LINE_CORNER_LEN;
+	points[0].y = lt.y;
+	points[1].x = lt.x;
+	points[1].y = lt.y;
+	points[2].x = ratio * gh + lt.x;
+	points[2].y = lt.y + gh;
+	mLinePainterPtr->setSourceColor(REVERSE_LINE_G_COLOR);
+	mLinePainterPtr->drawLines(points, 3);
+
+	points[0].x = points[2].x + REVERSE_LINE_CORNER_LEN;
+	points[0].y = points[2].y;
+	points[1].x = points[2].x;
+	points[1].y = points[2].y;
+	points[2].x = ratio * (gh + yh) + lt.x;
+	points[2].y = lt.y + (gh + yh);
+	mLinePainterPtr->setSourceColor(REVERSE_LINE_Y_COLOR);
+	mLinePainterPtr->drawLines(points, 3);
+
+	points[0].x = points[2].x + REVERSE_LINE_CORNER_LEN;
+	points[0].y = points[2].y;
+	points[1].x = points[2].x;
+	points[1].y = points[2].y;
+	points[2].x = lb.x;
+	points[2].y = lb.y;
+	mLinePainterPtr->setSourceColor(REVERSE_LINE_R_COLOR);
+	mLinePainterPtr->drawLines(points, 3);
+
+	// draw right
+	w = rb.x - rt.x;
+	ratio = (float) w / h;
+
+	points[0].x = rt.x - REVERSE_LINE_CORNER_LEN;
+	points[0].y = rt.y;
+	points[1].x = rt.x;
+	points[1].y = rt.y;
+	points[2].x = ratio * gh + rt.x;
+	points[2].y = rt.y + gh;
+	mLinePainterPtr->setSourceColor(REVERSE_LINE_G_COLOR);
+	mLinePainterPtr->drawLines(points, 3);
+
+	points[0].x = points[2].x - REVERSE_LINE_CORNER_LEN;
+	points[0].y = points[2].y;
+	points[1].x = points[2].x;
+	points[1].y = points[2].y;
+	points[2].x = ratio * (gh + yh) + rt.x;
+	points[2].y = rt.y + (gh + yh);
+	mLinePainterPtr->setSourceColor(REVERSE_LINE_Y_COLOR);
+	mLinePainterPtr->drawLines(points, 3);
+
+	points[0].x = points[2].x - REVERSE_LINE_CORNER_LEN;
+	points[0].y = points[2].y;
+	points[1].x = points[2].x;
+	points[1].y = points[2].y;
+	points[2].x = rb.x;
+	points[2].y = rb.y;
+	mLinePainterPtr->setSourceColor(REVERSE_LINE_R_COLOR);
+	mLinePainterPtr->drawLines(points, 3);
+}
+
+typedef struct {
+	audio_type_e type;			  // 音频类型
+	bool playing;				  // 保存切换声音类型时的播放状态
+	bool (*is_playing)();		  // 获取播放状态的方法
+	void (*pause)();			  // 设置暂停状态的方法
+	void (*resume)();			  // 设置恢复状态的方法
+} audio_reverse_t;
+
+static void _linein_pause() {
+	audio::linein_stop();
+}
+
+static void _linein_resume() {
+	audio::linein_start();
+}
+
+static void _bt_music_pause() {
+	bt::music_pause();
+}
+
+static void _bt_music_resume() {
+	bt::music_play();
+}
+
+static audio_reverse_t _s_audio_reverse_tab[] = {
+	{ E_AUDIO_TYPE_BT_MUSIC, false, bt::music_is_playing, _bt_music_pause, _bt_music_resume },
+	{ E_AUDIO_TYPE_MUSIC, false, media::music_is_playing, media::music_pause, media::music_resume },
+	{ E_AUDIO_TYPE_LYLINK_MUSIC, false, lk::music_is_playing, lk::music_pause, lk::music_resume },
+	{ E_AUDIO_TYPE_LINEIN, false, audio::linein_is_playing, _linein_pause, _linein_resume },
+};
+
+static void reverse_show() {
+	for (size_t i = 0; i < TAB_SIZE(_s_audio_reverse_tab); ++i) {
+		if (audio::get_audio_type() == _s_audio_reverse_tab[i].type) {
+			if (_s_audio_reverse_tab[i].is_playing()) {
+				_s_audio_reverse_tab[i].pause();
+				_s_audio_reverse_tab[i].playing = true;
+				return ;
+			}
+			_s_audio_reverse_tab[i].playing = false;
+		}
+	}
+}
+
+static void reverse_quit() {
+	for (size_t i = 0; i < TAB_SIZE(_s_audio_reverse_tab); ++i) {
+		if (audio::get_audio_type() == _s_audio_reverse_tab[i].type) {
+			if (!_s_audio_reverse_tab[i].is_playing() && _s_audio_reverse_tab[i].playing) {
+				_s_audio_reverse_tab[i].resume();
+				return ;
+			}
+		}
+	}
+}
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -79,15 +215,25 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 static void onUI_init() {
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
 	fold_statusbar();
-	screenOn_event();
+//	screenOn_event();
 	mCameraViewReversePtr->setErrorCodeCallback(&sMyErrorCodeCallback);
 	mCameraViewReversePtr->setPictureCallback(&sMyPictureCallback);
 	mCameraViewReversePtr->setDevPath(sys::setting::get_camera_dev());
 	mCameraViewReversePtr->setChannel(sys::setting::get_camera_chn());
 	mCameraViewReversePtr->setFormatSize(sys::setting::get_camera_wide(),sys::setting::get_camera_high());
+	mCameraViewReversePtr->setRotation((ERotation)sys::setting::get_camera_rot());
 	mCameraViewReversePtr->setFrameRate(sys::setting::get_camera_rate());
 	mCameraViewReversePtr->setOption("req_bufs_count", "3");
 	mCameraViewReversePtr->setOption("mem_type", "2");
+
+	if (sys::setting::is_reverse_line_view()) {
+		mLinePainterPtr->setVisible(true);
+		_draw_reverse_line();
+	} else {
+		mLinePainterPtr->setVisible(false);
+	}
+
+//	vol = audio::get_system_vol();
 }
 
 /**
@@ -103,7 +249,16 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
+//	bool effect = bt::is_calling() || (lk::is_connected() && lk::get_is_call_state() != CallState_Hang);
+//	audio::set_system_vol(0, !effect);
+	reverse_show();
 
+	if (bt::is_calling()) {
+		EASYUICONTEXT->showStatusBar();
+	}
+	EASYUICONTEXT->screensaverOff();
+	BRIGHTNESSHELPER->screenOn();
+//	app::hide_topbar();
 }
 
 /*
@@ -118,6 +273,12 @@ static void onUI_hide() {
  */
 static void onUI_quit() {
 	mCameraViewReversePtr->setErrorCodeCallback(NULL);
+//	bool effect = bt::is_calling() || (lk::is_connected() && lk::get_is_call_state() != CallState_Hang);
+//	audio::set_system_vol(vol, !effect);
+	reverse_quit();
+
+//	app::show_topbar();
+	fy::drop_caches();
 }
 
 /**

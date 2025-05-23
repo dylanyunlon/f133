@@ -26,6 +26,7 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_VIDEO_TextViewBg    50010
 #define ID_VIDEO_TextView5    50004
 #define ID_VIDEO_TextView2    50005
 #define ID_VIDEO_TextView3    50006

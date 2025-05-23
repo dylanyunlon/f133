@@ -247,6 +247,7 @@ bool parse_video_info(const char *file, video_info_t *info) {
 	info->width = mi.program[0].video[0].nWidth;
 	info->height = mi.program[0].video[0].nHeight;
 	info->bit_rate = mi.bitrate;
+	info->codec_format = mi.program[0].video[0].eCodecFormat;
 
 	if ((info->bit_rate == 0) && (mi.program[0].duration != 0)) {
 		info->bit_rate = mi.fileSize * 8 / (mi.program[0].duration / 1000);

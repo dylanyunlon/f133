@@ -18,8 +18,11 @@
 #define D_ZKCAMERA_PROP_SIZE	  		"1920x1080"
 #define D_ZKCAMERA_PROP_RATE	 		25
 #define D_ZKCAMERA_PROP_CHN		 		0
-#define D_ZKCAMERA_PROP_SKIP			3
+#define D_ZKCAMERA_PROP_SKIP			14
 #define D_ZKCAMERA_PROP_ROT		 		0
+
+#define D_ZKCAMERA_PROP_BUFCNT		 	3
+#define D_ZKCAMERA_PROP_MEMTYPE		 	2
 
 #define ZKCAMERA_PROP_DEV         		"persist.zkcamera.dev"
 #define ZKCAMERA_PROP_SIZE        		"persist.zkcamera.size"
@@ -27,6 +30,8 @@
 #define ZKCAMERA_PROP_ROT         		"persist.zkcamera.rot"
 #define ZKCAMERA_PROP_CHN         		"persist.zkcamera.chn"
 #define ZKCAMERA_PROP_SKIP        		"persist.zkcamera.skip"
+#define ZKCAMERA_PROP_BUFCNT 			"persist.zkcamera.bufcount"
+#define ZKCAMERA_PROP_MEMTYPE			"persist.zkcamera.memtype"
 
 #define GET_ZKCAMERA_PROP_DEV(c) 	 	 SystemProperties::getString(ZKCAMERA_PROP_DEV,c,D_ZKCAMERA_PROP_DEV);
 #define GET_ZKCAMERA_PROP_SIZE(c) 	 	 SystemProperties::getString(ZKCAMERA_PROP_SIZE, c,D_ZKCAMERA_PROP_SIZE);
@@ -34,6 +39,8 @@
 #define GET_ZKCAMERA_PROP_CHN(i)         SystemProperties::getInt(ZKCAMERA_PROP_CHN,i,D_ZKCAMERA_PROP_CHN);
 #define GET_ZKCAMERA_PROP_SKIP(i)        SystemProperties::getInt(ZKCAMERA_PROP_SKIP,i,D_ZKCAMERA_PROP_SKIP);
 #define GET_ZKCAMERA_PROP_ROT(i)		 SystemProperties::getInt(ZKCAMERA_PROP_ROT,i,D_ZKCAMERA_PROP_ROT);
+#define GET_ZKCAMERA_PROP_BUFCNT(i)		 SystemProperties::getInt(ZKCAMERA_PROP_BUFCNT,i,D_ZKCAMERA_PROP_BUFCNT);
+#define GET_ZKCAMERA_PROP_MEMTYPE(i)	 SystemProperties::getInt(ZKCAMERA_PROP_MEMTYPE,i,D_ZKCAMERA_PROP_MEMTYPE);
 
 #define AUDIO_PLAY_MODE					 "audio_play_mode"
 #define SYS_BRIGHTNESS					 "brightness"
@@ -59,7 +66,12 @@
 #define FM_FREQUENCY               "fm_frequency"
 #define FM_SWITCH				   "fm_switch"
 
+#define VIDEO_PLAY_MODE_KEY			"video_play_mode_key"
+#define MUSIC_PLAY_DEV				"music_play_dev"
+
 #define TIME_FORMAT_24H            "time_format_24h"
+#define REVERSE_LINE_POINT         "reverse_line_point"
+#define REVERSE_LINE_VIEW		   "reverse_line_view"
 
 #define DEFAULT_FREQUENCY		   900
 
@@ -72,6 +84,8 @@ typedef struct{
 	int wide;
 	int high;
 	int rot;
+	int buf_count;
+	int mem_type;
 } camera_info_tab;
 static bool _s_time_format_24h = true;
 static camera_info_tab s_camera_info_tab;
@@ -96,8 +110,21 @@ void init() {
 	GET_ZKCAMERA_PROP_CHN(&s_camera_info_tab.chn)
 	GET_ZKCAMERA_PROP_SKIP(&s_camera_info_tab.skip)
 	GET_ZKCAMERA_PROP_ROT(&s_camera_info_tab.rot)
+	GET_ZKCAMERA_PROP_BUFCNT(&s_camera_info_tab.buf_count)
+	GET_ZKCAMERA_PROP_MEMTYPE(&s_camera_info_tab.mem_type)
+
 	sscanf(s_camera_info_tab.size, "%dx%d", &s_camera_info_tab.wide, &s_camera_info_tab.high);
+	set_camera_dev(s_camera_info_tab.dev);
+	set_camera_size(s_camera_info_tab.wide, s_camera_info_tab.high);
+	set_camera_rate(s_camera_info_tab.rate);
+	set_camera_rot(s_camera_info_tab.rot);
+	set_camera_chn(s_camera_info_tab.chn);
 	set_camera_skip(s_camera_info_tab.skip);
+
+	// 解决快速倒车画面卡顿的问题
+	set_camera_buf_count(s_camera_info_tab.buf_count);
+	set_camera_mem_type(s_camera_info_tab.mem_type);
+
 	int brival = storage::get_int(SYS_BRIGHTNESS, -1);
 	int contrastval = storage::get_int(SYS_CONTRAST, -1);
 	int satrationval = storage::get_int(SYS_SATRATION, -1);
@@ -279,6 +306,24 @@ void set_camera_rot(int rot){
 	SystemProperties::setInt(ZKCAMERA_PROP_ROT, rot);
 }
 
+int get_camera_buf_count(){
+	GET_ZKCAMERA_PROP_ROT(&s_camera_info_tab.buf_count)
+	return s_camera_info_tab.buf_count;
+}
+
+void set_camera_buf_count(int cnt){
+	SystemProperties::setInt(ZKCAMERA_PROP_BUFCNT, cnt);
+}
+
+int get_camera_mem_type(){
+	GET_ZKCAMERA_PROP_ROT(&s_camera_info_tab.mem_type)
+	return s_camera_info_tab.mem_type;
+}
+
+void set_camera_mem_type(int type){
+	SystemProperties::setInt(ZKCAMERA_PROP_MEMTYPE, type);
+}
+
 void set_brightness(int brightness) {
 	storage::put_int(SYS_BRIGHTNESS,brightness);
 	BRIGHTNESSHELPER->setBrightness(brightness);
@@ -430,5 +475,61 @@ void set_time_format_24h(bool format_24h) {
 bool is_time_format_24h() {
 	return _s_time_format_24h;
 }
+
+void set_reverse_line_point(const SZKPoint &lt, const SZKPoint &rt, const SZKPoint &lb, const SZKPoint &rb) {
+	char buf[128];
+	sprintf(buf, "%d,%d,%d,%d,%d,%d,%d,%d",
+			(int) lt.x, (int) lt.y, (int) rt.x, (int) rt.y,
+			(int) lb.x, (int) lb.y, (int) rb.x, (int) rb.y);
+	storage::put_string(REVERSE_LINE_POINT, buf);
+}
+
+void get_reverse_line_point(SZKPoint &lt, SZKPoint &rt, SZKPoint &lb, SZKPoint &rb) {
+	std::string str = storage::get_string(REVERSE_LINE_POINT, "");
+	if (!str.empty()) {
+		int ltx = 0, lty = 0, rtx = 0, rty = 0, lbx = 0, lby = 0, rbx = 0, rby = 0;
+		sscanf(str.c_str(), "%d,%d,%d,%d,%d,%d,%d,%d", &ltx, &lty, &rtx, &rty, &lbx, &lby, &rbx, &rby);
+		lt.x = ltx;
+		lt.y = lty;
+		rt.x = rtx;
+		rt.y = rty;
+		lb.x = lbx;
+		lb.y = lby;
+		rb.x = rbx;
+		rb.y = rby;
+	} else {
+		lt.x = REVERSE_LINE_DEF_LTX;
+		lt.y = REVERSE_LINE_DEF_LTY;
+		rt.x = REVERSE_LINE_DEF_RTX;
+		rt.y = REVERSE_LINE_DEF_RTY;
+		lb.x = REVERSE_LINE_DEF_LBX;
+		lb.y = REVERSE_LINE_DEF_LBY;
+		rb.x = REVERSE_LINE_DEF_RBX;
+		rb.y = REVERSE_LINE_DEF_RBY;
+	}
+}
+
+void set_reverse_line_view (bool show) {
+	storage::put_bool(REVERSE_LINE_VIEW, show);
+}
+bool is_reverse_line_view () {
+	return storage::get_bool(REVERSE_LINE_VIEW, false);
+}
+
+void video_set_play_mode(media_play_mode_e mode) {
+	storage::put_int(VIDEO_PLAY_MODE_KEY, mode);
+}
+
+media_play_mode_e video_get_play_mode() {
+	return (media_play_mode_e) storage::get_int(VIDEO_PLAY_MODE_KEY, E_MEDIA_PLAY_MODE_CYCLE);
+}
+
+void set_music_play_dev(audio_type_e dev) {
+	storage::put_int(MUSIC_PLAY_DEV, dev);
+}
+audio_type_e get_music_play_dev() {
+	return (audio_type_e) storage::get_int(MUSIC_PLAY_DEV, E_AUDIO_TYPE_MUSIC);
+}
+
 }
 }

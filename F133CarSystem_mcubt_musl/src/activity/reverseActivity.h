@@ -13,6 +13,7 @@
 
 #include "utils/Log.h"
 #include "control/ZKDigitalClock.h"
+#include "control/ZKPainter.h"
 #include "control/ZKButton.h"
 #include "control/ZKCameraView.h"
 #include "control/ZKCircleBar.h"
@@ -27,6 +28,7 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_REVERSE_LinePainter    52001
 #define ID_REVERSE_ListView1    80001
 #define ID_REVERSE_TextView1    50002
 #define ID_REVERSE_SignTextView    50001

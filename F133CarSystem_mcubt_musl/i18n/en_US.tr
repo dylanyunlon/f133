@@ -65,7 +65,8 @@
     <string name="Cut">Cut</string>
     <string name="CameraType">CameraType：</string>
     <string name="developer">developer</string>
-    <string name="version">system version：</string>
+    <string name="version">system version</string>
+    <string name="Version Information">Version Information</string>
     <string name="color system">color system</string>
     <string name="media volume">media volume</string>
     <string name="phone volume">phone volume</string>
@@ -89,8 +90,9 @@
 	<string name="disconnecting">disconnecting</string>
 	<string name="Album">Album</string>
 	<string name="FMT">FMT</string>
-	<string name="Turn on">开启</string>
-    <string name="Turn off">关闭</string>
+	<string name="Horn">Horn</string>
+	<string name="Turn on">Turn on</string>
+    <string name="Turn off">Turn off</string>
 	<string name="downloading">downloading</string>
 	<string name="Calling">Calling</string>
 	<string name="Please use this function when your mobile phone is not connected">Please use this function when your mobile phone is not connected</string>
@@ -98,8 +100,7 @@
 	<string name="Conn_step">Connection steps:</string>
 	<string name="Conn_tips">Tip:</string>
 	<string name="cp_help">CarPlay connection help</string>
-	<string name="cp_step1">1. Use an iPhone to connect to Bluetooth,
- the Bluetooth name is:</string>
+	<string name="cp_step1">1. Use an iPhone to connect to Bluetooth,the Bluetooth name is:</string>
 	<string name="cp_step2">2. When the pop-up window on the phone shows &quot;Use iPhone for Carplay car?&quot;, select the &quot;Use Carplay car option&quot;</string>
 	<string name="cp_tips1">1. The waiting time for the first connection is relatively long</string>
 	<string name="cp_tips2">2. Only supports Apple phones</string>
@@ -112,12 +113,11 @@
 application and dependent applications are the latest versions</string>
 	<string name="ap_help">AirPlay connection help</string>
 	<string name="ap_step1">1. Please use your iPhone to connect to WiFi.The WiFi name is:</string>
-	<string name="ap_step2">The WiFi password is:</string>
+	<string name="ap_step2">2. The WiFi password is:</string>
 	<string name="ap_step3">3. In the screen mirror of the iPhone control center, select:</string>
 	<string name="ap_tips1">1. Only supports iPhone phones</string>
 	<string name="mc_help">Miracast connection help</string>
-	<string name="mc_step1">1. Open your Android phone and enter the 
-system settings interface</string>
+	<string name="mc_step1">1. Open your Android phone and enter the system settings interface</string>
 	<string name="mc_step2">2. Find more connections and enable phone screen mirroring</string>
 	<string name="mc_step3">3. Wait for scanning, connect device name:</string>
 	<string name="ac_help">AiCast connection help</string>
@@ -160,12 +160,13 @@ the mobile phone hotspot.</string>
 	<string name="Sound">Sound</string>
 	<string name="Query the version">Query the version</string>
 	<string name="Check for updates">Check for updates</string>
-	<string name="Enter upgrade mode">Enter upgrade mode</string>
+	<string name="Upgrade MCU">Upgrade MCU</string>
 	<string name="Start the upgrade">Start the upgrade</string>
 	<string name="explain">Enable/disable this feature will automatically disconnect and reconnect before it takes 
 effect, so please check whether to use this 
 function</string>
 	<string name="Other devices are connected">Other devices are connected</string>
+	<string name="Authorization">Authorization</string>
 	<string name="Read auto code">Read auto code</string>
 	<string name="Lylink is not auto">Lylink is not auto</string>
 	<string name="Lylink is auto">Lylink is auto</string>
@@ -180,4 +181,21 @@ function</string>
 	<string name="This image is not supported for display!">This image is not supported for display!</string>
 	<string name="No files">No files</string>
 	<string name="Display parameter adjustment">Display parameter adjustment</string>
+	<string name="model">MCU model</string>
+	<string name="There are available upgrade files, do you want to upgrade?">There are available upgrade files, 
+do you want to upgrade?</string>
+	<string name="No upgrade files found.">No upgrade files found.</string>
+	<string name="Upgrade complete">Upgrade complete</string>
+	<string name="Latest version">Latest version</string>
+	<string name="Updated content">Updated content</string>
+	<string name="Reversing assistance lines">Reversing assistance lines</string>
+	<string name="mirror">Camera avatar mirroring</string>
+	<string name="confirm_switch_link_screen_mode">Enabling/disabling this
+function will automatically disconnect 
+and reconnect before it can take effect. 
+Please confirm whether to switch</string>
+	<string name="Time system">Time system</string>
+	<string name="12 hour">12 hour</string>
+	<string name="24 hour">24 hour</string>
+	<string name="You can only enter a maximum of 20 characters">You can only enter a maximum of 20 characters</string>
 </resources>

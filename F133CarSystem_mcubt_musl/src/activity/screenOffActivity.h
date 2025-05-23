@@ -26,6 +26,11 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_SCREENOFF_TextCenter    50002
+#define ID_SCREENOFF_PointHour    90001
+#define ID_SCREENOFF_PointSecond    90003
+#define ID_SCREENOFF_PointMinute    90002
+#define ID_SCREENOFF_TextBg    50001
 /*TAG:Macro宏ID END*/
 
 class screenOffActivity : public Activity, 

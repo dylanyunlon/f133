@@ -4,6 +4,20 @@
 #include "callingActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mnumberTextViewPtr;
+static ZKTextView* mTextView15Ptr;
+static ZKButton* mbtsettingButtonPtr;
+static ZKButton* mbtcontactsButtonPtr;
+static ZKButton* mbtrecordButtonPtr;
+static ZKButton* mphoneButtonPtr;
+static ZKButton* mqueryMusicButtonPtr;
+static ZKWindow* mbtAppWindowPtr;
+static ZKButton* mouthangupButtonPtr;
+static ZKWindow* moutWindowPtr;
+static ZKButton* minanswerButtonPtr;
+static ZKButton* minhangupButtonPtr;
+static ZKWindow* minWindowPtr;
+static ZKWindow* mInfoWndPtr;
 static ZKButton* mdelButtonPtr;
 static ZKButton* mkeyXINGButtonPtr;
 static ZKButton* mkeyJINGButtonPtr;
@@ -22,10 +36,8 @@ static ZKWindow* mkeyBoardWindowPtr;
 static ZKButton* mstopMicButtonPtr;
 static ZKButton* mkeyBoardButtonPtr;
 static ZKButton* msoundButtonPtr;
-static ZKTextView* mnumberTextViewPtr;
 static ZKWindow* mcommunicateWindowPtr;
 static ZKTextView* mcallTimeTextViewPtr;
-static ZKTextView* mTextView2Ptr;
 static ZKTextView* mnameTextViewPtr;
 static ZKTextView* mheadTextViewPtr;
 static ZKButton* mhangupButtonPtr;
@@ -66,6 +78,14 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_CALLING_btsettingButton, onButtonClick_btsettingButton,
+    ID_CALLING_btcontactsButton, onButtonClick_btcontactsButton,
+    ID_CALLING_btrecordButton, onButtonClick_btrecordButton,
+    ID_CALLING_phoneButton, onButtonClick_phoneButton,
+    ID_CALLING_queryMusicButton, onButtonClick_queryMusicButton,
+    ID_CALLING_outhangupButton, onButtonClick_outhangupButton,
+    ID_CALLING_inanswerButton, onButtonClick_inanswerButton,
+    ID_CALLING_inhangupButton, onButtonClick_inhangupButton,
     ID_CALLING_delButton, onButtonClick_delButton,
     ID_CALLING_keyXINGButton, onButtonClick_keyXINGButton,
     ID_CALLING_keyJINGButton, onButtonClick_keyJINGButton,
@@ -155,6 +175,20 @@ callingActivity::~callingActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    mnumberTextViewPtr = NULL;
+    mTextView15Ptr = NULL;
+    mbtsettingButtonPtr = NULL;
+    mbtcontactsButtonPtr = NULL;
+    mbtrecordButtonPtr = NULL;
+    mphoneButtonPtr = NULL;
+    mqueryMusicButtonPtr = NULL;
+    mbtAppWindowPtr = NULL;
+    mouthangupButtonPtr = NULL;
+    moutWindowPtr = NULL;
+    minanswerButtonPtr = NULL;
+    minhangupButtonPtr = NULL;
+    minWindowPtr = NULL;
+    mInfoWndPtr = NULL;
     mdelButtonPtr = NULL;
     mkeyXINGButtonPtr = NULL;
     mkeyJINGButtonPtr = NULL;
@@ -173,10 +207,8 @@ callingActivity::~callingActivity() {
     mstopMicButtonPtr = NULL;
     mkeyBoardButtonPtr = NULL;
     msoundButtonPtr = NULL;
-    mnumberTextViewPtr = NULL;
     mcommunicateWindowPtr = NULL;
     mcallTimeTextViewPtr = NULL;
-    mTextView2Ptr = NULL;
     mnameTextViewPtr = NULL;
     mheadTextViewPtr = NULL;
     mhangupButtonPtr = NULL;
@@ -189,6 +221,20 @@ const char* callingActivity::getAppName() const{
 //TAG:onCreate
 void callingActivity::onCreate() {
 	Activity::onCreate();
+    mnumberTextViewPtr = (ZKTextView*)findControlByID(ID_CALLING_numberTextView);
+    mTextView15Ptr = (ZKTextView*)findControlByID(ID_CALLING_TextView15);
+    mbtsettingButtonPtr = (ZKButton*)findControlByID(ID_CALLING_btsettingButton);
+    mbtcontactsButtonPtr = (ZKButton*)findControlByID(ID_CALLING_btcontactsButton);
+    mbtrecordButtonPtr = (ZKButton*)findControlByID(ID_CALLING_btrecordButton);
+    mphoneButtonPtr = (ZKButton*)findControlByID(ID_CALLING_phoneButton);
+    mqueryMusicButtonPtr = (ZKButton*)findControlByID(ID_CALLING_queryMusicButton);
+    mbtAppWindowPtr = (ZKWindow*)findControlByID(ID_CALLING_btAppWindow);
+    mouthangupButtonPtr = (ZKButton*)findControlByID(ID_CALLING_outhangupButton);
+    moutWindowPtr = (ZKWindow*)findControlByID(ID_CALLING_outWindow);
+    minanswerButtonPtr = (ZKButton*)findControlByID(ID_CALLING_inanswerButton);
+    minhangupButtonPtr = (ZKButton*)findControlByID(ID_CALLING_inhangupButton);
+    minWindowPtr = (ZKWindow*)findControlByID(ID_CALLING_inWindow);
+    mInfoWndPtr = (ZKWindow*)findControlByID(ID_CALLING_InfoWnd);
     mdelButtonPtr = (ZKButton*)findControlByID(ID_CALLING_delButton);
     mkeyXINGButtonPtr = (ZKButton*)findControlByID(ID_CALLING_keyXINGButton);
     mkeyJINGButtonPtr = (ZKButton*)findControlByID(ID_CALLING_keyJINGButton);
@@ -207,10 +253,8 @@ void callingActivity::onCreate() {
     mstopMicButtonPtr = (ZKButton*)findControlByID(ID_CALLING_stopMicButton);
     mkeyBoardButtonPtr = (ZKButton*)findControlByID(ID_CALLING_keyBoardButton);
     msoundButtonPtr = (ZKButton*)findControlByID(ID_CALLING_soundButton);
-    mnumberTextViewPtr = (ZKTextView*)findControlByID(ID_CALLING_numberTextView);
     mcommunicateWindowPtr = (ZKWindow*)findControlByID(ID_CALLING_communicateWindow);
     mcallTimeTextViewPtr = (ZKTextView*)findControlByID(ID_CALLING_callTimeTextView);
-    mTextView2Ptr = (ZKTextView*)findControlByID(ID_CALLING_TextView2);
     mnameTextViewPtr = (ZKTextView*)findControlByID(ID_CALLING_nameTextView);
     mheadTextViewPtr = (ZKTextView*)findControlByID(ID_CALLING_headTextView);
     mhangupButtonPtr = (ZKButton*)findControlByID(ID_CALLING_hangupButton);

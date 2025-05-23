@@ -8,7 +8,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <set>
-
+#include "manager/ConfigManager.h"
 #include "media_context.h"
 #include "audio_context.h"
 #include "music_player.h"
@@ -276,7 +276,18 @@ static MediaMountListener _s_mount_listener;
 void init() {
 	// 2 * 1024 * 1024 = 2097152   1024对齐
 	setenv("ZKMEDIA_H264_VBVSIZE", "1048576", 1);
+//	ZKMEDIA_VIDEO_MAX_SIZE与VD_LBC_MODE不能同时使用；启用LBC提高视频画质，并不会占用太多的内存
+#if 1
 	setenv("ZKMEDIA_VIDEO_MAX_SIZE", "640x480", 1);
+#else
+	enum disp_rot_e rot = (enum disp_rot_e) (CONFIGMANAGER->getScreenRotate() / 90);
+	setenv("VD_LBC_MODE", "2", 1);
+	if(rot == E_DISP_ROT_0) {
+		setenv("VD_LBC_RC_EN", "1", 1);
+	} else {
+		setenv("VD_LBC_RC_EN", "0", 1);
+	}
+#endif
 
 	audio::init();
 	music_init();

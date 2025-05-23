@@ -36,13 +36,19 @@
 #include "media/music_player.h"
 #include "media/media_parser.h"
 #include "os/MountMonitor.h"
+#include "utils/ScreenHelper.h"
 #include "utils/Loading_icon.hpp"
 #include "uart/context.h"
 #include "fy/strings.hpp"
 #include <sys/sysinfo.h>
 #include "net/context.h"
 #include "sysapp_context.h"
+#include "system/setting.h"
 #include "fy/os.hpp"
+#include "manager/ConfigManager.h"
+#include "utils/BitmapHelper.h"
+
+#include "vbasetype.h"
 
 #define LOOP_TIMER            1
 #define DELAY_CHECK_TIMER     2
@@ -105,6 +111,7 @@ protected:
 				mVideoviewTTPtr->stop();
 				unregister_play_error_timer();
 				mvideoPlayWindowPtr->hideWnd();
+//				app::show_topbar();
 				mPlayButtonPtr->setSelected(false);
 				mWindowMaskPtr->setVisible(true);
 				_s_play_index = -1;
@@ -132,6 +139,39 @@ static void _media_scan_cb(const char *dir, storage_type_e type, bool started) {
 	mscaningWindowPtr->setVisible(started);
 	mvideoListViewPtr->refreshListView();
 }
+
+static void _display_video_centered(video_info_t info) {
+    if (info.width <= 0 || info.height <= 0) {
+        return;
+    }
+	LayoutPosition pos = { 0 };
+	int screen_width = ScreenHelper::getScreenWidth();
+	int screen_height = ScreenHelper::getScreenHeight();
+
+    if(info.width <= screen_width && info.height <= screen_height) {
+		pos.mWidth = info.width;
+		pos.mHeight = info.height;
+    } else {
+        const float video_scale = (float)info.width / info.height;
+        const float screen_scale = (float)screen_width / screen_height;
+
+        if (video_scale > screen_scale) {
+			// 视频比屏幕更宽（上下留黑边）
+        	pos.mWidth = screen_width;
+        	pos.mHeight = (int)(screen_width / video_scale + 0.5f);
+        } else {
+			// 视频比屏幕更高（左右留黑边）
+        	pos.mHeight = screen_height;
+            pos.mWidth = (int)(screen_height * video_scale + 0.5f);
+        }
+    }
+    // 计算居中位置（四舍五入）
+    pos.mLeft = (int)((screen_width - pos.mWidth) / 2.0f + 0.5);
+    pos.mTop = (int)((screen_height - pos.mHeight) / 2.0f  + 0.5);
+
+    mVideoviewTTPtr->setPosition(pos);
+}
+
 static bool video_ctrl_play(const char* file, int msec = 0) {
 	video_info_t info;
 	std::string filestr(file);
@@ -139,6 +179,10 @@ static bool video_ctrl_play(const char* file, int msec = 0) {
 	bool ret = media::parse_video_info(file, &info);
 	if (!ret) {		// 解析失败
 		LOGD("Video parsing failure!   %s\n", file);
+		goto FAIL;
+	} else if((info.codec_format >= VIDEO_CODEC_FORMAT_MPEG1 && info.codec_format <= VIDEO_CODEC_FORMAT_MPEG4) &&
+			(info.width >= 1920 || info.height >= 1080)) {
+		LOGD("Does not support high-resolution(%d*%d) MPEG format(0x%x)!\n", info.width, info.height, info.codec_format);
 		goto FAIL;
 	} else if (info.width >= 2560 || info.height >= 1440 || info.bit_rate >= 5000*1000) {		// 分辨率过大
 		LOGD("max support: 1920*1080, current file: %d*%d, bit_rate:%d, Excessive video resolution!\n", info.width, info.height, info.bit_rate);
@@ -153,8 +197,9 @@ static bool video_ctrl_play(const char* file, int msec = 0) {
 	} else {
 		if(!mvideoPlayWindowPtr->isWndShow()) {
 			mvideoPlayWindowPtr->showWnd();
-			app::hide_topbar();
+//			app::hide_topbar();
 		}
+		_display_video_centered(info);
 		mVideoviewTTPtr->setVisible(true);
 //		mDisplayButton1Ptr->setVisible(true);
 		mVideoviewTTPtr->play(file, msec);
@@ -246,7 +291,6 @@ static bool _show_sys_info(unsigned long *freeram) {
 	*freeram = info.freeram;
 	return true;
 }
-
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -270,6 +314,7 @@ static void onUI_init(){
 	mWindowMaskPtr->setPosition(mVideoviewTTPtr->getPosition());
 
 	mount_path_button_selected(_s_select_storage);
+	_s_play_mode = sys::setting::video_get_play_mode();
 	mplayModeButtonPtr->setButtonStatusPic(ZK_CONTROL_STATUS_NORMAL, play_mode_path[_s_play_mode].c_str());
 	mplayModeButtonPtr->setButtonStatusPic(ZK_CONTROL_STATUS_PRESSED, play_mode_press_path[_s_play_mode].c_str());
 
@@ -577,7 +622,7 @@ static bool onButtonClick_backButton(ZKButton *pButton) {
     mWindowMaskPtr->setVisible(true);
     mvideoPlayWindowPtr->hideWnd();
     mVideoCtrlWindowPtr->hideWnd();
-    app::show_topbar();
+//    app::show_topbar();
     return false;
 }
 
@@ -594,13 +639,14 @@ static bool onButtonClick_videoListButton(ZKButton *pButton) {
     seek_to_current_play();
     mvideoListViewPtr->refreshListView();
     mvideoPlayWindowPtr->hideWnd();
-    app::show_topbar();
+//    app::show_topbar();
     return false;
 }
 
 static bool onButtonClick_playModeButton(ZKButton *pButton) {
     LOGD(" ButtonClick playModeButton !!!\n");
     _s_play_mode =  (media_play_mode_e)((_s_play_mode + 1) % 3);
+    sys::setting::video_set_play_mode(_s_play_mode);
     pButton->setButtonStatusPic(ZK_CONTROL_STATUS_NORMAL, play_mode_path[_s_play_mode].c_str());
     pButton->setButtonStatusPic(ZK_CONTROL_STATUS_PRESSED, play_mode_press_path[_s_play_mode].c_str());
     return false;

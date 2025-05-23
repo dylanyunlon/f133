@@ -4,6 +4,23 @@
 #include "settingsActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKButton* msystemButtonPtr;
+static ZKButton* mfactoryButtonPtr;
+static ZKButton* mreverseButtonPtr;
+static ZKButton* mvoiceButtonPtr;
+static ZKButton* mlinkButtonPtr;
+static ZKButton* mshowButtonPtr;
+static ZKWindow* msetWndPtr;
+static ZKTextView* mmcuTextViewPtr;
+static ZKTextView* mappTextViewPtr;
+static ZKTextView* mosTextViewPtr;
+static ZKTextView* mTextView17Ptr;
+static ZKTextView* mTextView16Ptr;
+static ZKTextView* mTextView15Ptr;
+static ZKTextView* mTextView14Ptr;
+static ZKTextView* mTextView13Ptr;
+static ZKTextView* mTextView10Ptr;
+static ZKWindow* mversionWindowPtr;
 static ZKButton* mhourButton24Ptr;
 static ZKButton* mhourButton12Ptr;
 static ZKTextView* mTextView9Ptr;
@@ -12,25 +29,6 @@ static ZKTextView* mTextView7Ptr;
 static ZKTextView* mTextView6Ptr;
 static ZKTextView* mTextView5Ptr;
 static ZKTextView* mTextView4Ptr;
-static ZKScrollWindow* mCameraScrollWindowPtr;
-static ZKButton* mrotnextButtonPtr;
-static ZKButton* mrotdownButtonPtr;
-static ZKTextView* mrotTextViewPtr;
-static ZKTextView* mTextView36Ptr;
-static ZKButton* mskipaddButtonPtr;
-static ZKTextView* mskipTextViewPtr;
-static ZKButton* mskipreduceButtonPtr;
-static ZKButton* mCutcvbsButtonPtr;
-static ZKTextView* mTextView35Ptr;
-static ZKTextView* mTextView32Ptr;
-static ZKTextView* mTextView33Ptr;
-static ZKTextView* motpTextViewPtr;
-static ZKWindow* motpWindowPtr;
-static ZKWindow* mdeveloperWndPtr;
-static ZKListView* mmoreListViewPtr;
-static ZKWindow* mmoreWndPtr;
-static ZKButton* mtimeCancelButtonPtr;
-static ZKButton* mSetTimeSureBtnPtr;
 static ZKListView* mdayListViewPtr;
 static ZKListView* mmonthListViewPtr;
 static ZKListView* myearListViewPtr;
@@ -41,9 +39,6 @@ static ZKWindow* msetWindowPtr;
 static ZKWindow* mSetdataWndPtr;
 static ZKListView* mLanguageListViewPtr;
 static ZKWindow* mLanguageWndPtr;
-static ZKTextView* mTextView12Ptr;
-static ZKTextView* mVersionTextPtr;
-static ZKTextView* mTextView11Ptr;
 static ZKTextView* mTextView40Ptr;
 static ZKButton* mresetCancelButtonPtr;
 static ZKButton* mresetConfirmButtonPtr;
@@ -51,60 +46,6 @@ static ZKWindow* mresetWindowPtr;
 static ZKButton* mresetButtonPtr;
 static ZKListView* msystemListViewPtr;
 static ZKWindow* msystemWndPtr;
-static ZKButton* mcvbsButtonPtr;
-static ZKTextView* mTextView28Ptr;
-static ZKTextView* mTextView27Ptr;
-static ZKTextView* mTextView1Ptr;
-static ZKButton* mCutCameraBtnPtr;
-static ZKTextView* mTextView2Ptr;
-static ZKTextView* mformatTextViewPtr;
-static ZKListView* mChannelListViewPtr;
-static ZKListView* mcaminfoListViewPtr;
-static ZKWindow* mCameraWndPtr;
-static ZKWindow* mreverseWndPtr;
-static ZKTextView* mTextView24Ptr;
-static ZKTextView* mTextView25Ptr;
-static ZKTextView* mTextView26Ptr;
-static ZKButton* msoundeffectBtnPtr;
-static ZKTextView* mTextView23Ptr;
-static ZKTextView* mTextView22Ptr;
-static ZKTextView* mphonevaluePtr;
-static ZKTextView* mmediavaluePtr;
-static ZKTextView* mTextView21Ptr;
-static ZKTextView* mTextView20Ptr;
-static ZKSeekBar* mPhoneSeekBarPtr;
-static ZKSeekBar* mMediaSeekBarPtr;
-static ZKWindow* mvoiceWndPtr;
-static ZKTextView* mcarBtTipsTextViewPtr;
-static ZKButton* mcarBtCancelButtonPtr;
-static ZKButton* mcarBtOkButtonPtr;
-static ZKWindow* mlinkVoiceWindowPtr;
-static ZKButton* mcfButtonPtr;
-static ZKButton* motpButtonPtr;
-static ZKTextView* mmfiTextViewPtr;
-static ZKButton* mlinkAuthorizeButtonPtr;
-static ZKButton* mbtAuthorizeButtonPtr;
-static ZKButton* mSetLinkTypeBtnPtr;
-static ZKTextView* mLink_typeTextPtr;
-static ZKTextView* mTextView31Ptr;
-static ZKTextView* mTextView41Ptr;
-static ZKWindow* mlinkWndPtr;
-static ZKButton* mBtnRightPtr;
-static ZKButton* mBtnLeftPtr;
-static ZKTextView* mBrillianceValTextViewPtr;
-static ZKTextView* mShowTextPtr;
-static ZKSeekBar* mBrillianceSeekBarPtr;
-static ZKWindow* mBrightnessWndPtr;
-static ZKTextView* mBrightnessTextPtr;
-static ZKTextView* mTextView29Ptr;
-static ZKSeekBar* mBrightnessSeekBarPtr;
-static ZKListView* mshowListViewPtr;
-static ZKButton* mcolorButtonPtr;
-static ZKTextView* mbrightnessTextViewPtr;
-static ZKWindow* mshowWndPtr;
-static ZKListView* mSettingListViewPtr;
-static ZKWindow* mWindow1Ptr;
-static ZKButton* mReturnBtnPtr;
 static settingsActivity* mActivityPtr;
 
 /*register activity*/
@@ -142,32 +83,17 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_SETTINGS_systemButton, onButtonClick_systemButton,
+    ID_SETTINGS_factoryButton, onButtonClick_factoryButton,
+    ID_SETTINGS_reverseButton, onButtonClick_reverseButton,
+    ID_SETTINGS_voiceButton, onButtonClick_voiceButton,
+    ID_SETTINGS_linkButton, onButtonClick_linkButton,
+    ID_SETTINGS_showButton, onButtonClick_showButton,
     ID_SETTINGS_hourButton24, onButtonClick_hourButton24,
     ID_SETTINGS_hourButton12, onButtonClick_hourButton12,
-    ID_SETTINGS_rotnextButton, onButtonClick_rotnextButton,
-    ID_SETTINGS_rotdownButton, onButtonClick_rotdownButton,
-    ID_SETTINGS_skipaddButton, onButtonClick_skipaddButton,
-    ID_SETTINGS_skipreduceButton, onButtonClick_skipreduceButton,
-    ID_SETTINGS_CutcvbsButton, onButtonClick_CutcvbsButton,
-    ID_SETTINGS_timeCancelButton, onButtonClick_timeCancelButton,
-    ID_SETTINGS_SetTimeSureBtn, onButtonClick_SetTimeSureBtn,
     ID_SETTINGS_resetCancelButton, onButtonClick_resetCancelButton,
     ID_SETTINGS_resetConfirmButton, onButtonClick_resetConfirmButton,
     ID_SETTINGS_resetButton, onButtonClick_resetButton,
-    ID_SETTINGS_cvbsButton, onButtonClick_cvbsButton,
-    ID_SETTINGS_CutCameraBtn, onButtonClick_CutCameraBtn,
-    ID_SETTINGS_soundeffectBtn, onButtonClick_soundeffectBtn,
-    ID_SETTINGS_carBtCancelButton, onButtonClick_carBtCancelButton,
-    ID_SETTINGS_carBtOkButton, onButtonClick_carBtOkButton,
-    ID_SETTINGS_cfButton, onButtonClick_cfButton,
-    ID_SETTINGS_otpButton, onButtonClick_otpButton,
-    ID_SETTINGS_linkAuthorizeButton, onButtonClick_linkAuthorizeButton,
-    ID_SETTINGS_btAuthorizeButton, onButtonClick_btAuthorizeButton,
-    ID_SETTINGS_SetLinkTypeBtn, onButtonClick_SetLinkTypeBtn,
-    ID_SETTINGS_BtnRight, onButtonClick_BtnRight,
-    ID_SETTINGS_BtnLeft, onButtonClick_BtnLeft,
-    ID_SETTINGS_colorButton, onButtonClick_colorButton,
-    ID_SETTINGS_ReturnBtn, onButtonClick_ReturnBtn,
 };
 /***************/
 
@@ -179,10 +105,6 @@ typedef struct {
 }S_ZKSeekBarCallback;
 /*TAG:SeekBarCallbackTab*/
 static S_ZKSeekBarCallback SZKSeekBarCallbackTab[] = {
-    ID_SETTINGS_PhoneSeekBar, onProgressChanged_PhoneSeekBar,
-    ID_SETTINGS_MediaSeekBar, onProgressChanged_MediaSeekBar,
-    ID_SETTINGS_BrillianceSeekBar, onProgressChanged_BrillianceSeekBar,
-    ID_SETTINGS_BrightnessSeekBar, onProgressChanged_BrightnessSeekBar,
 };
 
 
@@ -197,7 +119,6 @@ typedef struct {
 }S_ListViewFunctionsCallback;
 /*TAG:ListViewFunctionsCallback*/
 static S_ListViewFunctionsCallback SListViewFunctionsCallbackTab[] = {
-    ID_SETTINGS_moreListView, getListItemCount_moreListView, obtainListItemData_moreListView, onListItemClick_moreListView,
     ID_SETTINGS_dayListView, getListItemCount_dayListView, obtainListItemData_dayListView, onListItemClick_dayListView,
     ID_SETTINGS_monthListView, getListItemCount_monthListView, obtainListItemData_monthListView, onListItemClick_monthListView,
     ID_SETTINGS_yearListView, getListItemCount_yearListView, obtainListItemData_yearListView, onListItemClick_yearListView,
@@ -205,10 +126,6 @@ static S_ListViewFunctionsCallback SListViewFunctionsCallbackTab[] = {
     ID_SETTINGS_hourListView, getListItemCount_hourListView, obtainListItemData_hourListView, onListItemClick_hourListView,
     ID_SETTINGS_LanguageListView, getListItemCount_LanguageListView, obtainListItemData_LanguageListView, onListItemClick_LanguageListView,
     ID_SETTINGS_systemListView, getListItemCount_systemListView, obtainListItemData_systemListView, onListItemClick_systemListView,
-    ID_SETTINGS_ChannelListView, getListItemCount_ChannelListView, obtainListItemData_ChannelListView, onListItemClick_ChannelListView,
-    ID_SETTINGS_caminfoListView, getListItemCount_caminfoListView, obtainListItemData_caminfoListView, onListItemClick_caminfoListView,
-    ID_SETTINGS_showListView, getListItemCount_showListView, obtainListItemData_showListView, onListItemClick_showListView,
-    ID_SETTINGS_SettingListView, getListItemCount_SettingListView, obtainListItemData_SettingListView, onListItemClick_SettingListView,
 };
 
 
@@ -256,6 +173,23 @@ settingsActivity::~settingsActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    msystemButtonPtr = NULL;
+    mfactoryButtonPtr = NULL;
+    mreverseButtonPtr = NULL;
+    mvoiceButtonPtr = NULL;
+    mlinkButtonPtr = NULL;
+    mshowButtonPtr = NULL;
+    msetWndPtr = NULL;
+    mmcuTextViewPtr = NULL;
+    mappTextViewPtr = NULL;
+    mosTextViewPtr = NULL;
+    mTextView17Ptr = NULL;
+    mTextView16Ptr = NULL;
+    mTextView15Ptr = NULL;
+    mTextView14Ptr = NULL;
+    mTextView13Ptr = NULL;
+    mTextView10Ptr = NULL;
+    mversionWindowPtr = NULL;
     mhourButton24Ptr = NULL;
     mhourButton12Ptr = NULL;
     mTextView9Ptr = NULL;
@@ -264,25 +198,6 @@ settingsActivity::~settingsActivity() {
     mTextView6Ptr = NULL;
     mTextView5Ptr = NULL;
     mTextView4Ptr = NULL;
-    mCameraScrollWindowPtr = NULL;
-    mrotnextButtonPtr = NULL;
-    mrotdownButtonPtr = NULL;
-    mrotTextViewPtr = NULL;
-    mTextView36Ptr = NULL;
-    mskipaddButtonPtr = NULL;
-    mskipTextViewPtr = NULL;
-    mskipreduceButtonPtr = NULL;
-    mCutcvbsButtonPtr = NULL;
-    mTextView35Ptr = NULL;
-    mTextView32Ptr = NULL;
-    mTextView33Ptr = NULL;
-    motpTextViewPtr = NULL;
-    motpWindowPtr = NULL;
-    mdeveloperWndPtr = NULL;
-    mmoreListViewPtr = NULL;
-    mmoreWndPtr = NULL;
-    mtimeCancelButtonPtr = NULL;
-    mSetTimeSureBtnPtr = NULL;
     mdayListViewPtr = NULL;
     mmonthListViewPtr = NULL;
     myearListViewPtr = NULL;
@@ -293,9 +208,6 @@ settingsActivity::~settingsActivity() {
     mSetdataWndPtr = NULL;
     mLanguageListViewPtr = NULL;
     mLanguageWndPtr = NULL;
-    mTextView12Ptr = NULL;
-    mVersionTextPtr = NULL;
-    mTextView11Ptr = NULL;
     mTextView40Ptr = NULL;
     mresetCancelButtonPtr = NULL;
     mresetConfirmButtonPtr = NULL;
@@ -303,60 +215,6 @@ settingsActivity::~settingsActivity() {
     mresetButtonPtr = NULL;
     msystemListViewPtr = NULL;
     msystemWndPtr = NULL;
-    mcvbsButtonPtr = NULL;
-    mTextView28Ptr = NULL;
-    mTextView27Ptr = NULL;
-    mTextView1Ptr = NULL;
-    mCutCameraBtnPtr = NULL;
-    mTextView2Ptr = NULL;
-    mformatTextViewPtr = NULL;
-    mChannelListViewPtr = NULL;
-    mcaminfoListViewPtr = NULL;
-    mCameraWndPtr = NULL;
-    mreverseWndPtr = NULL;
-    mTextView24Ptr = NULL;
-    mTextView25Ptr = NULL;
-    mTextView26Ptr = NULL;
-    msoundeffectBtnPtr = NULL;
-    mTextView23Ptr = NULL;
-    mTextView22Ptr = NULL;
-    mphonevaluePtr = NULL;
-    mmediavaluePtr = NULL;
-    mTextView21Ptr = NULL;
-    mTextView20Ptr = NULL;
-    mPhoneSeekBarPtr = NULL;
-    mMediaSeekBarPtr = NULL;
-    mvoiceWndPtr = NULL;
-    mcarBtTipsTextViewPtr = NULL;
-    mcarBtCancelButtonPtr = NULL;
-    mcarBtOkButtonPtr = NULL;
-    mlinkVoiceWindowPtr = NULL;
-    mcfButtonPtr = NULL;
-    motpButtonPtr = NULL;
-    mmfiTextViewPtr = NULL;
-    mlinkAuthorizeButtonPtr = NULL;
-    mbtAuthorizeButtonPtr = NULL;
-    mSetLinkTypeBtnPtr = NULL;
-    mLink_typeTextPtr = NULL;
-    mTextView31Ptr = NULL;
-    mTextView41Ptr = NULL;
-    mlinkWndPtr = NULL;
-    mBtnRightPtr = NULL;
-    mBtnLeftPtr = NULL;
-    mBrillianceValTextViewPtr = NULL;
-    mShowTextPtr = NULL;
-    mBrillianceSeekBarPtr = NULL;
-    mBrightnessWndPtr = NULL;
-    mBrightnessTextPtr = NULL;
-    mTextView29Ptr = NULL;
-    mBrightnessSeekBarPtr = NULL;
-    mshowListViewPtr = NULL;
-    mcolorButtonPtr = NULL;
-    mbrightnessTextViewPtr = NULL;
-    mshowWndPtr = NULL;
-    mSettingListViewPtr = NULL;
-    mWindow1Ptr = NULL;
-    mReturnBtnPtr = NULL;
 }
 
 const char* settingsActivity::getAppName() const{
@@ -366,6 +224,23 @@ const char* settingsActivity::getAppName() const{
 //TAG:onCreate
 void settingsActivity::onCreate() {
 	Activity::onCreate();
+    msystemButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_systemButton);
+    mfactoryButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_factoryButton);
+    mreverseButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_reverseButton);
+    mvoiceButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_voiceButton);
+    mlinkButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_linkButton);
+    mshowButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_showButton);
+    msetWndPtr = (ZKWindow*)findControlByID(ID_SETTINGS_setWnd);
+    mmcuTextViewPtr = (ZKTextView*)findControlByID(ID_SETTINGS_mcuTextView);
+    mappTextViewPtr = (ZKTextView*)findControlByID(ID_SETTINGS_appTextView);
+    mosTextViewPtr = (ZKTextView*)findControlByID(ID_SETTINGS_osTextView);
+    mTextView17Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView17);
+    mTextView16Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView16);
+    mTextView15Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView15);
+    mTextView14Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView14);
+    mTextView13Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView13);
+    mTextView10Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView10);
+    mversionWindowPtr = (ZKWindow*)findControlByID(ID_SETTINGS_versionWindow);
     mhourButton24Ptr = (ZKButton*)findControlByID(ID_SETTINGS_hourButton24);
     mhourButton12Ptr = (ZKButton*)findControlByID(ID_SETTINGS_hourButton12);
     mTextView9Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView9);
@@ -374,25 +249,6 @@ void settingsActivity::onCreate() {
     mTextView6Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView6);
     mTextView5Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView5);
     mTextView4Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView4);
-    mCameraScrollWindowPtr = (ZKScrollWindow*)findControlByID(ID_SETTINGS_CameraScrollWindow);
-    mrotnextButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_rotnextButton);
-    mrotdownButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_rotdownButton);
-    mrotTextViewPtr = (ZKTextView*)findControlByID(ID_SETTINGS_rotTextView);
-    mTextView36Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView36);
-    mskipaddButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_skipaddButton);
-    mskipTextViewPtr = (ZKTextView*)findControlByID(ID_SETTINGS_skipTextView);
-    mskipreduceButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_skipreduceButton);
-    mCutcvbsButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_CutcvbsButton);
-    mTextView35Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView35);
-    mTextView32Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView32);
-    mTextView33Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView33);
-    motpTextViewPtr = (ZKTextView*)findControlByID(ID_SETTINGS_otpTextView);
-    motpWindowPtr = (ZKWindow*)findControlByID(ID_SETTINGS_otpWindow);
-    mdeveloperWndPtr = (ZKWindow*)findControlByID(ID_SETTINGS_developerWnd);
-    mmoreListViewPtr = (ZKListView*)findControlByID(ID_SETTINGS_moreListView);if(mmoreListViewPtr!= NULL){mmoreListViewPtr->setListAdapter(this);mmoreListViewPtr->setItemClickListener(this);}
-    mmoreWndPtr = (ZKWindow*)findControlByID(ID_SETTINGS_moreWnd);
-    mtimeCancelButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_timeCancelButton);
-    mSetTimeSureBtnPtr = (ZKButton*)findControlByID(ID_SETTINGS_SetTimeSureBtn);
     mdayListViewPtr = (ZKListView*)findControlByID(ID_SETTINGS_dayListView);if(mdayListViewPtr!= NULL){mdayListViewPtr->setListAdapter(this);mdayListViewPtr->setItemClickListener(this);}
     mmonthListViewPtr = (ZKListView*)findControlByID(ID_SETTINGS_monthListView);if(mmonthListViewPtr!= NULL){mmonthListViewPtr->setListAdapter(this);mmonthListViewPtr->setItemClickListener(this);}
     myearListViewPtr = (ZKListView*)findControlByID(ID_SETTINGS_yearListView);if(myearListViewPtr!= NULL){myearListViewPtr->setListAdapter(this);myearListViewPtr->setItemClickListener(this);}
@@ -403,9 +259,6 @@ void settingsActivity::onCreate() {
     mSetdataWndPtr = (ZKWindow*)findControlByID(ID_SETTINGS_SetdataWnd);
     mLanguageListViewPtr = (ZKListView*)findControlByID(ID_SETTINGS_LanguageListView);if(mLanguageListViewPtr!= NULL){mLanguageListViewPtr->setListAdapter(this);mLanguageListViewPtr->setItemClickListener(this);}
     mLanguageWndPtr = (ZKWindow*)findControlByID(ID_SETTINGS_LanguageWnd);
-    mTextView12Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView12);
-    mVersionTextPtr = (ZKTextView*)findControlByID(ID_SETTINGS_VersionText);
-    mTextView11Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView11);
     mTextView40Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView40);
     mresetCancelButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_resetCancelButton);
     mresetConfirmButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_resetConfirmButton);
@@ -413,60 +266,6 @@ void settingsActivity::onCreate() {
     mresetButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_resetButton);
     msystemListViewPtr = (ZKListView*)findControlByID(ID_SETTINGS_systemListView);if(msystemListViewPtr!= NULL){msystemListViewPtr->setListAdapter(this);msystemListViewPtr->setItemClickListener(this);}
     msystemWndPtr = (ZKWindow*)findControlByID(ID_SETTINGS_systemWnd);
-    mcvbsButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_cvbsButton);
-    mTextView28Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView28);
-    mTextView27Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView27);
-    mTextView1Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView1);
-    mCutCameraBtnPtr = (ZKButton*)findControlByID(ID_SETTINGS_CutCameraBtn);
-    mTextView2Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView2);
-    mformatTextViewPtr = (ZKTextView*)findControlByID(ID_SETTINGS_formatTextView);
-    mChannelListViewPtr = (ZKListView*)findControlByID(ID_SETTINGS_ChannelListView);if(mChannelListViewPtr!= NULL){mChannelListViewPtr->setListAdapter(this);mChannelListViewPtr->setItemClickListener(this);}
-    mcaminfoListViewPtr = (ZKListView*)findControlByID(ID_SETTINGS_caminfoListView);if(mcaminfoListViewPtr!= NULL){mcaminfoListViewPtr->setListAdapter(this);mcaminfoListViewPtr->setItemClickListener(this);}
-    mCameraWndPtr = (ZKWindow*)findControlByID(ID_SETTINGS_CameraWnd);
-    mreverseWndPtr = (ZKWindow*)findControlByID(ID_SETTINGS_reverseWnd);
-    mTextView24Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView24);
-    mTextView25Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView25);
-    mTextView26Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView26);
-    msoundeffectBtnPtr = (ZKButton*)findControlByID(ID_SETTINGS_soundeffectBtn);
-    mTextView23Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView23);
-    mTextView22Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView22);
-    mphonevaluePtr = (ZKTextView*)findControlByID(ID_SETTINGS_phonevalue);
-    mmediavaluePtr = (ZKTextView*)findControlByID(ID_SETTINGS_mediavalue);
-    mTextView21Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView21);
-    mTextView20Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView20);
-    mPhoneSeekBarPtr = (ZKSeekBar*)findControlByID(ID_SETTINGS_PhoneSeekBar);if(mPhoneSeekBarPtr!= NULL){mPhoneSeekBarPtr->setSeekBarChangeListener(this);}
-    mMediaSeekBarPtr = (ZKSeekBar*)findControlByID(ID_SETTINGS_MediaSeekBar);if(mMediaSeekBarPtr!= NULL){mMediaSeekBarPtr->setSeekBarChangeListener(this);}
-    mvoiceWndPtr = (ZKWindow*)findControlByID(ID_SETTINGS_voiceWnd);
-    mcarBtTipsTextViewPtr = (ZKTextView*)findControlByID(ID_SETTINGS_carBtTipsTextView);
-    mcarBtCancelButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_carBtCancelButton);
-    mcarBtOkButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_carBtOkButton);
-    mlinkVoiceWindowPtr = (ZKWindow*)findControlByID(ID_SETTINGS_linkVoiceWindow);
-    mcfButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_cfButton);
-    motpButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_otpButton);
-    mmfiTextViewPtr = (ZKTextView*)findControlByID(ID_SETTINGS_mfiTextView);
-    mlinkAuthorizeButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_linkAuthorizeButton);
-    mbtAuthorizeButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_btAuthorizeButton);
-    mSetLinkTypeBtnPtr = (ZKButton*)findControlByID(ID_SETTINGS_SetLinkTypeBtn);
-    mLink_typeTextPtr = (ZKTextView*)findControlByID(ID_SETTINGS_Link_typeText);
-    mTextView31Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView31);
-    mTextView41Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView41);
-    mlinkWndPtr = (ZKWindow*)findControlByID(ID_SETTINGS_linkWnd);
-    mBtnRightPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnRight);
-    mBtnLeftPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnLeft);
-    mBrillianceValTextViewPtr = (ZKTextView*)findControlByID(ID_SETTINGS_BrillianceValTextView);
-    mShowTextPtr = (ZKTextView*)findControlByID(ID_SETTINGS_ShowText);
-    mBrillianceSeekBarPtr = (ZKSeekBar*)findControlByID(ID_SETTINGS_BrillianceSeekBar);if(mBrillianceSeekBarPtr!= NULL){mBrillianceSeekBarPtr->setSeekBarChangeListener(this);}
-    mBrightnessWndPtr = (ZKWindow*)findControlByID(ID_SETTINGS_BrightnessWnd);
-    mBrightnessTextPtr = (ZKTextView*)findControlByID(ID_SETTINGS_BrightnessText);
-    mTextView29Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextView29);
-    mBrightnessSeekBarPtr = (ZKSeekBar*)findControlByID(ID_SETTINGS_BrightnessSeekBar);if(mBrightnessSeekBarPtr!= NULL){mBrightnessSeekBarPtr->setSeekBarChangeListener(this);}
-    mshowListViewPtr = (ZKListView*)findControlByID(ID_SETTINGS_showListView);if(mshowListViewPtr!= NULL){mshowListViewPtr->setListAdapter(this);mshowListViewPtr->setItemClickListener(this);}
-    mcolorButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_colorButton);
-    mbrightnessTextViewPtr = (ZKTextView*)findControlByID(ID_SETTINGS_brightnessTextView);
-    mshowWndPtr = (ZKWindow*)findControlByID(ID_SETTINGS_showWnd);
-    mSettingListViewPtr = (ZKListView*)findControlByID(ID_SETTINGS_SettingListView);if(mSettingListViewPtr!= NULL){mSettingListViewPtr->setListAdapter(this);mSettingListViewPtr->setItemClickListener(this);}
-    mWindow1Ptr = (ZKWindow*)findControlByID(ID_SETTINGS_Window1);
-    mReturnBtnPtr = (ZKButton*)findControlByID(ID_SETTINGS_ReturnBtn);
 	mActivityPtr = this;
 	onUI_init();
   registerProtocolDataUpdateListener(onProtocolDataUpdate);

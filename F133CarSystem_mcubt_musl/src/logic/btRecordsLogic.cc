@@ -34,8 +34,9 @@
 #include "Manager/ConfigManager.h"
 #include "utils/Loading_icon.hpp"
 #include "config.h"
+#include "utils/BitmapHelper.h"
 
-static const char* records_status_pic[] = {"bt_n/out.png", "bt_n/in.png", "bt_n/no.png"};
+static const char* records_status_pic[] = {"bt_a/out.png", "bt_a/in.png", "bt_a/no.png"};
 
 //旋转加载图标
 static zkf::IconRotate iconRotate;
@@ -58,19 +59,6 @@ static void _bt_add_cb() {
 
 static void _bt_remove_cb() {
 	bt::remove_cb(&_s_bt_cb);
-}
-
-static void _textview_touchpass(bool pass) {
-	mTextView1Ptr->setTouchPass(pass);
-	mTextView2Ptr->setTouchPass(pass);
-	mTextView3Ptr->setTouchPass(pass);
-	mTextView4Ptr->setTouchPass(pass);
-	mTextView5Ptr->setTouchPass(pass);
-	mTextView16Ptr->setTouchPass(pass);
-	mTextView17Ptr->setTouchPass(pass);
-	mTextView18Ptr->setTouchPass(pass);
-	mTextView19Ptr->setTouchPass(pass);
-	mTextView20Ptr->setTouchPass(pass);
 }
 /**
  * 注册定时器
@@ -104,7 +92,7 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
-	_textview_touchpass(true);
+
 }
 
 /*
@@ -214,6 +202,9 @@ static bool onButtonClick_downloadButton(ZKButton *pButton) {
 }
 static bool onButtonClick_DeleteButton(ZKButton *pButton) {
     LOGD(" ButtonClick DeleteButton !!!\n");
+    if (bt::get_record_size() <= 0) {
+    	return false;
+    }
     mDeleteTipsWindowPtr->showWnd();
     return false;
 }
@@ -247,7 +238,12 @@ static bool onButtonClick_queryMusicButton(ZKButton *pButton) {
 
 static bool onButtonClick_phoneButton(ZKButton *pButton) {
     LOGD(" ButtonClick phoneButton !!!\n");
-    EASYUICONTEXT->openActivity("btDialActivity");
+    if (bt::is_calling()) {
+    	EASYUICONTEXT->openActivity("callingActivity");
+        EASYUICONTEXT->closeActivity("btDialActivity");
+    } else {
+        EASYUICONTEXT->openActivity("btDialActivity");
+    }
     EASYUICONTEXT->closeActivity("btRecordsActivity");
     EASYUICONTEXT->closeActivity("btContactsActivity");
     EASYUICONTEXT->closeActivity("btMusicActivity");
@@ -289,7 +285,7 @@ static bool onButtonClick_cancelButton(ZKButton *pButton) {
 
 static bool onButtonClick_sureButton(ZKButton *pButton) {
     LOGD(" ButtonClick sureButton !!!\n");
-    bt::delete_phone_book();
+    bt::delete_call_record();
     mrecordsListViewPtr->refreshListView();
     mDeleteTipsWindowPtr->hideWnd();
     return false;

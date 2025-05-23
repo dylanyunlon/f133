@@ -4,6 +4,11 @@
 #include "topbarActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKButton* mNetButtonPtr;
+static ZKButton* musbButtonPtr;
+static ZKButton* msdButtonPtr;
+static ZKButton* mfmButtonPtr;
+static ZKWindow* mheadWindowPtr;
 static ZKButton* mvolumButtonPtr;
 static ZKTextView* mtimeTextViewPtr;
 static ZKTextView* mtimeSystemTextViewPtr;
@@ -49,6 +54,10 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_TOPBAR_NetButton, onButtonClick_NetButton,
+    ID_TOPBAR_usbButton, onButtonClick_usbButton,
+    ID_TOPBAR_sdButton, onButtonClick_sdButton,
+    ID_TOPBAR_fmButton, onButtonClick_fmButton,
     ID_TOPBAR_volumButton, onButtonClick_volumButton,
     ID_TOPBAR_lightButton, onButtonClick_lightButton,
     ID_TOPBAR_sys_back, onButtonClick_sys_back,
@@ -126,6 +135,11 @@ topbarActivity::~topbarActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    mNetButtonPtr = NULL;
+    musbButtonPtr = NULL;
+    msdButtonPtr = NULL;
+    mfmButtonPtr = NULL;
+    mheadWindowPtr = NULL;
     mvolumButtonPtr = NULL;
     mtimeTextViewPtr = NULL;
     mtimeSystemTextViewPtr = NULL;
@@ -143,6 +157,11 @@ const char* topbarActivity::getAppName() const{
 //TAG:onCreate
 void topbarActivity::onCreate() {
 	Activity::onCreate();
+    mNetButtonPtr = (ZKButton*)findControlByID(ID_TOPBAR_NetButton);
+    musbButtonPtr = (ZKButton*)findControlByID(ID_TOPBAR_usbButton);
+    msdButtonPtr = (ZKButton*)findControlByID(ID_TOPBAR_sdButton);
+    mfmButtonPtr = (ZKButton*)findControlByID(ID_TOPBAR_fmButton);
+    mheadWindowPtr = (ZKWindow*)findControlByID(ID_TOPBAR_headWindow);
     mvolumButtonPtr = (ZKButton*)findControlByID(ID_TOPBAR_volumButton);
     mtimeTextViewPtr = (ZKTextView*)findControlByID(ID_TOPBAR_timeTextView);
     mtimeSystemTextViewPtr = (ZKTextView*)findControlByID(ID_TOPBAR_timeSystemTextView);

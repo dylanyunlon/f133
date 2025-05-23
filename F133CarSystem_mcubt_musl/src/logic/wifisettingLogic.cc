@@ -32,6 +32,7 @@
 #include "net/context.h"
 #include "net/NetManager.h"
 #include "sysapp_context.h"
+#include "ntp/ntp.h"
 
 #define WIFIMANAGER			NETMANAGER->getWifiManager()
 
@@ -48,12 +49,40 @@ static void removeItemWifiChangeAps(const char *bssid) {
 	}
 }
 
+// 连接设备位置调整为第一项
+static void set_connect_info_to_first() {
+	WifiInfo* conn_wifi = WIFIMANAGER->getConnectionInfo();
+	for (size_t i=0; i<sWifiInfos.size(); i++) {
+		LOGD(" --sWifiInfos[%d].Bssid:%s---conn_wifi.Bassid:%s--\n", i, sWifiInfos[i].getBssid().c_str(), conn_wifi->getBssid().c_str());
+		if (sWifiInfos[i].getBssid() == conn_wifi->getBssid()) {
+			LOGD("--%d-- --%s-- 更新WiFi信号强度! Level:%d\n", __LINE__, __FILE__, sWifiInfos[i].getLevel());
+			conn_wifi->setLevel(sWifiInfos[i].getLevel());		//更新信号强度
+			sWifiInfos.erase(sWifiInfos.begin() + i);
+			sWifiInfos.insert(sWifiInfos.begin(), *conn_wifi);
+			break;
+		}
+	}
+}
+
 namespace {
 
 class MyWifiListener : public WifiManager::IWifiListener {
 public:
 	virtual void handleWifiConnect(E_WIFI_CONNECT event, int args) {
 		LOGD("MyWifiListener handleWifiConnect event: %d\n", event);
+		switch (event) {
+		case E_WIFI_CONNECT_CONNECTED:
+			LOGD("连接成功!");
+			set_connect_info_to_first();
+			ntp::startSynchronizationTask(ntp::defaultServerList(), NULL);
+			break;
+		case E_WIFI_CONNECT_DISCONNECT:
+		case E_WIFI_CONNECT_CONNECTING:
+		case E_WIFI_CONNECT_DICONNECTING:
+		case E_WIFI_CONNECT_ERROR:
+		case E_WIFI_CONNECT_UNKNOW:
+			break;
+		}
 		mListViewWifiInfoPtr->refreshListView();
 	}
 
@@ -65,6 +94,10 @@ public:
 		if (wifiInfos) {
 			Mutex::Autolock _l(sLock);
 			sWifiInfos.assign(wifiInfos->begin(), wifiInfos->end());
+			if (WIFIMANAGER->isConnected()) {
+				LOGD("扫描完成!");
+				set_connect_info_to_first();
+			}
 		}
 
 		mListViewWifiInfoPtr->refreshListView();
@@ -165,6 +198,8 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 
 static void onUI_init() {
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
+	setenv("TZ", "UTC-8", 1); //这里UTC-8表示北京时区
+	tzset();
 
 	mButtonOnOffPtr->setSelected(WIFIMANAGER->isWifiEnable());
 
@@ -174,6 +209,7 @@ static void onUI_init() {
 	WIFIMANAGER->getWifiScanInfosLock(sWifiInfos);
 	WIFIMANAGER->addWifiListener(&sMyWifiListener);
 
+	if (WIFIMANAGER->isConnected()) { LOGD("进入界面!"); set_connect_info_to_first(); }
 	net::add_mode_update_cb(_net_mode_cb);
 	app::hide_topbar();
 }

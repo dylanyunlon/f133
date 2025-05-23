@@ -87,6 +87,9 @@ static void _lylink_callback(LYLINKAPI_EVENT evt, int para0, void *para1) {
 		LOGD("LYLINK_LINK_ESTABLISH %s", lk::_link_type_to_str((LYLINK_TYPE_E) para0));
 		EASYUICONTEXT->hideStatusBar();		//隐藏蓝牙来电界面
 		if (LINK_TYPE_AIRPLAY == para0 || LINK_TYPE_MIRACAST == para0 || LINK_TYPE_WIFILY == para0) {
+			if (bt::is_on()) {
+				bt::power_off();
+			}
 			entry_lylink_ftu();
 		}
 		break;
@@ -134,15 +137,19 @@ static void _lylink_callback(LYLINKAPI_EVENT evt, int para0, void *para1) {
 static void _reverse_status_cb(int status) {
 	LOGD("reverse status %d\n", status);
 	if (status == REVERSE_STATUS_ENTER) {   // 进入倒车
+		app::hide_topbar();
 		EASYUICONTEXT->openActivity("reverseActivity");
 	} else {    							// 退出倒车
 		EASYUICONTEXT->closeActivity("reverseActivity");
 		if (_s_need_reopen_linkview) {
 			_s_need_reopen_linkview = false;
 			if (lk::is_connected()) {
+//				app::hide_topbar();
 				EASYUICONTEXT->openActivity("lylinkviewActivity");
+				return ;
 			}
 		}
+		app::show_topbar();
 	}
 }
 
@@ -234,6 +241,8 @@ static void onUI_init() {
 
 	// 串口初始化
 	uart::init();
+	// 上电mute
+	uart::set_amplifier_mute(0);
 
 	// 蓝牙初始化
 	bt::init();
@@ -339,6 +348,9 @@ static bool onUI_Timer(int id) {
 		} else {
 			sys::set_usb_config(E_USB_MODE_HOST);
 		}
+
+		// unmute
+		uart::set_amplifier_mute(1);
 	}
 		return false;
 	case MUSIC_ERROR_TIMER:

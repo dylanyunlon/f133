@@ -3,6 +3,8 @@
 #include <iostream>
 #include "uart/ProtocolSender.h"
 #include "utils/SlidingManager.h"
+#include "utils/BitmapHelper.h"
+#include "manager/ConfigManager.h"
 #include <os/MountMonitor.h>
 #include <sys/sysinfo.h>
 #include <system/Thread.h>
@@ -67,6 +69,7 @@ static void EqualProportionZoomOut(int *width, int *height){
  * @控件水平垂直居中
  */
 static void Horizontal_Vertical_Center_Pic(ZKTextView *zkbase,Photos pts){//const char *pPicPath
+	fy::drop_caches();
 	if(pts.Displayable){
 		zkbase->setText("");
 		zkbase->setBackgroundPic(pts.path.c_str());
@@ -76,7 +79,6 @@ static void Horizontal_Vertical_Center_Pic(ZKTextView *zkbase,Photos pts){//cons
 		zkbase->setPosition(LayoutPosition(0,0,SCREENRESOULUTION_WIDTH,SCREENRESOULUTION_HEIGHT));
 		zkbase->setTextTr("This image is not supported for display!");
 	}
-
 }
 
 /**
@@ -274,6 +276,7 @@ static void _media_scan_cb(const char *dir, storage_type_e type, bool started) {
 	}
 	if(!mAlbumClassificationPtr->isWndShow()){
 		mAlbumClassificationPtr->showWnd();
+//		app::show_topbar();
 	}
 	if (started) {
 		iconRotate.run();
@@ -286,7 +289,6 @@ static void _media_scan_cb(const char *dir, storage_type_e type, bool started) {
 		iconRotate.requestExit();
 	}
 }
-
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -487,6 +489,8 @@ static void displayopposite(){
 	mCarouselPicPtr->setVisible(mIndexPtr->isVisible());
 	mamplifyBtnPtr->setVisible(mIndexPtr->isVisible());
 	mreduceBtnPtr->setVisible(mIndexPtr->isVisible());
+	mTextView5Ptr->setVisible(mIndexPtr->isVisible());
+	mbackPtr->setVisible(mIndexPtr->isVisible());
 	if (SlideEnable) {
 		mPrevPtr->setVisible(mIndexPtr->isVisible());
 		mNextPtr->setVisible(mIndexPtr->isVisible());
@@ -580,14 +584,14 @@ static void onListItemClick_ImagesListView(ZKListView *pListView, int index, int
 			ImagesFilter(media::get_image_file(albumtype,(IndexPic < (size-1))?IndexPic+1:0)));
 	SetDisplayOpposite(true);
 	mAlbumClassificationPtr->hideWnd();
-	app::hide_topbar();
+//	app::hide_topbar();
 }
 
 static bool onButtonClick_back(ZKButton *pButton) {
     LOGD(" ButtonClick back !!!\n");
     if(!mAlbumClassificationPtr->isWndShow()){
     	mAlbumClassificationPtr->showWnd();
-    	app::show_topbar();
+//    	app::show_topbar();
         is_sel = true;
         mImagesListViewPtr->setSelection(IndexPic);
 

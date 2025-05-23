@@ -26,15 +26,12 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
-#define ID_BTSETTING_btrecordButton    20001
-#define ID_BTSETTING_TextView20    50027
-#define ID_BTSETTING_TextView19    50026
-#define ID_BTSETTING_TextView18    50025
-#define ID_BTSETTING_TextView17    50024
-#define ID_BTSETTING_TextView16    50023
+#define ID_BTSETTING_connDevTextView    50024
+#define ID_BTSETTING_TextViewBg    50023
+#define ID_BTSETTING_btsettingButton    20007
+#define ID_BTSETTING_btcontactsButton    20006
+#define ID_BTSETTING_btrecordButton    20002
 #define ID_BTSETTING_TextView15    50001
-#define ID_BTSETTING_btsettingButton    20003
-#define ID_BTSETTING_btcontactsButton    20002
 #define ID_BTSETTING_btsetWindow    110010
 #define ID_BTSETTING_syncPointer    90001
 #define ID_BTSETTING_scaningTextView    50012

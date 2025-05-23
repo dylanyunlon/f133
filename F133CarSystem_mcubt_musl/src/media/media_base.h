@@ -12,7 +12,7 @@
 #include <vector>
 #include "common.h"
 
-#define MEDIA_FILE_MAX_PATH        256
+#define MEDIA_FILE_MAX_PATH        512
 
 typedef enum {
 	E_MEDIA_TYPE_AUDIO,
@@ -87,6 +87,7 @@ typedef struct {
 	int width;
 	int height;
 	int bit_rate;
+	int codec_format;
 } video_info_t;
 
 #endif /* _MEDIA_MEDIA_BASE_H_ */

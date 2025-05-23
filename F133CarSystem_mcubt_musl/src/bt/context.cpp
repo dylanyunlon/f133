@@ -15,6 +15,7 @@
 #include "fy/thread.hpp"
 #include "fy/os.hpp"
 #include "fy/time.hpp"
+#include "fy/strings.hpp"
 #include "misc/storage.h"
 #include "media/audio_context.h"
 #include "link/context.h"
@@ -213,36 +214,25 @@ static void _notify_square_data_cb(const char *data) {
 	}
 }
 
-// return:  false 只响应一次, true 循化响应
-static bool phone_down_task() {
-	Mutex::Autolock _l(_s_info_mutex);
-	_s_bt_info.is_downloading_phone = false;
-	LOGD("--%d-- --%s-- 联系人响应超时! \n", __LINE__, __FILE__);
-	_notify_download_cb(E_BT_DOWNLOAD_CONTACT_COMPLETED);
-	return false;
-}
-
-static bool record_down_task() {
-	Mutex::Autolock _l(_s_info_mutex);
-	_s_bt_info.is_downloading_record = false;
-	LOGD("--%d-- --%s-- 通话记录响应超时! \n", __LINE__, __FILE__);
-	_notify_download_cb(E_BT_DOWNLOAD_RECORD_COMPLETED);
-	return false;
-}
-
 std::vector<bt_contact_t> m_contact_list;
 std::vector<bt_record_t> m_record_list;
 
-static void _split(std::vector<std::string> &res, const std::string &str, char c) {
-    res.clear();
+struct Record_Sort {
+  bool operator() (bt_record_t record1, bt_record_t record2) {
+	  return (record1.time > record2.time);
+  }
+} record_sort;
 
-    std::string::size_type pos1 = 0, pos2 = str.find(c);
-    while (std::string::npos != pos2) {
-        res.push_back(str.substr(pos1, pos2 - pos1));
-        pos1 = pos2 + 1;
-        pos2 = str.find(c, pos1);
-    }
-    res.push_back(str.substr(pos1));
+static void* _records_sort_thread(void *args) {
+	LOGD("[bt] thread start...\n");
+	LOCK_OP(_s_info_mutex, m_record_list = _s_bt_info.record_list);
+
+	// 通话记录按时间排序
+	std::sort(m_record_list.begin(), m_record_list.end(), record_sort);
+	LOCK_OP(_s_info_mutex, _s_bt_info.record_list = m_record_list);
+	_notify_download_cb(E_BT_DOWNLOAD_RECORD_COMPLETED);
+	LOCK_OP(_s_info_mutex, _s_bt_info.is_downloading_record = false)
+	return NULL;
 }
 
 static std::string to_time_format_str(std::string str) {
@@ -404,8 +394,11 @@ static void _proc_hfp_state(const char *data, int len) {
 		break;
 	case '3':
 		LOGD("[bt] HFP state: 连接成功\n");
+		if (strcmp(_s_bt_info.connect_dev.name.c_str(), "") == 0) {
+			LOGD("--%d-- --%s-- name = %s!!!\n", __LINE__, __FILE__, bt::get_connect_dev().name.c_str());
+			query_state();
+		}
 		_notify_connect_cb(E_BT_CONNECT_STATE_CONNECTED);
-		query_matched();
 		break;
 	case '4':
 		LOGD("[bt] HFP state: 电话拨出\n");
@@ -558,7 +551,7 @@ static void _proc_music_info(const char *data, int len) {
 	// [lyric]  [name][artist][time][index][count][album]
 
 	std::vector<std::string> res;
-	_split(res, std::string(data, len), 0xFF);
+	fy::strings::split(res, std::string(data, len), 0xFF);
 
 //	for (size_t i = 0; i < res.size(); ++i) {
 //		LOGD("[bt] %d: %s\n", i, res[i].c_str());
@@ -600,7 +593,7 @@ static void _proc_music_info(const char *data, int len) {
 
 static void _proc_music_play_progress(const char *data, int len) {
 	std::vector<std::string> res;
-	_split(res, std::string(data, len), 0xFF);
+	fy::strings::split(res, std::string(data, len), 0xFF);
 
 //	for (size_t i = 0; i < res.size(); ++i) {
 //		LOGD("[bt] %d: %s\n", i, res[i].c_str());
@@ -696,7 +689,7 @@ static void _proc_download_record(const char *data, int len) {
 	}
 
 	std::vector<std::string> resV;
-	_split(resV, std::string(data+1, len-1), 0xFF);
+	fy::strings::split(resV, std::string(data+1, len-1), 0xFF);
 
 //	for (size_t i = 0; i < resV.size(); ++i) {
 //		LOGD("[bt] %d: %s\n", i, resV[i].c_str());
@@ -730,8 +723,9 @@ static void _proc_download_record(const char *data, int len) {
 
 static void _proc_download_record_end(const char *data, int len) {
 	LOGD("[bt] download record end\n");
-	_notify_download_cb(E_BT_DOWNLOAD_RECORD_COMPLETED);
-	LOCK_OP(_s_info_mutex, _s_bt_info.is_downloading_record = false);
+	fy::run_thread(_records_sort_thread, NULL);
+//	_notify_download_cb(E_BT_DOWNLOAD_RECORD_COMPLETED);
+//	LOCK_OP(_s_info_mutex, _s_bt_info.is_downloading_record = false);
 }
 
 static void _proc_car_sound(const char *data, int len) {
@@ -864,10 +858,15 @@ static bool _send_cmd(const char *cmd) {
 static void _init_setup() {
 	// 蓝牙开关
 	bool bten = storage::get_bool(BT_POWER_KEY, true);
+	bool btcn = storage::get_bool(BT_AUTO_CONNECT_KEY, true);
 	LOGD("--%d-- --%s-- 蓝牙初始化!   bten = %d \n", __LINE__, __FILE__, bten);
 
 	if (bten) {
 		power_on();
+	}
+	if (btcn) {
+		_s_bt_info.auto_connect = btcn;
+		set_auto_connect(btcn);
 	}
 	// 查询状态信息
 	query_state();
@@ -988,6 +987,7 @@ bool clear_match_device() {
 }
 
 bool set_auto_connect(bool auto_connect) {
+	storage::put_bool(BT_AUTO_CONNECT_KEY, auto_connect);
 	return _send_cmd(auto_connect ? BT_CMD_OPEN_AUTOCONNECT : BT_CMD_CLOSE_AUTOCONNECT);
 }
 
@@ -1328,6 +1328,10 @@ bool start_scan_control() {
 
 bool stop_scan_control() {
 	return _send_cmd(BT_CMD_START_SCAN_VB);
+}
+
+bool query_name() {
+	return _send_cmd(BT_CMD_QUERY_CONNECT_NAME);
 }
 
 

@@ -26,6 +26,7 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_MUSIC_TextViewBg    50017
 #define ID_MUSIC_TextView7    50016
 #define ID_MUSIC_TextView5    50010
 #define ID_MUSIC_TextView6    50015

@@ -4,10 +4,11 @@
 #include "FMemitActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextView10Ptr;
+static ZKTextView* mTextViewBgPtr;
 static ZKButton* mtipCancelPtr;
 static ZKButton* mtipSurePtr;
 static ZKTextView* mLinkSwitchTipTextViewPtr;
-static ZKTextView* mTextView10Ptr;
 static ZKWindow* mLinkTipWindowPtr;
 static ZKTextView* mTextView9Ptr;
 static ZKTextView* mTextView8Ptr;
@@ -153,10 +154,11 @@ FMemitActivity::~FMemitActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    mTextView10Ptr = NULL;
+    mTextViewBgPtr = NULL;
     mtipCancelPtr = NULL;
     mtipSurePtr = NULL;
     mLinkSwitchTipTextViewPtr = NULL;
-    mTextView10Ptr = NULL;
     mLinkTipWindowPtr = NULL;
     mTextView9Ptr = NULL;
     mTextView8Ptr = NULL;
@@ -192,10 +194,11 @@ const char* FMemitActivity::getAppName() const{
 //TAG:onCreate
 void FMemitActivity::onCreate() {
 	Activity::onCreate();
+    mTextView10Ptr = (ZKTextView*)findControlByID(ID_FMEMIT_TextView10);
+    mTextViewBgPtr = (ZKTextView*)findControlByID(ID_FMEMIT_TextViewBg);
     mtipCancelPtr = (ZKButton*)findControlByID(ID_FMEMIT_tipCancel);
     mtipSurePtr = (ZKButton*)findControlByID(ID_FMEMIT_tipSure);
     mLinkSwitchTipTextViewPtr = (ZKTextView*)findControlByID(ID_FMEMIT_LinkSwitchTipTextView);
-    mTextView10Ptr = (ZKTextView*)findControlByID(ID_FMEMIT_TextView10);
     mLinkTipWindowPtr = (ZKWindow*)findControlByID(ID_FMEMIT_LinkTipWindow);
     mTextView9Ptr = (ZKTextView*)findControlByID(ID_FMEMIT_TextView9);
     mTextView8Ptr = (ZKTextView*)findControlByID(ID_FMEMIT_TextView8);

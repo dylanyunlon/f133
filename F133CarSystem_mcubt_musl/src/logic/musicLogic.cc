@@ -39,7 +39,9 @@
 #include "media/media_parser.h"
 #include "manager/ConfigManager.h"
 #include "utils/Loading_icon.hpp"
+#include "utils/BitmapHelper.h"
 #include "uart/context.h"
+#include "system/setting.h"
 #define DEBUG	//LOGD("--%d-- --%s-- ---DEBUG!!!--", __LINE__, __FILE__);
 
 static storage_type_e _s_select_storage = E_STORAGE_TYPE_SD; //E_STORAGE_TYPE_INVALID;	//选中的文件仓库
@@ -86,6 +88,7 @@ static void refreshMusicInfo() {
 	std::string cur_play_file = media::music_get_current_play_file();
 
 	id3_info_t info;
+	memset(&info, 0, sizeof(id3_info_t));
 	bool isTrue = media::parse_id3_info(cur_play_file.c_str(), &info);
 	if (isTrue && strcmp(info.title, "") != 0) {
 		mtitleTextViewPtr->setText(info.title);
@@ -102,8 +105,9 @@ static void refreshMusicInfo() {
 		malbumTextViewPtr->setTextTr("Unknown");
 	}
 
-	isTrue = media::parse_id3_pic(cur_play_file.c_str(), "/tmp/m.jpg");
-	mpicTextViewPtr->setBackgroundPic(isTrue ? "/tmp/m.jpg" : CONFIGMANAGER->getResFilePath("MusicPlayer/icon.png").c_str());
+	isTrue = media::parse_id3_pic(cur_play_file.c_str(), "/tmp/m1.jpg");
+	LOGD("[music] %s", cur_play_file.c_str());
+	mpicTextViewPtr->setBackgroundPic(isTrue ? "/tmp/m1.jpg" : CONFIGMANAGER->getResFilePath("media_player/icon_media_cover_n.png").c_str());
 	//mpicTextViewPtr->setPosition(LayoutPosition(166,190,120,120));
 	mmusicListViewPtr->refreshListView();
 }
@@ -136,16 +140,19 @@ static void seek_to_current_play() {
 static void _music_play_status_cb(music_play_status_e status) {
 	switch (status) {
 	case E_MUSIC_PLAY_STATUS_STARTED:    // 播放开始
+		mpicTextViewPtr->setBackgroundPic(CONFIGMANAGER->getResFilePath("media_player/icon_media_cover_n.png").c_str());
 		setDuration();
 		mPlayProgressSeekbarPtr->setProgress(0);
 		refreshMusicInfo();
 		mButtonPlayPtr->setSelected(true);
 		mtitleTextViewPtr->setTextColor(0xFF00FF00);
+		sys::setting::set_music_play_dev(E_AUDIO_TYPE_MUSIC);
 		break;
 
 	case E_MUSIC_PLAY_STATUS_RESUME:     // 恢复播放
 		mButtonPlayPtr->setSelected(true);
 		mtitleTextViewPtr->setTextColor(0xFF00FF00);
+		sys::setting::set_music_play_dev(E_AUDIO_TYPE_MUSIC);
 		break;
 
 	case E_MUSIC_PLAY_STATUS_PAUSE:      // 暂停播放
@@ -184,14 +191,13 @@ static void _media_scan_cb(const char *dir, storage_type_e type, bool started) {
 
 //控件初始化
 static void ctrl_init() {
-	mtitleTextViewPtr->setLongMode(ZKTextView::E_LONG_MODE_DOTS);
-	martistTextViewPtr->setLongMode(ZKTextView::E_LONG_MODE_DOTS);
-	malbumTextViewPtr->setLongMode(ZKTextView::E_LONG_MODE_DOTS);
+	mtitleTextViewPtr->setLongMode(ZKTextView::E_LONG_MODE_SCROLL_CIRCULAR);
+	martistTextViewPtr->setLongMode(ZKTextView::E_LONG_MODE_SCROLL_CIRCULAR);
+	malbumTextViewPtr->setLongMode(ZKTextView::E_LONG_MODE_SCROLL_CIRCULAR);
 	mTextView2Ptr->setTouchPass(true);
 	mTextView3Ptr->setTouchPass(true);
 	mTextView4Ptr->setTouchPass(true);
 }
-
 /**
  * 注册定时器
  * 填充数组用于注册定时器

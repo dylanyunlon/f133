@@ -60,6 +60,8 @@ void remove_fm_fre_cb(fm_fre_cb cb);
 
 bool set_volume(float vol);
 
+bool set_amplifier_mute(uint8_t mute);
+
 //  音频通道      0：ARM, 1：FM, 2：AUX(mcubt无效), 3:BT
 bool set_sound_channel(sound_channel_e channel);
 

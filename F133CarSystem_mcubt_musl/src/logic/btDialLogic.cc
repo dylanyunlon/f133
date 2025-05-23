@@ -63,15 +63,6 @@ public:
 
 }
 static LongClickListener delLongClickListener;
-
-static void _textview_touchpass(bool pass) {
-	mTextView16Ptr->setTouchPass(pass);
-	mTextView17Ptr->setTouchPass(pass);
-	mTextView18Ptr->setTouchPass(pass);
-	mTextView19Ptr->setTouchPass(pass);
-	mTextView20Ptr->setTouchPass(pass);
-}
-
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -107,7 +98,7 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
-	_textview_touchpass(true);
+
 }
 
 /*

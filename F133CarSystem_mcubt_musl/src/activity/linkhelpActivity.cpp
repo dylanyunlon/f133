@@ -4,6 +4,7 @@
 #include "linkhelpActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextViewBgPtr;
 static ZKTextView* maaTipTextViewPtr;
 static ZKTextView* mapTipTextViewPtr;
 static ZKTextView* mcpTipTextViewPtr;
@@ -157,6 +158,7 @@ linkhelpActivity::~linkhelpActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    mTextViewBgPtr = NULL;
     maaTipTextViewPtr = NULL;
     mapTipTextViewPtr = NULL;
     mcpTipTextViewPtr = NULL;
@@ -210,6 +212,7 @@ const char* linkhelpActivity::getAppName() const{
 //TAG:onCreate
 void linkhelpActivity::onCreate() {
 	Activity::onCreate();
+    mTextViewBgPtr = (ZKTextView*)findControlByID(ID_LINKHELP_TextViewBg);
     maaTipTextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_aaTipTextView);
     mapTipTextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_apTipTextView);
     mcpTipTextViewPtr = (ZKTextView*)findControlByID(ID_LINKHELP_cpTipTextView);

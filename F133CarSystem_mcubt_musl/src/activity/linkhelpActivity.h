@@ -26,6 +26,7 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_LINKHELP_TextViewBg    50010
 #define ID_LINKHELP_aaTipTextView    50008
 #define ID_LINKHELP_apTipTextView    50006
 #define ID_LINKHELP_cpTipTextView    50005

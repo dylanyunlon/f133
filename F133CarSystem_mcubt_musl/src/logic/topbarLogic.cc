@@ -10,10 +10,16 @@
 #include "mode_observer.h"
 #include "media/audio_context.h"
 #include "bt/context.h"
+#include "os/MountMonitor.h"
+#include "uart/context.h"
+#include "net/NetManager.h"
+#include "ntp/ntp.h"
+
+#define WIFIMANAGER			NETMANAGER->getWifiManager()
 
 REGISTER_SYSAPP(APP_TYPE_SYS_TOPBAR, topbarActivity);
 static bt_cb_t _s_bt_cb;
-
+static void set_status_btn_visble_pos(ZKButton* pButton, bool isVisible);
 
 static void sys_time_(tm t ) {
 	char buf[128] = {0};
@@ -44,8 +50,24 @@ static void _bt_connect_cb(bt_connect_state_e state) {
 	}
 }
 
+static void _bt_power_cb(bt_power_state_e state) {
+	switch (state) {
+	case E_BT_POWER_STATE_OFF:
+		mbtButtonPtr->setVisible(false);
+		break;
+	case E_BT_POWER_STATE_CHANGING:
+		break;
+	case E_BT_POWER_STATE_ON:
+		mbtButtonPtr->setVisible(true);
+		break;
+	default:
+		break;
+	}
+}
+
 static void _bt_add_cb() {
 	_s_bt_cb.connect_cb = _bt_connect_cb;
+	_s_bt_cb.power_cb = _bt_power_cb;
 	bt::add_cb(&_s_bt_cb);
 }
 
@@ -53,9 +75,117 @@ static void _bt_remove_cb() {
 	bt::remove_cb(&_s_bt_cb);
 }
 
-static void Icon_Init() {
-	mvolumButtonPtr->setSelected(audio::get_system_vol() > 0.1);
+static void fm_status_cb(bool status){
+	if(status){
+		set_status_btn_visble_pos(mfmButtonPtr, status);
+	}else{
+		set_status_btn_visble_pos(mfmButtonPtr, status);
+	}
 
+}
+
+namespace {
+
+class MainWifiListener : public WifiManager::IWifiListener {
+public:
+	virtual void handleWifiEnable(E_WIFI_ENABLE event, int args) {
+		LOGD("MyWifiListener handleWifiEnable event: %d\n", event);
+		switch (event) {
+		case E_WIFI_ENABLE_ENABLE:
+			break;
+		case E_WIFI_ENABLE_DISABLE:
+		case E_WIFI_ENABLE_DISABLEING:
+			set_status_btn_visble_pos(mNetButtonPtr, false);
+			break;
+		case E_WIFI_ENABLE_ENABLEING:
+		case E_WIFI_ENABLE_UNKNOW:
+			break;
+		}
+	}
+	virtual void handleWifiConnect(E_WIFI_CONNECT event, int args) {
+		switch(event) {
+		case E_WIFI_CONNECT_CONNECTED:
+			set_status_btn_visble_pos(mNetButtonPtr, true);
+			ntp::startSynchronizationTask(ntp::defaultServerList(), NULL);
+			break;
+		case E_WIFI_CONNECT_CONNECTING:
+			break;
+		case E_WIFI_CONNECT_DICONNECTING:
+		case E_WIFI_CONNECT_DISCONNECT:
+			set_status_btn_visble_pos(mNetButtonPtr, false);
+			break;
+		case E_WIFI_CONNECT_ERROR:
+		case E_WIFI_CONNECT_UNKNOW:
+			break;
+		}
+	}
+};
+class topMountListener : public MountMonitor::IMountListener {
+protected:
+	virtual void notify(int what, int status, const char *msg) {
+		switch (status) {
+		case MountMonitor::E_MOUNT_STATUS_MOUNTED: {
+			LOGD("media mount path: %s\n", msg);
+			if (strcmp(msg, "/mnt/extsd") == 0) {
+				set_status_btn_visble_pos(msdButtonPtr, true);
+			} else if (strcmp(msg, "/mnt/usb1") == 0 || strcmp(msg, "/mnt/usbotg") == 0) {
+				set_status_btn_visble_pos(musbButtonPtr, true);
+			}
+			break;
+		}
+
+		case MountMonitor::E_MOUNT_STATUS_UNMOUNTING: {
+			LOGD("media remove path: %s\n", msg);
+			if (strcmp(msg, "/mnt/extsd") == 0) {
+				set_status_btn_visble_pos(msdButtonPtr, false);
+			} else if (strcmp(msg, "/mnt/usbotg") == 0 && !MOUNTMONITOR->isMounted("/mnt/usb1")) {
+				set_status_btn_visble_pos(musbButtonPtr, false);
+			} else if (strcmp(msg, "/mnt/usb1") == 0 && !MOUNTMONITOR->isMounted("/mnt/usbotg")) {
+				set_status_btn_visble_pos(musbButtonPtr, false);
+			}
+			break;
+		}
+		}
+	}
+};
+
+}
+static topMountListener _mount_listener;
+static MainWifiListener mainWifiListener;
+
+static ZKButton** BtnArr[] = {&mNetButtonPtr, &mfmButtonPtr, &msdButtonPtr, &musbButtonPtr};
+
+static void set_status_btn_visble_pos(ZKButton* pButton, bool isVisible) {
+	pButton->setVisible(isVisible);
+
+	const int RIGHT = 413 + 60; 	//图标右对齐边界
+	const int INTERTVAL = 12; 		//图标对齐间隙
+
+	int icon_left = RIGHT - (*BtnArr[TABLESIZE(BtnArr)-1])->getPosition().mWidth;		// 最后一个图标左边界
+
+	for (size_t i=0; i<TABLESIZE(BtnArr); i++) {
+		if ((*BtnArr[i])->isVisible()) {
+			LayoutPosition pos = (*BtnArr[i])->getPosition();
+			icon_left = icon_left - INTERTVAL - pos.mWidth;
+			pos.mLeft = icon_left;
+			(*BtnArr[i])->setPosition(pos);
+		}
+	}
+}
+
+static void Icon_Init() {
+	set_status_btn_visble_pos(msdButtonPtr, MOUNTMONITOR->isMounted("/mnt/extsd"));
+	set_status_btn_visble_pos(musbButtonPtr, MOUNTMONITOR->isMounted("/mnt/usb1") || MOUNTMONITOR->isMounted("/mnt/usbotg"));
+	set_status_btn_visble_pos(mfmButtonPtr, uart::query_fmswitch());
+	set_status_btn_visble_pos(mNetButtonPtr,WIFIMANAGER->isConnected());
+
+	mbtButtonPtr->setVisible(bt::is_on());
+	mbtButtonPtr->setSelected(bt::get_connect_state() == E_BT_CONNECT_STATE_IDLE);
+
+	mvolumButtonPtr->setSelected(audio::get_system_vol() > 0.1);
+	mvolumTextViewPtr->setText((int)(audio::get_system_vol()*100));
+	WIFIMANAGER->addWifiListener(&mainWifiListener);
+	MOUNTMONITOR->addMountListener(&_mount_listener);
 	_bt_add_cb();
 }
 /**
@@ -74,6 +204,11 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 static void onUI_init() {
     //Tips :添加 UI初始化的显示代码到这里,如:mText1->setText("123");
 	Icon_Init();
+	sys_time_(*TimeHelper::getDateTime());
+	uart::add_fm_state_cb(fm_status_cb);
+
+	setenv("TZ", "UTC-8", 1); //这里UTC-8表示北京时区
+	tzset();
 }
 
 /**
@@ -104,6 +239,9 @@ static void onUI_hide() {
  */
 static void onUI_quit() {
 	_bt_remove_cb();
+	WIFIMANAGER->removeWifiListener(&mainWifiListener);
+	MOUNTMONITOR->removeMountListener(&_mount_listener);
+	uart::remove_fm_state_cb(fm_status_cb);
 }
 
 /**
@@ -198,5 +336,24 @@ static bool onButtonClick_sys_home(ZKButton *pButton) {
 
 static bool onButtonClick_sys_back(ZKButton *pButton) {
     LOGD(" ButtonClick sys_back !!!\n");
+    return false;
+}
+
+static bool onButtonClick_fmButton(ZKButton *pButton) {
+    LOGD(" ButtonClick fmButton !!!\n");
+    return false;
+}
+
+static bool onButtonClick_sdButton(ZKButton *pButton) {
+    LOGD(" ButtonClick sdButton !!!\n");
+    return false;
+}
+
+static bool onButtonClick_usbButton(ZKButton *pButton) {
+    LOGD(" ButtonClick usbButton !!!\n");
+    return false;
+}
+static bool onButtonClick_NetButton(ZKButton *pButton) {
+    LOGD(" ButtonClick NetButton !!!\n");
     return false;
 }

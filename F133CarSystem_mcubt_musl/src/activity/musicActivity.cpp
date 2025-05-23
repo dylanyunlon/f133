@@ -4,6 +4,7 @@
 #include "musicActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextViewBgPtr;
 static ZKTextView* mTextView7Ptr;
 static ZKTextView* mTextView5Ptr;
 static ZKTextView* mTextView6Ptr;
@@ -157,6 +158,7 @@ musicActivity::~musicActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    mTextViewBgPtr = NULL;
     mTextView7Ptr = NULL;
     mTextView5Ptr = NULL;
     mTextView6Ptr = NULL;
@@ -197,6 +199,7 @@ const char* musicActivity::getAppName() const{
 //TAG:onCreate
 void musicActivity::onCreate() {
 	Activity::onCreate();
+    mTextViewBgPtr = (ZKTextView*)findControlByID(ID_MUSIC_TextViewBg);
     mTextView7Ptr = (ZKTextView*)findControlByID(ID_MUSIC_TextView7);
     mTextView5Ptr = (ZKTextView*)findControlByID(ID_MUSIC_TextView5);
     mTextView6Ptr = (ZKTextView*)findControlByID(ID_MUSIC_TextView6);

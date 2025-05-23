@@ -4,12 +4,9 @@
 #include "btsettingActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mconnDevTextViewPtr;
+static ZKTextView* mTextViewBgPtr;
 static ZKButton* mbtrecordButtonPtr;
-static ZKTextView* mTextView20Ptr;
-static ZKTextView* mTextView19Ptr;
-static ZKTextView* mTextView18Ptr;
-static ZKTextView* mTextView17Ptr;
-static ZKTextView* mTextView16Ptr;
 static ZKTextView* mTextView15Ptr;
 static ZKButton* mbtsettingButtonPtr;
 static ZKButton* mbtcontactsButtonPtr;
@@ -186,12 +183,9 @@ btsettingActivity::~btsettingActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    mconnDevTextViewPtr = NULL;
+    mTextViewBgPtr = NULL;
     mbtrecordButtonPtr = NULL;
-    mTextView20Ptr = NULL;
-    mTextView19Ptr = NULL;
-    mTextView18Ptr = NULL;
-    mTextView17Ptr = NULL;
-    mTextView16Ptr = NULL;
     mTextView15Ptr = NULL;
     mbtsettingButtonPtr = NULL;
     mbtcontactsButtonPtr = NULL;
@@ -252,12 +246,9 @@ const char* btsettingActivity::getAppName() const{
 //TAG:onCreate
 void btsettingActivity::onCreate() {
 	Activity::onCreate();
+    mconnDevTextViewPtr = (ZKTextView*)findControlByID(ID_BTSETTING_connDevTextView);
+    mTextViewBgPtr = (ZKTextView*)findControlByID(ID_BTSETTING_TextViewBg);
     mbtrecordButtonPtr = (ZKButton*)findControlByID(ID_BTSETTING_btrecordButton);
-    mTextView20Ptr = (ZKTextView*)findControlByID(ID_BTSETTING_TextView20);
-    mTextView19Ptr = (ZKTextView*)findControlByID(ID_BTSETTING_TextView19);
-    mTextView18Ptr = (ZKTextView*)findControlByID(ID_BTSETTING_TextView18);
-    mTextView17Ptr = (ZKTextView*)findControlByID(ID_BTSETTING_TextView17);
-    mTextView16Ptr = (ZKTextView*)findControlByID(ID_BTSETTING_TextView16);
     mTextView15Ptr = (ZKTextView*)findControlByID(ID_BTSETTING_TextView15);
     mbtsettingButtonPtr = (ZKButton*)findControlByID(ID_BTSETTING_btsettingButton);
     mbtcontactsButtonPtr = (ZKButton*)findControlByID(ID_BTSETTING_btcontactsButton);

@@ -97,13 +97,14 @@ static void _bt_power_cb(bt_power_state_e state) {
 	case E_BT_POWER_STATE_OFF:
 		mbtButtonPtr->setTextTr("Bluetooth");
 		mbtTextViewPtr->setTextTr("ununited");
-
+		mbtTextViewPtr->setTextColor(0xFF000000);
 		mbtButtonPtr->setInvalid(false);
 		mbtButtonPtr->setSelected(false);
 		break;
 	case E_BT_POWER_STATE_ON:
 		mbtButtonPtr->setInvalid(false);
 		mbtButtonPtr->setSelected(true);
+		mbtTextViewPtr->setTextColor(0xFFFFFFFF);
 		break;
 	case E_BT_POWER_STATE_CHANGING:
 		mbtButtonPtr->setInvalid(true);
@@ -121,7 +122,7 @@ static void _bt_connect_cb(bt_connect_state_e state) {
 		mbtTextViewPtr->setTextTr("connecting");
 		break;
 	case E_BT_CONNECT_STATE_CONNECTED:          // 已连接
-		mbtButtonPtr->setText(bt::get_connect_dev().name);
+//		mbtButtonPtr->setText(bt::get_connect_dev().name);
 		mbtTextViewPtr->setTextTr("connected");
 		break;
 	default:
@@ -164,7 +165,7 @@ static void _bt_remove_cb() {
 //收起状态栏
 void fold_statusbar() {
 	LayoutPosition pos = mnavibarPtr->getPosition();
-	if(pos.mTop == 0){
+	if(pos.mTop <= 0){
 		pos.mTop = -pos.mHeight;
 		mnavibarPtr->setPosition(pos);
 	    SLIDEMANAGER->setCanSlide(false);
@@ -262,21 +263,25 @@ static void _sound_mode_cb(sound_mode_e mode) {
 	case E_SOUND_MODE_SPK:
 		mfmButtonPtr->setSelected(false);
 		mfmTextViewPtr->setTextTr("Turn off");
+		mfmTextViewPtr->setTextColor(0xFF000000);
 		audio::change_output_mode(E_AUDIO_PLAYER_MODE_SPK);
 		break;
 	case E_SOUND_MODE_LINK:
 		mfmButtonPtr->setSelected(false);
 		mfmTextViewPtr->setTextTr("Turn off");
+		mfmTextViewPtr->setTextColor(0xFF000000);
 //		audio::change_output_mode(E_AUDIO_PLAYER_MODE_BT);
 		break;
 	case E_SOUND_MODE_FM:
 		mfmButtonPtr->setSelected(true);
 		mfmTextViewPtr->setTextTr("Turn on");
+		mfmTextViewPtr->setTextColor(0xFFFFFFFF);
 		audio::change_output_mode(E_AUDIO_PLAYER_MODE_FM);
 		break;
 	case E_SOUND_MODE_AUX:
 		mfmButtonPtr->setSelected(false);
 		mfmTextViewPtr->setTextTr("Turn off");
+		mfmTextViewPtr->setTextColor(0xFF000000);
 		audio::change_output_mode(E_AUDIO_PLAYER_MODE_AUX);
 		break;
 	default:
@@ -474,6 +479,9 @@ static bool onButtonClick_briButton(ZKButton *pButton) {
 
 static bool onButtonClick_btButton(ZKButton *pButton) {
     LOGD(" ButtonClick btButton !!!\n");
+	if (lk::is_connected()) {
+		return false;
+	}
     bt::is_on() ? bt::power_off() : bt::power_on();
     return false;
 }
@@ -508,7 +516,7 @@ static bool onButtonClick_SoundButton(ZKButton *pButton) {
 
 static bool onButtonClick_settingButton(ZKButton *pButton) {
     LOGD(" ButtonClick settingButton !!!\n");
-    EASYUICONTEXT->openActivity("settingsActivity");
+    EASYUICONTEXT->openActivity("setshowActivity");
 	fold_statusbar();
     return false;
 }

@@ -144,7 +144,6 @@ public:
 
 }
 static FMSeekBarChangeListener sSeekBarChangeListener;
-
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -226,7 +225,7 @@ static bool onUI_Timer(int id){
 	switch (id) {
 	case LINK_RESTART_TIMER:
 		lk::restart_lylink();
-		break;
+		return false;
 		default:
 			break;
 	}

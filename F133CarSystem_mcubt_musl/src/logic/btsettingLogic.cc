@@ -35,6 +35,8 @@
 #include "system/setting.h"
 #include "utils/Loading_icon.hpp"
 #include "media/audio_context.h"
+#include "utils/BitmapHelper.h"
+#include "manager/ConfigManager.h"
 
 static zkf::IconRotate iconRotate;
 //#include "bt/database.h"
@@ -56,17 +58,19 @@ static void _update_pin() {
 static void _bt_info_init() {
 	switch(bt::get_connect_state()){
 	case E_BT_CONNECT_STATE_IDLE:
-		mconnDevButtonPtr->setTextTr("ununited");
+		mconnDevTextViewPtr->setTextTr("ununited");
 		break;
 	case E_BT_CONNECT_STATE_CONNECTING:
-		mconnDevButtonPtr->setTextTr("connecting");
+		mconnDevTextViewPtr->setTextTr("connecting");
 		break;
 	case E_BT_CONNECT_STATE_CONNECTED:
-		mconnDevButtonPtr->setText(bt::get_connect_dev().name);
+		mconnDevTextViewPtr->setText(bt::get_connect_dev().name);
 		break;
 	default:
 		break;
 	}
+	mconnDevTextViewPtr->setLongMode(ZKTextView::E_LONG_MODE_SCROLL_CIRCULAR);
+
 	mbtNameEditTextPtr->setText(bt::get_name());
 	LOGD("--%d-- --%s-- bt::is_on():%d \n", __LINE__, __FILE__, bt::is_on());
 	menableButtonPtr->setSelected(bt::is_on());
@@ -98,7 +102,7 @@ static void _bt_power_cb(bt_power_state_e state) {
 	case E_BT_POWER_STATE_OFF:
 		close_bt_appActivity();
 		mbtEnableWindowPtr->hideWnd();
-		mconnDevButtonPtr->setTextTr("ununited");
+		mconnDevTextViewPtr->setTextTr("ununited");
 		mopeningWndPtr->hideWnd();
 		iconRotate.requestExit();
 		menableButtonPtr->setVisible(true);
@@ -126,7 +130,7 @@ static void _bt_connect_cb(bt_connect_state_e state) {
 	switch (state) {
 	case E_BT_CONNECT_STATE_IDLE:
 		close_bt_appActivity();
-		mconnDevButtonPtr->setTextTr("ununited");
+		mconnDevTextViewPtr->setTextTr("ununited");
 		if (next_connect_bt_info.addr != "") {
 			bt::connect(next_connect_bt_info.addr.c_str());
 			next_connect_bt_info.addr = "";
@@ -134,12 +138,14 @@ static void _bt_connect_cb(bt_connect_state_e state) {
 		mscanButtonPtr->setTouchable(true);
 		break;
 	case E_BT_CONNECT_STATE_CONNECTING:
-		mconnDevButtonPtr->setTextTr("connecting");
+		mconnDevTextViewPtr->setTextTr("connecting");
 		mscanButtonPtr->setTouchable(false);
 		break;
 	case E_BT_CONNECT_STATE_CONNECTED:
-		DEBUG
-		mconnDevButtonPtr->setText(bt::get_connect_dev().name);
+//		DEBUG
+		LOGE("--%d-- --%s-- name = %s!!!\n", __LINE__, __FILE__, bt::get_connect_dev().name.c_str());
+		mconnDevTextViewPtr->setText(bt::get_connect_dev().name);
+		mconnDevTextViewPtr->setLongMode(ZKTextView::E_LONG_MODE_SCROLL_CIRCULAR);
 		mscanButtonPtr->setTouchable(true);
 		break;
 	}
@@ -202,14 +208,11 @@ static void _bt_remove_cb() {
 	bt::remove_cb(&_s_bt_cb);
 }
 
-static void _textview_touchpass(bool pass) {
-	mTextView16Ptr->setTouchPass(pass);
-	mTextView17Ptr->setTouchPass(pass);
-	mTextView18Ptr->setTouchPass(pass);
-	mTextView19Ptr->setTouchPass(pass);
-	mTextView20Ptr->setTouchPass(pass);
+static void set_back_pic() {
+	bitmap_t *bg_bmp = NULL;
+	BitmapHelper::loadBitmapFromFile(bg_bmp, CONFIGMANAGER->getResFilePath("/bg/bg.jpg").c_str(), 3);
+	mTextViewBgPtr->setBackgroundBmp(bg_bmp);
 }
-
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -222,6 +225,7 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 
 static void _init_bt_info() {
 	menableButtonPtr->setSelected(bt::is_on());
+	mconnDevTipsTextViewPtr->setLongMode(ZKTextView::E_LONG_MODE_DOTS);
 	_update_dev_name();
 	_update_pin();
 }
@@ -255,7 +259,6 @@ static void onUI_intent(const Intent *intentPtr) {
 static void onUI_show() {
 	iconRotate.SetCtrl(mopeningPointerPtr, mopeningWndPtr);
 	_bt_info_init();
-	_textview_touchpass(true);
 }
 
 /*
@@ -336,6 +339,7 @@ static void obtainListItemData_matchedListView(ZKListView *pListView,ZKListView:
     //LOGD(" obtainListItemData_ matchedListView  !!!\n");
 	bt_dev_t dev;
 	bt::get_matched_dev_by_index(index, dev);
+	pListItem->setLongMode(ZKTextView::E_LONG_MODE_DOTS);
 	pListItem->setText(dev.name);
 //	pListItem->setText(bt_match_list[index].name);
 }
@@ -350,6 +354,7 @@ static void onListItemClick_matchedListView(ZKListView *pListView, int index, in
 		return;
 	}
 	if (bt::get_connect_state() == E_BT_CONNECT_STATE_CONNECTED) {
+		mconnectedNameTextViewPtr->setLongMode(ZKTextView::E_LONG_MODE_DOTS);
 		mconnectedNameTextViewPtr->setText(conn_dev.name);
 		mdisConnectWindowPtr->showWnd();
 		next_connect_bt_info = click_dev;
@@ -444,7 +449,8 @@ static bool onButtonClick_connDevButton(ZKButton *pButton) {
     if(bt::get_connect_state() == E_BT_CONNECT_STATE_IDLE || bt::get_connect_state() == E_BT_CONNECT_STATE_CONNECTING){
     	return false;
     }
-    mconnectedNameTextViewPtr->setText(mconnDevButtonPtr->getText());
+    mconnectedNameTextViewPtr->setLongMode(ZKTextView::E_LONG_MODE_SCROLL_CIRCULAR);
+    mconnectedNameTextViewPtr->setText(mconnDevTextViewPtr->getText());
     mdisConnectWindowPtr->showWnd();
     return false;
 }
@@ -490,7 +496,12 @@ static bool onButtonClick_phoneButton(ZKButton *pButton) {
     	mbtTipsWindowPtr->showWnd();
     	return false;
     }
-    EASYUICONTEXT->openActivity("btDialActivity");
+    if (bt::is_calling()) {
+    	EASYUICONTEXT->openActivity("callingActivity");
+        EASYUICONTEXT->closeActivity("btDialActivity");
+    } else {
+        EASYUICONTEXT->openActivity("btDialActivity");
+    }
     return false;
 }
 

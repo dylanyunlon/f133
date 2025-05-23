@@ -32,6 +32,10 @@
 
 #include "utils/BrightnessHelper.h"
 #include "system/setting.h"
+#include "fy/timer.hpp"
+#include "utils/TimeHelper.h"
+#include "system/reverse.h"
+
 void screenOn_event() {
 	LOGD("--%d-- --%s-- 亮屏事件处理! \n", __LINE__, __FILE__);
 	if (!BRIGHTNESSHELPER->isScreenOn()) {
@@ -40,13 +44,18 @@ void screenOn_event() {
 	}
 }
 
+static void set_time(tm t) {
+	mPointSecondPtr->setTargetAngle(6 * t.tm_sec);
+	mPointMinutePtr->setTargetAngle((6 * t.tm_min) + (t.tm_sec / 10));
+	mPointHourPtr->setTargetAngle((30 * t.tm_hour) + (t.tm_min / 2));
+}
 /**
  * 注册定时器
  * 填充数组用于注册定时器
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	//{0,  6000}, //定时器id=0, 时间间隔6秒
+	{0,  1000}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
 };
 
@@ -55,8 +64,7 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
  */
 static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
-	BRIGHTNESSHELPER->screenOff();
-
+	set_time(*TimeHelper::getDateTime());
 }
 
 /**
@@ -110,7 +118,10 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  */
 static bool onUI_Timer(int id){
 	switch (id) {
-
+	case 0:{
+		set_time(*TimeHelper::getDateTime());
+		break;
+	}
 		default:
 			break;
 	}

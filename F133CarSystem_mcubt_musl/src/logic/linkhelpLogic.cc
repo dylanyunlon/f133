@@ -39,6 +39,8 @@
 #include "fy/format.hpp"
 #include "fy/os.hpp"
 #include "common.h"
+#include "utils/BitmapHelper.h"
+#include "manager/ConfigManager.h"
 
 #define LINK_RESTART_TIMER    1
 
@@ -114,17 +116,15 @@ static void _update_layout() {
 	std::string bt_name = sys::setting::get_bt_name();
 	std::string dev_name = sys::setting::get_dev_name();
 
-	std::string cpStep = LTOV("cp_step1") + "\n"
-					   + bt_name + "\n\n"
+	std::string cpStep = LTOV("cp_step1")+ bt_name + "\n\n"
 					   + LTOV("cp_step2");
 
 	std::string aaStep = LTOV("aa_step1") +  "\n\n"
-					   + LTOV("aa_step2") + "\n"
-					   + bt_name;
+					   + LTOV("aa_step2") + bt_name;
 
-	std::string apStep = LTOV("ap_step1") + "\n" + dev_name + "\n\n"
+	std::string apStep = LTOV("ap_step1") + dev_name + "\n\n"
 					   + LTOV("ap_step2") + std::string("12345678") + "\n\n"
-					   + LTOV("ap_step3") + "\n" + dev_name;
+					   + LTOV("ap_step3") + dev_name;
 
 	std::string mcStep = LTOV("mc_step1") +  "\n\n"
 					   + LTOV("mc_step2") +  "\n\n"
@@ -145,6 +145,11 @@ static void _update_layout() {
 	macStepTextViewPtr->setText(acStep);
 }
 
+static void set_back_pic() {
+	bitmap_t *bg_bmp = NULL;
+	BitmapHelper::loadBitmapFromFile(bg_bmp, CONFIGMANAGER->getResFilePath("/link/wallpaper.jpg").c_str(), 3);
+	mTextViewBgPtr->setBackgroundBmp(bg_bmp);
+}
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -165,7 +170,7 @@ static void onUI_init(){
 
 //	mcp3TextViewPtr->setText(tips);
 //	maa3TextViewPtr->setText(tips);
-
+	set_back_pic();
 	_update_layout();
 }
 

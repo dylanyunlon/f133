@@ -322,15 +322,3 @@ static bool onlylinkviewActivityTouchEvent(const MotionEvent &ev) {
 	}
 	return false;
 }
-
-
-
-
-static bool onButtonClick_sys_home(ZKButton *pButton) {
-    LOGD(" ButtonClick sys_home !!!\n");
-    return false;
-}
-static bool onButtonClick_sys_back(ZKButton *pButton) {
-    LOGD(" ButtonClick sys_back !!!\n");
-    return false;
-}

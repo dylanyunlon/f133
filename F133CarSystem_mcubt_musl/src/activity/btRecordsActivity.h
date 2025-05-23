@@ -26,20 +26,11 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
-#define ID_BTRECORDS_TextView5    50006
-#define ID_BTRECORDS_TextView4    50005
-#define ID_BTRECORDS_TextView3    50004
-#define ID_BTRECORDS_TextView2    50003
-#define ID_BTRECORDS_TextView1    50001
+#define ID_BTRECORDS_TextViewBg    50001
 #define ID_BTRECORDS_sureButton    20015
 #define ID_BTRECORDS_cancelButton    20014
 #define ID_BTRECORDS_TipsTextView    50011
 #define ID_BTRECORDS_DeleteTipsWindow    110010
-#define ID_BTRECORDS_TextView20    50027
-#define ID_BTRECORDS_TextView19    50026
-#define ID_BTRECORDS_TextView18    50025
-#define ID_BTRECORDS_TextView17    50024
-#define ID_BTRECORDS_TextView16    50023
 #define ID_BTRECORDS_TextView15    50002
 #define ID_BTRECORDS_btsettingButton    20007
 #define ID_BTRECORDS_btcontactsButton    20006

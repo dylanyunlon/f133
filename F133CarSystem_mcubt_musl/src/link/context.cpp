@@ -48,6 +48,9 @@ static bool bt_music_is_mute;
 
 static bool _s_lylink_is_started = false;
 
+static int _s_vr_audio_skip_frame = 0;
+static LYLINK_AUDIOTYPE_E _s_audio_type = AudioType_Invalid;
+
 typedef struct {
 	audio::StreamTransfer st;
 	void *player;
@@ -118,11 +121,11 @@ static void _mix_mode_player_init(LYLINK_AUDIOTYPE_E type, uint32_t channels, ui
 #endif
 
 		if (_s_link_type == LINK_TYPE_WIFICP) {
-			if (type == AudioType_TTS) {
+			if (type == AudioType_TTS || type == AudioType_VR) {
 				// carplay导航播报数据有时喂得不及时，出现alsa xrun，表现为声音卡顿
-				// 填充点静音数据   1920 * 20 / (48000 * 2 / 1000) = 400ms
+				// 填充点静音数据   1920 * 10 / (48000 * 2 / 1000) = 200ms
 				uint8_t silence[1920] = { 0 };
-				for (uint32_t i = 0; i < 20; ++i) {
+				for (uint32_t i = 0; i < 10; ++i) {
 					zk_audio_multi_player_put_frame(_s_audio_info.player, silence, sizeof(silence));
 				}
 			}
@@ -389,7 +392,7 @@ static void _proc_audio(LYLINKAPI_EVENT evt, int para0, void *para1) {
 				params->sampleRate, params->channelNum, params->bitWidth);
 
 		Mutex::Autolock _l(_s_audio_info.lock);
-
+		_s_audio_type = (LYLINK_AUDIOTYPE_E) para0;
 #if MIX_MODE
 		_mix_mode_player_init((LYLINK_AUDIOTYPE_E) para0, 2, 48000);
 #else
@@ -426,7 +429,7 @@ static void _proc_audio(LYLINKAPI_EVENT evt, int para0, void *para1) {
 		}
 
 		Mutex::Autolock _l(_s_audio_info.lock);
-
+		_s_audio_type = AudioType_Invalid;
 #if MIX_MODE
 		_mix_mode_player_deinit((LYLINK_AUDIOTYPE_E) para0);
 #else
@@ -439,6 +442,9 @@ static void _proc_audio(LYLINKAPI_EVENT evt, int para0, void *para1) {
 			_s_audio_info.music_playing = false;
 		} else if (para0 == AudioType_Phone) {  // 电话
 			audio::handle_phone(E_AUDIO_TYPE_LYLINK_PHONE, false);
+		} else if (para0 == AudioType_VR) {
+			_s_vr_audio_skip_frame = 0;
+			audio::handle_phone(E_AUDIO_TYPE_LYLINK_VR, false);
 		}
 
 		break;
@@ -458,7 +464,15 @@ static void _proc_audio(LYLINKAPI_EVENT evt, int para0, void *para1) {
 			_mix_mode_player_put_frame(true, (uint8_t *) para1, para0);
 #endif
 		} else {
-			_mix_mode_player_put_frame(false, (uint8_t *) para1, para0);
+			if(_s_vr_audio_skip_frame < 10 && _s_audio_type == AudioType_VR) {
+				LOGD("[link] LYLINK_AUDIO_DATA skip:%d", _s_vr_audio_skip_frame);
+				_s_vr_audio_skip_frame++;
+				// 填充点静音数据   1920 * 5 / (48000 * 2 / 1000) = 100ms
+				uint8_t silence[1920] = { 0 };
+				zk_audio_multi_player_put_frame(_s_audio_info.player, silence, sizeof(silence));
+			} else {
+				_mix_mode_player_put_frame(false, (uint8_t *) para1, para0);
+			}
 		}
 
 		break;
@@ -738,10 +752,10 @@ static bool _start_link() {
 	fy::files::remove(LINK_BIN_SH);
 	if (sys::setting::get_link_mode() == E_LINK_MODE_CARLIFE) {
 		sprintf(script, LINK_SCRIPT_CN, sys::setting::get_dev_name().c_str());
-		fy::files::create_script(LINK_BIN_SH, LINK_SCRIPT_CN);
+		fy::files::create_script(LINK_BIN_SH, script);
 	} else {
 		sprintf(script, LINK_SCRIPT_AB, sys::setting::get_dev_name().c_str());
-		fy::files::create_script(LINK_BIN_SH, LINK_SCRIPT_AB);
+		fy::files::create_script(LINK_BIN_SH, script);
 	}
 
 	int funmode = 0;
@@ -784,9 +798,9 @@ static bool _start_link() {
 	params.funmode = funmode;
 	params.flags |= LYLINK_FLAGS_VIDEO_LYLINK;
 
-	sys::setting::get_linksound_type() == E_TYPE_ENGINE
-			? params.flags |= LYLINK_FLAGS_VIDEO_LYLINK
-			: params.flags |= LYLINK_FLAGS_VIDEO_ONLY;
+	if (sys::setting::get_sound_mode() == E_SOUND_MODE_LINK) {
+		params.flags |= LYLINK_FLAGS_VIDEO_ONLY;
+	}
 
 	// 可配置mfi i2c号及地址
 #if LINK_MFI_SET_ENABLE

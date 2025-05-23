@@ -26,19 +26,15 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_BTMUSIC_TextViewBg    50001
+#define ID_BTMUSIC_TextView15    50002
+#define ID_BTMUSIC_btsettingButton    20007
+#define ID_BTMUSIC_btcontactsButton    20006
+#define ID_BTMUSIC_btrecordButton    20002
 #define ID_BTMUSIC_TextView2    50007
 #define ID_BTMUSIC_TextView14    50011
 #define ID_BTMUSIC_btTipsWindow    110006
 #define ID_BTMUSIC_TextView1    50003
-#define ID_BTMUSIC_TextView20    50027
-#define ID_BTMUSIC_TextView19    50026
-#define ID_BTMUSIC_TextView18    50025
-#define ID_BTMUSIC_TextView17    50024
-#define ID_BTMUSIC_TextView16    50002
-#define ID_BTMUSIC_TextView15    50001
-#define ID_BTMUSIC_btsettingButton    20003
-#define ID_BTMUSIC_btcontactsButton    20002
-#define ID_BTMUSIC_btrecordButton    20001
 #define ID_BTMUSIC_phoneButton    20008
 #define ID_BTMUSIC_queryMusicButton    20010
 #define ID_BTMUSIC_btAppWindow    110001

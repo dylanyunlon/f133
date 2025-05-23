@@ -26,6 +26,11 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_TOPBAR_NetButton    20022
+#define ID_TOPBAR_usbButton    20031
+#define ID_TOPBAR_sdButton    20030
+#define ID_TOPBAR_fmButton    20007
+#define ID_TOPBAR_headWindow    110002
 #define ID_TOPBAR_volumButton    20011
 #define ID_TOPBAR_timeTextView    50003
 #define ID_TOPBAR_timeSystemTextView    50002

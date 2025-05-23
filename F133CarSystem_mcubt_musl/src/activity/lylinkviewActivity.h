@@ -26,7 +26,6 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
-#define ID_LYLINKVIEW_sys_back   100
 #define ID_LYLINKVIEW_syncPointer    90001
 #define ID_LYLINKVIEW_LoadingTextView    50012
 #define ID_LYLINKVIEW_LoadingWindow    110001

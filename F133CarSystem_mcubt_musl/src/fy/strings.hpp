@@ -99,6 +99,18 @@ inline void split_word(const std::string& words, std::vector<std::string>* chara
   }
 }
 
+inline void split(std::vector<std::string> &res, const std::string &str, char c) {
+    res.clear();
+
+    std::string::size_type pos1 = 0, pos2 = str.find(c);
+    while (std::string::npos != pos2) {
+        res.push_back(str.substr(pos1, pos2 - pos1));
+        pos1 = pos2 + 1;
+        pos2 = str.find(c, pos1);
+    }
+    res.push_back(str.substr(pos1));
+}
+
 inline void split(const std::string& str, const std::string& delimitor,
     std::vector<std::string>* group) {
   if (group == NULL) {

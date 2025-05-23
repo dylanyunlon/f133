@@ -4,11 +4,7 @@
 #include "btDialActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
-static ZKTextView* mTextView20Ptr;
-static ZKTextView* mTextView19Ptr;
-static ZKTextView* mTextView18Ptr;
-static ZKTextView* mTextView17Ptr;
-static ZKTextView* mTextView16Ptr;
+static ZKTextView* mTextViewBgPtr;
 static ZKTextView* mTextView15Ptr;
 static ZKButton* mbtsettingButtonPtr;
 static ZKButton* mbtcontactsButtonPtr;
@@ -162,11 +158,7 @@ btDialActivity::~btDialActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
-    mTextView20Ptr = NULL;
-    mTextView19Ptr = NULL;
-    mTextView18Ptr = NULL;
-    mTextView17Ptr = NULL;
-    mTextView16Ptr = NULL;
+    mTextViewBgPtr = NULL;
     mTextView15Ptr = NULL;
     mbtsettingButtonPtr = NULL;
     mbtcontactsButtonPtr = NULL;
@@ -201,11 +193,7 @@ const char* btDialActivity::getAppName() const{
 //TAG:onCreate
 void btDialActivity::onCreate() {
 	Activity::onCreate();
-    mTextView20Ptr = (ZKTextView*)findControlByID(ID_BTDIAL_TextView20);
-    mTextView19Ptr = (ZKTextView*)findControlByID(ID_BTDIAL_TextView19);
-    mTextView18Ptr = (ZKTextView*)findControlByID(ID_BTDIAL_TextView18);
-    mTextView17Ptr = (ZKTextView*)findControlByID(ID_BTDIAL_TextView17);
-    mTextView16Ptr = (ZKTextView*)findControlByID(ID_BTDIAL_TextView16);
+    mTextViewBgPtr = (ZKTextView*)findControlByID(ID_BTDIAL_TextViewBg);
     mTextView15Ptr = (ZKTextView*)findControlByID(ID_BTDIAL_TextView15);
     mbtsettingButtonPtr = (ZKButton*)findControlByID(ID_BTDIAL_btsettingButton);
     mbtcontactsButtonPtr = (ZKButton*)findControlByID(ID_BTDIAL_btcontactsButton);

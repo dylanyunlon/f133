@@ -78,16 +78,6 @@ static void _bt_add_cb() {
 static void _bt_remove_cb() {
 	bt::remove_cb(&_s_bt_cb);
 }
-
-static void _textview_touchpass(bool pass) {
-	mTextView1Ptr->setTouchPass(pass);
-	mTextView2Ptr->setTouchPass(pass);
-	mTextView16Ptr->setTouchPass(pass);
-	mTextView17Ptr->setTouchPass(pass);
-	mTextView18Ptr->setTouchPass(pass);
-	mTextView19Ptr->setTouchPass(pass);
-	mTextView20Ptr->setTouchPass(pass);
-}
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -122,7 +112,7 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
-	_textview_touchpass(true);
+
 }
 
 /*
@@ -198,6 +188,11 @@ static bool onButtonClick_sys_back(ZKButton *pButton) {
 
 static int getListItemCount_contactsListView(const ZKListView *pListView) {
     //LOGD("getListItemCount_contactsListView !\n");
+	if (bt::get_contact_size() <= 0) {
+		mnumberTextViewPtr->setText("");
+	} else {
+		mnumberTextViewPtr->setText((int)bt::get_contact_size());
+	}
 	return bt::get_contact_size();
 }
 static void obtainListItemData_contactsListView(ZKListView *pListView,ZKListView::ZKListItem *pListItem, int index) {
@@ -285,7 +280,12 @@ static bool onButtonClick_queryMusicButton(ZKButton *pButton) {
 
 static bool onButtonClick_phoneButton(ZKButton *pButton) {
     LOGD(" ButtonClick phoneButton !!!\n");
-    EASYUICONTEXT->openActivity("btDialActivity");
+    if (bt::is_calling()) {
+    	EASYUICONTEXT->openActivity("callingActivity");
+        EASYUICONTEXT->closeActivity("btDialActivity");
+    } else {
+        EASYUICONTEXT->openActivity("btDialActivity");
+    }
     EASYUICONTEXT->closeActivity("btRecordsActivity");
     EASYUICONTEXT->closeActivity("btContactsActivity");
     EASYUICONTEXT->closeActivity("btMusicActivity");

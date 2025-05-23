@@ -252,6 +252,8 @@ bool get_bt_is_mute();
 bool start_scan_control();
 bool stop_scan_control();
 
+bool query_name();
+
 /**
  * 声音 (南硅mcu指令)
  */

@@ -4,6 +4,7 @@
 #include "videoActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextViewBgPtr;
 static ZKTextView* mTextView5Ptr;
 static ZKTextView* mTextView2Ptr;
 static ZKTextView* mTextView3Ptr;
@@ -159,6 +160,7 @@ videoActivity::~videoActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    mTextViewBgPtr = NULL;
     mTextView5Ptr = NULL;
     mTextView2Ptr = NULL;
     mTextView3Ptr = NULL;
@@ -200,6 +202,7 @@ const char* videoActivity::getAppName() const{
 //TAG:onCreate
 void videoActivity::onCreate() {
 	Activity::onCreate();
+    mTextViewBgPtr = (ZKTextView*)findControlByID(ID_VIDEO_TextViewBg);
     mTextView5Ptr = (ZKTextView*)findControlByID(ID_VIDEO_TextView5);
     mTextView2Ptr = (ZKTextView*)findControlByID(ID_VIDEO_TextView2);
     mTextView3Ptr = (ZKTextView*)findControlByID(ID_VIDEO_TextView3);

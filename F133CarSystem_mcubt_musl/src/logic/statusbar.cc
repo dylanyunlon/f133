@@ -78,6 +78,7 @@ static void set_status_layout(bt_call_state_e state) {
 	else if (state == E_BT_CALL_STATE_TALKING) {
 //		position = LayoutPosition(314+158, 0, 80, 40);
 //		EASYUICONTEXT->getStatusBar()->setPosition(position);
+		mnumTextViewPtr->setText(bt::get_call_num());
 		mincomingWindowPtr->hideWnd();
 	}
 }
@@ -110,7 +111,7 @@ static void _bt_call_cb(bt_call_state_e state) {
 
 			EASYUICONTEXT->showStatusBar();
 		} else {
-			EASYUICONTEXT->openActivity("btIncomingActivity");
+			EASYUICONTEXT->openActivity("callingActivity");
 		}
 		break;
 	case E_BT_CALL_STATE_TALKING:                // 通话中

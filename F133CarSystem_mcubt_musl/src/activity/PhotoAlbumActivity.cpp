@@ -4,6 +4,7 @@
 #include "PhotoAlbumActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextViewBgPtr;
 static ZKTextView* mTextView6Ptr;
 static ZKTextView* mTextView4Ptr;
 static ZKTextView* mTextView1Ptr;
@@ -159,6 +160,7 @@ PhotoAlbumActivity::~PhotoAlbumActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    mTextViewBgPtr = NULL;
     mTextView6Ptr = NULL;
     mTextView4Ptr = NULL;
     mTextView1Ptr = NULL;
@@ -200,6 +202,7 @@ const char* PhotoAlbumActivity::getAppName() const{
 //TAG:onCreate
 void PhotoAlbumActivity::onCreate() {
 	Activity::onCreate();
+    mTextViewBgPtr = (ZKTextView*)findControlByID(ID_PHOTOALBUM_TextViewBg);
     mTextView6Ptr = (ZKTextView*)findControlByID(ID_PHOTOALBUM_TextView6);
     mTextView4Ptr = (ZKTextView*)findControlByID(ID_PHOTOALBUM_TextView4);
     mTextView1Ptr = (ZKTextView*)findControlByID(ID_PHOTOALBUM_TextView1);

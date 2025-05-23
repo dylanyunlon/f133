@@ -4,6 +4,7 @@
 #include "soundEffectActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKButton* mreturnButtonPtr;
 static ZKTextView* mTextView13Ptr;
 static ZKTextView* mTextView12Ptr;
 static ZKTextView* mTextView11Ptr;
@@ -65,6 +66,7 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_SOUNDEFFECT_returnButton, onButtonClick_returnButton,
     ID_SOUNDEFFECT_sys_back, onButtonClick_sys_back,
 };
 /***************/
@@ -148,6 +150,7 @@ soundEffectActivity::~soundEffectActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    mreturnButtonPtr = NULL;
     mTextView13Ptr = NULL;
     mTextView12Ptr = NULL;
     mTextView11Ptr = NULL;
@@ -181,6 +184,7 @@ const char* soundEffectActivity::getAppName() const{
 //TAG:onCreate
 void soundEffectActivity::onCreate() {
 	Activity::onCreate();
+    mreturnButtonPtr = (ZKButton*)findControlByID(ID_SOUNDEFFECT_returnButton);
     mTextView13Ptr = (ZKTextView*)findControlByID(ID_SOUNDEFFECT_TextView13);
     mTextView12Ptr = (ZKTextView*)findControlByID(ID_SOUNDEFFECT_TextView12);
     mTextView11Ptr = (ZKTextView*)findControlByID(ID_SOUNDEFFECT_TextView11);

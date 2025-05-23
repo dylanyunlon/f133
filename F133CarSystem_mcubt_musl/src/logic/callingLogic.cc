@@ -87,15 +87,47 @@ static void _bt_misc_info_cb(bt_misc_info_e info) {
 	}
 }
 
-static void _bt_call_cb(bt_call_state_e state) {
-	if (state == E_BT_CALL_STATE_OUTGOING) {        // 去电
-		std::string name = bt::get_call_contact();
-		std::string num = bt::get_call_num();
-	    mnameTextViewPtr->setText(name == "" ? num : name);
-//	    LOGD("--%d-- --%s-- call_name:%s  call_num:%s \n", __LINE__, __FILE__, name.c_str(), num.c_str());
+static void _switch_app_window(bool show) {
+	if (show) {
+		mInfoWndPtr->setPosition(LayoutPosition(621, 112, 381, 424));
+	} else {
+		mInfoWndPtr->setPosition(LayoutPosition(414, 112, 381, 424));
 	}
-	mcommunicateWindowPtr->setVisible(state == E_BT_CALL_STATE_TALKING);
-	mcallTimeTextViewPtr->setVisible(state == E_BT_CALL_STATE_TALKING);
+}
+
+static void _bt_call_cb(bt_call_state_e state) {
+//	if (state == E_BT_CALL_STATE_OUTGOING) {        // 去电
+//		std::string name = bt::get_call_contact();
+//		std::string num = bt::get_call_num();
+//	    mnameTextViewPtr->setText(name == "" ? num : name);
+////	    LOGD("--%d-- --%s-- call_name:%s  call_num:%s \n", __LINE__, __FILE__, name.c_str(), num.c_str());
+//	}
+	std::string name = bt::get_call_contact();
+	std::string num = bt::get_call_num();
+	switch(state) {
+	case E_BT_CALL_STATE_IDLE:					// 挂断
+		EASYUICONTEXT->hideStatusBar();
+		EASYUICONTEXT->closeActivity("callingActivity");
+		break;
+	case E_BT_CALL_STATE_OUTGOING:               // 去电
+	    mnameTextViewPtr->setText(name == "" ? num : name);
+//	    mnumberTextViewPtr->setVisible(false);
+		moutWindowPtr->showWnd();
+		minWindowPtr->hideWnd();
+		break;
+	case E_BT_CALL_STATE_INCOMING:               // 来电
+		mnameTextViewPtr->setText(name == "" ? num : name);
+//		mnumberTextViewPtr->setVisible(false);
+		moutWindowPtr->hideWnd();
+		minWindowPtr->showWnd();
+		break;
+	case E_BT_CALL_STATE_TALKING:                // 通话中
+		moutWindowPtr->hideWnd();
+		minWindowPtr->hideWnd();
+		mcommunicateWindowPtr->setVisible(state == E_BT_CALL_STATE_TALKING);
+		mcallTimeTextViewPtr->setVisible(state == E_BT_CALL_STATE_TALKING);
+		break;
+	}
 }
 
 static void _bt_add_cb() {
@@ -158,6 +190,7 @@ static void onUI_init(){
 	redial_munber_str = "";
 	mdelButtonPtr->setLongClickListener(&delLongClickListener);
 	set_call_time();
+	_switch_app_window(false);
 }
 
 /**
@@ -267,6 +300,7 @@ static bool onButtonClick_keyBoardButton(ZKButton *pButton) {
     LOGD(" ButtonClick keyBoardButton !!!\n");
     pButton->setSelected(!pButton->isSelected());
     mkeyBoardWindowPtr->setVisible(pButton->isSelected());
+    _switch_app_window(pButton->isSelected());
     return false;
 }
 
@@ -361,3 +395,65 @@ static bool onButtonClick_delButton(ZKButton *pButton) {
 }
 
 
+static bool onButtonClick_inhangupButton(ZKButton *pButton) {
+    LOGD(" ButtonClick inhangupButton !!!\n");
+    bt::hangup();
+    return false;
+}
+
+static bool onButtonClick_inanswerButton(ZKButton *pButton) {
+    LOGD(" ButtonClick inanswerButton !!!\n");
+    bt::answer();
+    return false;
+}
+
+static bool onButtonClick_outhangupButton(ZKButton *pButton) {
+    LOGD(" ButtonClick outhangupButton !!!\n");
+    bt::hangup();
+    return false;
+}
+
+static bool onButtonClick_queryMusicButton(ZKButton *pButton) {
+    LOGD(" ButtonClick queryMusicButton !!!\n");
+    EASYUICONTEXT->openActivity("btMusicActivity");
+    EASYUICONTEXT->closeActivity("btRecordsActivity");
+    EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btDialActivity");
+    return false;
+}
+
+static bool onButtonClick_phoneButton(ZKButton *pButton) {
+    LOGD(" ButtonClick phoneButton !!!\n");
+    EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btRecordslActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
+    return false;
+}
+
+static bool onButtonClick_btrecordButton(ZKButton *pButton) {
+    LOGD(" ButtonClick btrecordButton !!!\n");
+    EASYUICONTEXT->closeActivity("btDialActivity");
+    EASYUICONTEXT->openActivity("btRecordsActivity");
+    EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
+    return false;
+}
+
+static bool onButtonClick_btcontactsButton(ZKButton *pButton) {
+    LOGD(" ButtonClick btcontactsButton !!!\n");
+    EASYUICONTEXT->closeActivity("btDialActivity");
+    EASYUICONTEXT->closeActivity("btRecordsActivity");
+    EASYUICONTEXT->openActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
+    return false;
+}
+
+static bool onButtonClick_btsettingButton(ZKButton *pButton) {
+    LOGD(" ButtonClick btsettingButton !!!\n");
+    EASYUICONTEXT->openActivity("btsettingActivity");
+    EASYUICONTEXT->closeActivity("btRecordsActivity");
+    EASYUICONTEXT->closeActivity("btContactsActivity");
+    EASYUICONTEXT->closeActivity("btDialActivity");
+    EASYUICONTEXT->closeActivity("btMusicActivity");
+    return false;
+}

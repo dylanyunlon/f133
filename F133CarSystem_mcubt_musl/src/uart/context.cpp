@@ -66,6 +66,7 @@ typedef struct {
 typedef struct {
 	sound_channel_e channel = SOUND_CHANNEL_BT;
 	uint8_t volume = 25;	//所有通道使用同一个音量
+	uint8_t mute = false;
 	Mutex _s_vol_mutex;
 } sys_voice_s;
 
@@ -681,6 +682,13 @@ bool set_volume(float vol) {
 	LOCK_OP(sys_voice._s_vol_mutex, sys_voice.volume = (uint8_t)(10.0 * vol))		//((vol < 0.1) ? 0 : (20.0 * vol + 19))
 	uint8_t data[] = { sys_voice.channel, sys_voice.volume };
 	return _send_frame_data(CMD_CHANNEL, data, 2);
+}
+
+bool set_amplifier_mute(uint8_t mute) {
+	LOGD("set_amplifier_mute mute = %d",mute);
+	LOCK_OP(sys_voice._s_vol_mutex, sys_voice.mute = mute)
+	uint8_t data = sys_voice.mute;
+	return _send_frame_data(CMD_SOUND_MUTE, &data, 1);
 }
 
 bool set_sound_channel(sound_channel_e channel) {

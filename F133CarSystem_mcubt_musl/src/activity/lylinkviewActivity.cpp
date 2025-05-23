@@ -4,7 +4,6 @@
 #include "lylinkviewActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
-static ZKButton* msys_backPtr;
 static ZKPointer* msyncPointerPtr;
 static ZKTextView* mLoadingTextViewPtr;
 static ZKWindow* mLoadingWindowPtr;
@@ -46,7 +45,6 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
-    ID_LYLINKVIEW_sys_back, onButtonClick_sys_back,
 };
 /***************/
 
@@ -120,7 +118,6 @@ lylinkviewActivity::~lylinkviewActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
-    msys_backPtr = NULL;
     msyncPointerPtr = NULL;
     mLoadingTextViewPtr = NULL;
     mLoadingWindowPtr = NULL;
@@ -134,7 +131,6 @@ const char* lylinkviewActivity::getAppName() const{
 //TAG:onCreate
 void lylinkviewActivity::onCreate() {
 	Activity::onCreate();
-    msys_backPtr = (ZKButton*)findControlByID(ID_LYLINKVIEW_sys_back);
     msyncPointerPtr = (ZKPointer*)findControlByID(ID_LYLINKVIEW_syncPointer);
     mLoadingTextViewPtr = (ZKTextView*)findControlByID(ID_LYLINKVIEW_LoadingTextView);
     mLoadingWindowPtr = (ZKWindow*)findControlByID(ID_LYLINKVIEW_LoadingWindow);

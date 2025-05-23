@@ -26,6 +26,7 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_SOUNDEFFECT_returnButton    20001
 #define ID_SOUNDEFFECT_TextView13    50013
 #define ID_SOUNDEFFECT_TextView12    50012
 #define ID_SOUNDEFFECT_TextView11    50011

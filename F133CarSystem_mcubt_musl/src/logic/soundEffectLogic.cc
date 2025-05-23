@@ -32,10 +32,14 @@
 
 #include "uart/context.h"
 
+#define SET_EFFECT_VLAUE 12
 
 struct C_effect{
 	int effect_vlaue;
 };
+
+static ZKSeekBar **seekbar[] = {&meqSeekBar0Ptr,&meqSeekBar1Ptr,&meqSeekBar2Ptr,&meqSeekBar3Ptr,
+		&meqSeekBar4Ptr,&meqSeekBar5Ptr,&meqSeekBar6Ptr,&meqSeekBar7Ptr,&meqSeekBar8Ptr,&meqSeekBar9Ptr,};
 
 static C_effect s_effect[10] = {12,12,12,12,12,12,12,12,12,12};
 /**
@@ -208,5 +212,14 @@ static void onProgressChanged_eqSeekBar9(ZKSeekBar *pSeekBar, int progress) {
 
 static bool onButtonClick_sys_back(ZKButton *pButton) {
     LOGD(" ButtonClick sys_back !!!\n");
+    return false;
+}
+static bool onButtonClick_returnButton(ZKButton *pButton) {
+    LOGD(" ButtonClick returnButton !!!\n");
+	for (unsigned int i=0; i<TABLESIZE(seekbar); i++) {
+		(*seekbar[i])->setProgress(SET_EFFECT_VLAUE);
+		uart::set_sound_effect(i, SET_EFFECT_VLAUE);
+		s_effect[i].effect_vlaue = SET_EFFECT_VLAUE;
+	}
     return false;
 }

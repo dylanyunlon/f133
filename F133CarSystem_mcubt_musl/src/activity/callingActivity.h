@@ -26,6 +26,20 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_CALLING_numberTextView    50006
+#define ID_CALLING_TextView15    50005
+#define ID_CALLING_btsettingButton    20007
+#define ID_CALLING_btcontactsButton    20004
+#define ID_CALLING_btrecordButton    20002
+#define ID_CALLING_phoneButton    20008
+#define ID_CALLING_queryMusicButton    20010
+#define ID_CALLING_btAppWindow    110002
+#define ID_CALLING_outhangupButton    20012
+#define ID_CALLING_outWindow    110005
+#define ID_CALLING_inanswerButton    20011
+#define ID_CALLING_inhangupButton    20009
+#define ID_CALLING_inWindow    110004
+#define ID_CALLING_InfoWnd    110003
 #define ID_CALLING_delButton    20025
 #define ID_CALLING_keyXINGButton    20024
 #define ID_CALLING_keyJINGButton    20023
@@ -44,10 +58,8 @@
 #define ID_CALLING_stopMicButton    20003
 #define ID_CALLING_keyBoardButton    20001
 #define ID_CALLING_soundButton    20005
-#define ID_CALLING_numberTextView    50002
 #define ID_CALLING_communicateWindow    110001
 #define ID_CALLING_callTimeTextView    50003
-#define ID_CALLING_TextView2    50006
 #define ID_CALLING_nameTextView    50004
 #define ID_CALLING_headTextView    50001
 #define ID_CALLING_hangupButton    20006

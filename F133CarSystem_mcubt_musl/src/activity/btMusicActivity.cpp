@@ -4,15 +4,11 @@
 #include "btMusicActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextViewBgPtr;
 static ZKTextView* mTextView2Ptr;
 static ZKTextView* mTextView14Ptr;
 static ZKWindow* mbtTipsWindowPtr;
 static ZKTextView* mTextView1Ptr;
-static ZKTextView* mTextView20Ptr;
-static ZKTextView* mTextView19Ptr;
-static ZKTextView* mTextView18Ptr;
-static ZKTextView* mTextView17Ptr;
-static ZKTextView* mTextView16Ptr;
 static ZKTextView* mTextView15Ptr;
 static ZKButton* mbtsettingButtonPtr;
 static ZKButton* mbtcontactsButtonPtr;
@@ -149,15 +145,11 @@ btMusicActivity::~btMusicActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    mTextViewBgPtr = NULL;
     mTextView2Ptr = NULL;
     mTextView14Ptr = NULL;
     mbtTipsWindowPtr = NULL;
     mTextView1Ptr = NULL;
-    mTextView20Ptr = NULL;
-    mTextView19Ptr = NULL;
-    mTextView18Ptr = NULL;
-    mTextView17Ptr = NULL;
-    mTextView16Ptr = NULL;
     mTextView15Ptr = NULL;
     mbtsettingButtonPtr = NULL;
     mbtcontactsButtonPtr = NULL;
@@ -185,15 +177,11 @@ const char* btMusicActivity::getAppName() const{
 //TAG:onCreate
 void btMusicActivity::onCreate() {
 	Activity::onCreate();
+    mTextViewBgPtr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextViewBg);
     mTextView2Ptr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextView2);
     mTextView14Ptr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextView14);
     mbtTipsWindowPtr = (ZKWindow*)findControlByID(ID_BTMUSIC_btTipsWindow);
     mTextView1Ptr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextView1);
-    mTextView20Ptr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextView20);
-    mTextView19Ptr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextView19);
-    mTextView18Ptr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextView18);
-    mTextView17Ptr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextView17);
-    mTextView16Ptr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextView16);
     mTextView15Ptr = (ZKTextView*)findControlByID(ID_BTMUSIC_TextView15);
     mbtsettingButtonPtr = (ZKButton*)findControlByID(ID_BTMUSIC_btsettingButton);
     mbtcontactsButtonPtr = (ZKButton*)findControlByID(ID_BTMUSIC_btcontactsButton);

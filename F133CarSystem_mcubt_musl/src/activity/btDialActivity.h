@@ -26,11 +26,7 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
-#define ID_BTDIAL_TextView20    50027
-#define ID_BTDIAL_TextView19    50026
-#define ID_BTDIAL_TextView18    50025
-#define ID_BTDIAL_TextView17    50024
-#define ID_BTDIAL_TextView16    50023
+#define ID_BTDIAL_TextViewBg    50001
 #define ID_BTDIAL_TextView15    50002
 #define ID_BTDIAL_btsettingButton    20007
 #define ID_BTDIAL_btcontactsButton    20006

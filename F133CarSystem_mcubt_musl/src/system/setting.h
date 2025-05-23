@@ -8,6 +8,8 @@
 #ifndef _SYSTEM_SETTING_H_
 #define _SYSTEM_SETTING_H_
 #include "media/audio_player.h"
+#include "media/media_base.h"
+#include "common.h"
 
 
 typedef enum {
@@ -147,6 +149,11 @@ int get_camera_rot();
  * @brief 设置旋转角度，默认0不旋转，如果屏幕有旋转才需要设置
  */
 void set_camera_rot(int rot);
+
+int get_camera_buf_count();
+void set_camera_buf_count(int cnt);
+int get_camera_mem_type();
+void set_camera_mem_type(int type);
 
 /**
  * @brief 设置亮度值
@@ -295,6 +302,20 @@ void set_fm_switch(bool status);
 
 void set_time_format_24h(bool format_24h);
 bool is_time_format_24h();
+
+// left top, right top, left bottom, right bottom
+void set_reverse_line_point(const SZKPoint &lt, const SZKPoint &rt, const SZKPoint &lb, const SZKPoint &rb);
+void get_reverse_line_point(SZKPoint &lt, SZKPoint &rt, SZKPoint &lb, SZKPoint &rb);
+
+void set_reverse_line_view(bool show);
+bool is_reverse_line_view();
+
+void video_set_play_mode(media_play_mode_e mode);
+media_play_mode_e video_get_play_mode();
+
+void set_music_play_dev(audio_type_e dev);
+audio_type_e get_music_play_dev();
+
 }
 
 }

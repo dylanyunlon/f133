@@ -4,6 +4,7 @@
 #include "reverseActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKPainter* mLinePainterPtr;
 static ZKListView* mListView1Ptr;
 static ZKTextView* mTextView1Ptr;
 static ZKTextView* mSignTextViewPtr;
@@ -118,6 +119,7 @@ reverseActivity::~reverseActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
     onUI_quit();
     mActivityPtr = NULL;
+    mLinePainterPtr = NULL;
     mListView1Ptr = NULL;
     mTextView1Ptr = NULL;
     mSignTextViewPtr = NULL;
@@ -131,6 +133,7 @@ const char* reverseActivity::getAppName() const{
 //TAG:onCreate
 void reverseActivity::onCreate() {
 	Activity::onCreate();
+    mLinePainterPtr = (ZKPainter*)findControlByID(ID_REVERSE_LinePainter);
     mListView1Ptr = (ZKListView*)findControlByID(ID_REVERSE_ListView1);if(mListView1Ptr!= NULL){mListView1Ptr->setListAdapter(this);mListView1Ptr->setItemClickListener(this);}
     mTextView1Ptr = (ZKTextView*)findControlByID(ID_REVERSE_TextView1);
     mSignTextViewPtr = (ZKTextView*)findControlByID(ID_REVERSE_SignTextView);
